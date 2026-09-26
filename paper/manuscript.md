@@ -3,8 +3,8 @@
 **Short communication draft for *Knowledge-Based Systems* (Elsevier, Scopus Q1)**  
 **Reproducible artifacts:** https://github.com/nithin427/fuzzy-neural-cyber-triage (private)
 
-**Authors:** [Name], [Affiliation], [email]  
-**Corresponding author:** [email]
+**Authors:** Sai Nithin Erigineni, Midwest University, serigineni@midwest.edu  
+**Corresponding author:** Sai Nithin Erigineni (serigineni@midwest.edu)
 
 > Metrics below match `results/summary.json` (seed = 42). Do not invent additional numbers.
 
@@ -173,7 +173,7 @@ This short communication presented a fuzzy–neural decision intelligence framew
 
 [22] S. Moro, P. Cortez, and P. Rita, “A data-driven approach to predict the success of bank telemarketing,” *Decision Support Systems*, vol. 62, pp. 22–31, 2014. doi: 10.1016/j.dss.2014.03.001
 
-[23] N. Erigineni et al., “Fuzzy-neural cyber triage experiment (code and figures),” GitHub repository, 2026. [Online]. Available: https://github.com/nithin427/fuzzy-neural-cyber-triage
+[23] S. N. Erigineni, “Fuzzy-neural cyber triage experiment (code and figures),” GitHub repository, 2026. [Online]. Available: https://github.com/nithin427/fuzzy-neural-cyber-triage
 
 
 ## Reproducibility

@@ -10,10 +10,10 @@
 \begin{document}
 \begin{frontmatter}
 \title{Fuzzy--Neural Decision Intelligence for Cost-Aware Cyber Alert Triage}
-\author[mymainaddress]{Author Name\corref{cor1}}
-\ead{author@example.com}
+\author[mymainaddress]{Sai Nithin Erigineni\corref{cor1}}
+\ead{serigineni@midwest.edu}
 \cortext[cor1]{Corresponding author}
-\address[mymainaddress]{Affiliation, City, Country}
+\address[mymainaddress]{Midwest University, United States}
 
 \begin{abstract}
 Security operations centres often receive strong alert scores from machine learning models, but the step from score to operational action is still handled with brittle thresholds. This short communication proposes a fuzzy--neural decision intelligence framework that treats cyber alert triage as a knowledge-based decision problem rather than a classification endpoint. A compact multilayer perceptron estimates attack propensity from NSL-KDD features. Triangular fuzzy membership functions convert propensity into linguistic Low / Medium / High risk bands. A cost-aware decision layer maps those bands to Monitor, Soft-block, or Escalate actions under an explicit relative cost model. In a reproducible CPU-scale experiment, gradient boosting attains the highest ROC-AUC (0.947). The fuzzy--neural policy, using the neural propensity scores, reduces mean expected triage cost to 3.069 versus 3.264 for a hard 0.5 threshold and 4.309 for a top-20\% escalate rule, while raising attack coverage to 0.686. The contribution is decision-facing knowledge representation and cost-aware actioning, not a new state-of-the-art detector.

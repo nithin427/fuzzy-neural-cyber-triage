@@ -13,3 +13,4 @@
 | Repo | Done | https://github.com/nithin427/fuzzy-neural-cyber-triage |
 | Elsevier KBS template | **Done** | `paper/elsevier/main.tex` + `refs.bib` |
 | Narration regression pass | **Done** | Prose tightened; numbers/claims unchanged |
+| Author block | **Done** | Sai Nithin Erigineni; Midwest University; serigineni@midwest.edu |
