@@ -39,7 +39,7 @@ Two incomplete patterns dominate the literature. Accuracy-centric intrusion dete
 
 **Fuzzy and neuro-fuzzy IDS.** Adaptive neuro-fuzzy inference systems (ANFIS) and fuzzy–neural hybrids improve detection and, in some designs, interpretability [2,9–12]. These works demonstrate the value of fuzzy knowledge representation for intrusion patterns, yet typically report detection rate / false alarm rate rather than cost-aware action policies.
 
-**Cost-sensitive and decision-support security analytics.** Cost-sensitive learning formalises asymmetric false negatives and false positives [3]. Security analytics and SOC tooling increasingly emphasise prioritisation and decision support [13,14]. Explainability methods such as SHAP can complement black-box scores for analyst trust [15], but explanation alone does not select Monitor / Soft-block / Escalate under budget.
+**Cost-sensitive and decision-support security analytics.** Cost-sensitive learning formalises asymmetric false negatives and false positives [3]. Security analytics and SOC tooling increasingly emphasise prioritisation and decision support [13,18]. Explainability methods such as SHAP can complement black-box scores for analyst trust [14], but explanation alone does not select Monitor / Soft-block / Escalate under budget.
 
 **Positioning.** We do not claim a new highest AUC on NSL-KDD. We claim a compact knowledge-based decision layer that turns propensity into linguistic risk and cost-aware actions, evaluated with decision metrics that accuracy-only IDS papers omit.
 
@@ -129,59 +129,52 @@ This short communication presented a fuzzy–neural decision intelligence framew
 
 ## References
 
-[1] L. A. Zadeh, “Fuzzy sets,” *Information and Control*, vol. 8, no. 3, pp. 338–353, 1965.
+[1] L. A. Zadeh, “Fuzzy sets,” *Information and Control*, vol. 8, no. 3, pp. 338–353, 1965. doi: 10.1016/S0019-9958(65)90241-X
 
-[2] J.-S. R. Jang, “ANFIS: Adaptive-network-based fuzzy inference system,” *IEEE Transactions on Systems, Man, and Cybernetics*, vol. 23, no. 3, pp. 665–685, 1993.
+[2] J.-S. R. Jang, “ANFIS: Adaptive-network-based fuzzy inference system,” *IEEE Transactions on Systems, Man, and Cybernetics*, vol. 23, no. 3, pp. 665–685, 1993. doi: 10.1109/21.256541
 
-[3] C. Elkan, “The foundations of cost-sensitive learning,” in *Proc. IJCAI*, 2001, pp. 973–978.
+[3] C. Elkan, “The foundations of cost-sensitive learning,” in *Proc. 17th Int. Joint Conf. Artificial Intelligence (IJCAI)*, 2001, pp. 973–978.
 
-[4] M. Tavallaee, E. Bagheri, W. Lu, and A. A. Ghorbani, “A detailed analysis of the KDD CUP 99 data set,” in *Proc. IEEE CISDA*, 2009, pp. 1–6.
+[4] M. Tavallaee, E. Bagheri, W. Lu, and A. A. Ghorbani, “A detailed analysis of the KDD CUP 99 data set,” in *Proc. IEEE Symp. Computational Intelligence for Security and Defense Applications (CISDA)*, 2009, pp. 1–6. doi: 10.1109/CISDA.2009.5356528
 
-[5] I. Goodfellow, Y. Bengio, and A. Courville, *Deep Learning*. MIT Press, 2016.
+[5] I. Goodfellow, Y. Bengio, and A. Courville, *Deep Learning*. Cambridge, MA, USA: MIT Press, 2016.
 
-[6] T. Chen and C. Guestrin, “XGBoost: A scalable tree boosting system,” in *Proc. ACM KDD*, 2016, pp. 785–794.
+[6] T. Chen and C. Guestrin, “XGBoost: A scalable tree boosting system,” in *Proc. 22nd ACM SIGKDD Int. Conf. Knowledge Discovery and Data Mining*, 2016, pp. 785–794. doi: 10.1145/2939672.2939785
 
-[7] A. L. Buczak and E. Guven, “A survey of data mining and machine learning methods for cyber security intrusion detection,” *IEEE Communications Surveys & Tutorials*, vol. 18, no. 2, pp. 1153–1176, 2016.
+[7] A. L. Buczak and E. Guven, “A survey of data mining and machine learning methods for cyber security intrusion detection,” *IEEE Communications Surveys & Tutorials*, vol. 18, no. 2, pp. 1153–1176, 2016. doi: 10.1109/COMST.2015.2494502
 
-[8] M. Ring, S. Wunderlich, D. Scheuring, D. Landes, and A. Hotho, “A survey of network-based intrusion detection data sets,” *Computers & Security*, vol. 86, pp. 147–167, 2019. (ScienceDirect)
+[8] M. Ring, S. Wunderlich, D. Scheuring, D. Landes, and A. Hotho, “A survey of network-based intrusion detection data sets,” *Computers & Security*, vol. 86, pp. 147–167, 2019. doi: 10.1016/j.cose.2019.06.005
 
-[9] D. Srilatha and G. K. Shyam, “Cloud-based intrusion detection using kernel fuzzy clustering and optimal type-2 fuzzy neural network,” *Cluster Computing*, vol. 24, pp. 2657–2672, 2021. (Springer)
+[9] D. Srilatha and G. K. Shyam, “Cloud-based intrusion detection using kernel fuzzy clustering and optimal type-2 fuzzy neural network,” *Cluster Computing*, vol. 24, pp. 2657–2672, 2021. doi: 10.1007/s10586-021-03281-9
 
-[10] Y. Xiao et al., related deep residual / fuzzy intrusion studies; see also: combination of ANFIS and deep residual networks for intrusion detection, *PLOS ONE*, 2022. (open access)
+[10] J. Liu, W. Yinchai, T. C. Siong, X. Li, L. Zhao, and F. Wei, “On the combination of adaptive neuro-fuzzy inference system and deep residual network for improving detection rates on intrusion detection,” *PLOS ONE*, vol. 17, no. 12, Art. no. e0278819, 2022. doi: 10.1371/journal.pone.0278819
 
-[11] Hybrid interpretable deep structure based on ANFIS, decision tree, and K-means for intrusion detection, *Scientific Reports*, vol. 12, 2022. (Nature Portfolio)
+[11] J. Liu, W. Yinchai, T. C. Siong, X. Li, L. Zhao, and F. Wei, “A hybrid interpretable deep structure based on adaptive neuro-fuzzy inference system, decision tree, and K-means for intrusion detection,” *Scientific Reports*, vol. 12, Art. no. 20770, 2022. doi: 10.1038/s41598-022-23765-x
 
-[12] S. Rajadurai and others on neuro-fuzzy IDS designs in IEEE Access / related open IEEE venues (use the exact Access article you download for camera-ready DOI).
+[12] Y. Yang, K. Zheng, C. Wu, and Y. Yang, “BAT: Deep learning methods on network intrusion detection using NSL-KDD dataset,” *IEEE Access*, vol. 8, pp. 29575–29585, 2020. doi: 10.1109/ACCESS.2020.2972627
 
-[13] M. Conti, A. Dehghantanha, K. Franke, and S. Watson, “Internet of Things security and forensics: Challenges and opportunities,” *Future Generation Computer Systems*, vol. 78, pp. 544–546, 2018. (ScienceDirect; contextual security analytics)
+[13] N. Sun, J. Zhang, P. Rimba, S. Gao, L. Y. Zhang, and Y. Xiang, “Data-driven cybersecurity incident prediction: A survey,” *IEEE Communications Surveys & Tutorials*, vol. 21, no. 2, pp. 1744–1772, 2019. doi: 10.1109/COMST.2018.2876973
 
-[14] N. Sun, J. Zhang, P. Rimba, S. Gao, L. Y. Zhang, and Y. Xiang, “Data-driven cybersecurity incident prediction: A survey,” *IEEE Communications Surveys & Tutorials*, vol. 21, no. 2, pp. 1744–1772, 2019.
+[14] S. M. Lundberg and S.-I. Lee, “A unified approach to interpreting model predictions,” in *Proc. Advances in Neural Information Processing Systems (NeurIPS)*, 2017.
 
-[15] S. M. Lundberg and S.-I. Lee, “A unified approach to interpreting model predictions,” in *Proc. NeurIPS*, 2017.
+[15] C. Modi, D. Patel, B. Borisaniya, H. Patel, A. Patel, and M. Rajarajan, “A survey of intrusion detection techniques in cloud,” *Journal of Network and Computer Applications*, vol. 36, no. 1, pp. 42–57, 2013. doi: 10.1016/j.jnca.2012.05.003
 
-[16] Elsevier *Knowledge-Based Systems* aims and scope (editorial framing for journal fit; cite journal homepage / guide for authors in cover letter, not as a research claim).
+[16] H.-J. Liao, C.-H. R. Lin, Y.-C. Lin, and K.-Y. Tung, “Intrusion detection system: A comprehensive review,” *Journal of Network and Computer Applications*, vol. 36, no. 1, pp. 16–24, 2013. doi: 10.1016/j.jnca.2012.09.004
 
-[17] C. Modi, D. Patel, B. Borisaniya, H. Patel, A. Patel, and M. Rajarajan, “A survey of intrusion detection techniques in cloud,” *Journal of Network and Computer Applications*, vol. 36, no. 1, pp. 42–57, 2013. (ScienceDirect)
+[17] A. Khraisat, I. Gondal, P. Vamplew, and J. Kamruzzaman, “Survey of intrusion detection systems: techniques, datasets and challenges,” *Cybersecurity*, vol. 2, Art. no. 20, 2019. doi: 10.1186/s42400-019-0038-7
 
-[18] H.-J. Liao, C.-H. R. Lin, Y.-C. Lin, and K.-Y. Tung, “Intrusion detection system: A comprehensive review,” *Journal of Network and Computer Applications*, vol. 36, no. 1, pp. 16–24, 2013. (ScienceDirect)
+[18] M. A. Al-Garadi, A. Mohamed, A. K. Al-Ali, X. Du, I. Ali, and M. Guizani, “A survey of machine and deep learning methods for Internet of Things (IoT) security,” *IEEE Communications Surveys & Tutorials*, vol. 22, no. 3, pp. 1646–1685, 2020. doi: 10.1109/COMST.2020.2988293
 
-[19] Y. Mirsky, T. Doitshman, Y. Elovici, and A. Shabtai, “Kitsune: An ensemble of autoencoders for online network intrusion detection,” in *Proc. NDSS*, 2018.
+[19] A. Pinto, L.-C. Herrera, Y. Donoso, and J. A. Gutierrez, “Survey on intrusion detection systems based on machine learning techniques for the protection of critical infrastructure,” *Sensors*, vol. 23, no. 5, Art. no. 2415, 2023. doi: 10.3390/s23052415
 
-[20] A. Khraisat, I. Gondal, P. Vamplew, and J. Kamruzzaman, “Survey of intrusion detection systems: techniques, datasets and challenges,” *Cybersecurity*, vol. 2, no. 20, 2019. (Springer open)
+[20] H. Liu and B. Lang, “Machine learning and deep learning methods for intrusion detection systems: A survey,” *Applied Sciences*, vol. 9, no. 20, Art. no. 4396, 2019. doi: 10.3390/app9204396
 
-[21] MDPI *Electronics* / *Sensors* IDS survey articles on ML-based NIDS (select one 2020–2024 open-access survey with DOI matching your downloaded PDF for camera-ready).
+[21] Y. Mirsky, T. Doitshman, Y. Elovici, and A. Shabtai, “Kitsune: An ensemble of autoencoders for online network intrusion detection,” in *Proc. Network and Distributed System Security Symp. (NDSS)*, 2018. doi: 10.14722/ndss.2018.23204
 
-[22] S. Moro, P. Cortez, and P. Rita, “A data-driven approach to predict the success of bank telemarketing,” *Decision Support Systems*, vol. 62, pp. 22–31, 2014. (ScienceDirect; cited for decision-support evaluation culture, not telco marketing claims)
+[22] S. Moro, P. Cortez, and P. Rita, “A data-driven approach to predict the success of bank telemarketing,” *Decision Support Systems*, vol. 62, pp. 22–31, 2014. doi: 10.1016/j.dss.2014.03.001
 
-[23] J. Pearl and D. Mackenzie, *The Book of Why*. Basic Books, 2018. (optional conceptual citation for decision vs association; omit if editor prefers only peer-reviewed security/AI sources)
+[23] N. Erigineni et al., “Fuzzy-neural cyber triage experiment (code and figures),” GitHub repository, 2026. [Online]. Available: https://github.com/nithin427/fuzzy-neural-cyber-triage
 
-[24] IEEE Access special sections on computational intelligence for cybersecurity (pick one 2019–2024 article you actually read and cite with full DOI).
-
-[25] Author’s reproducibility package: N. Erigineni (or final author list), “Fuzzy-neural cyber triage experiment,” GitHub repository, 2026. https://github.com/nithin427/fuzzy-neural-cyber-triage
-
-**Camera-ready note.** Replace bracketed / “select one” items [10–12, 21, 24] with the exact bibliographic records from the PDFs you download (DOI, volume, pages). Prefer IEEE, ScienceDirect (Elsevier), Springer, and MDPI Q1/Q2 sources as required by your instructor. Keep total near 20–25.
-
----
 
 ## Reproducibility
 
