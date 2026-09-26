@@ -12,4 +12,4 @@
 | Exactly 2 figures + 2 tables | Locked | From experiment code |
 | Repo | Done | https://github.com/nithin427/fuzzy-neural-cyber-triage |
 | Elsevier KBS template | **Done** | `paper/elsevier/main.tex` + `refs.bib` |
-| Narration regression pass | Optional | After template |
+| Narration regression pass | **Done** | Prose tightened; numbers/claims unchanged |

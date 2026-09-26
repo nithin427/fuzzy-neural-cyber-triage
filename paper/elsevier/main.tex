@@ -16,7 +16,7 @@
 \address[mymainaddress]{Affiliation, City, Country}
 
 \begin{abstract}
-Security operations centres routinely obtain high-quality alert scores from machine learning, yet the mapping from score to operational action is often left to brittle thresholds. This short communication proposes a fuzzy--neural decision intelligence framework that treats cyber alert triage as a knowledge-based decision problem. A compact multilayer perceptron estimates attack propensity from NSL-KDD features. Triangular fuzzy membership functions convert propensity into linguistic Low / Medium / High risk bands. A cost-aware decision layer maps those bands to Monitor, Soft-block, or Escalate actions under an explicit relative cost model. In a reproducible CPU-scale experiment, gradient boosting attains the highest ROC-AUC (0.947). The fuzzy--neural policy, using the neural propensity scores, reduces mean expected triage cost to 3.069 versus 3.264 for a hard 0.5 threshold and 4.309 for a top-20\% escalate rule, while raising attack coverage to 0.686. The claimed contribution is decision-facing knowledge representation and cost-aware actioning, not a new state-of-the-art detector.
+Security operations centres often receive strong alert scores from machine learning models, but the step from score to operational action is still handled with brittle thresholds. This short communication proposes a fuzzy--neural decision intelligence framework that treats cyber alert triage as a knowledge-based decision problem rather than a classification endpoint. A compact multilayer perceptron estimates attack propensity from NSL-KDD features. Triangular fuzzy membership functions convert propensity into linguistic Low / Medium / High risk bands. A cost-aware decision layer maps those bands to Monitor, Soft-block, or Escalate actions under an explicit relative cost model. In a reproducible CPU-scale experiment, gradient boosting attains the highest ROC-AUC (0.947). The fuzzy--neural policy, using the neural propensity scores, reduces mean expected triage cost to 3.069 versus 3.264 for a hard 0.5 threshold and 4.309 for a top-20\% escalate rule, while raising attack coverage to 0.686. The contribution is decision-facing knowledge representation and cost-aware actioning, not a new state-of-the-art detector.
 \end{abstract}
 
 \begin{keyword}
@@ -25,12 +25,12 @@ fuzzy systems \sep neural networks \sep decision intelligence \sep intrusion det
 \end{frontmatter}
 
 \section{Introduction}
-Artificial intelligence and knowledge-based methods are widely used to support prediction and human decision-making in security operations. For intrusion alerts, analysts must decide which events to monitor, soft-contain, or escalate under limited response capacity.
+Artificial intelligence and knowledge-based methods already support prediction in security operations. For intrusion alerts, analysts still need a second answer beyond accuracy: which events to monitor, soft-contain, or escalate under limited response capacity.
 
-Accuracy-centric detectors optimise ROC-AUC or F1 and stop at a score. Pure expert rule bases are transparent but brittle. Fuzzy--neural hybrids retain learning capacity while exposing linguistic grades operators can inspect, aligning with the aims of \emph{Knowledge-Based Systems} for intelligent decision support and computational intelligence.
+Accuracy-centric detectors optimise ROC-AUC or F1 and stop at a score or label. Pure expert rule bases are transparent but brittle when traffic shifts. Fuzzy--neural hybrids learn from data while exposing linguistic grades operators can inspect, matching the aims of \emph{Knowledge-Based Systems} for intelligent decision support and computational intelligence.
 
 \paragraph{Research gap.}
-Prior fuzzy and neural IDS work largely improves detection rates. Fewer studies close the loop from learned propensity to linguistic knowledge bands to cost-aware triage actions, evaluated with decision metrics rather than classifier metrics alone.
+Prior fuzzy and neural IDS work mainly lifts detection rates. Fewer studies close the loop from learned propensity to linguistic knowledge bands to cost-aware triage actions, and then evaluate that loop with decision metrics rather than classifier metrics alone.
 
 \paragraph{Contributions.}
 (1) A three-layer fuzzy--neural decision pipeline for cyber alert triage.

@@ -12,7 +12,7 @@
 
 ## Abstract
 
-Security operations centres routinely obtain high-quality alert scores from machine learning, yet the mapping from score to operational action is often left to brittle thresholds. This short communication proposes a fuzzy–neural decision intelligence framework that treats cyber alert triage as a knowledge-based decision problem. A compact multilayer perceptron estimates attack propensity from NSL-KDD features. Triangular fuzzy membership functions convert propensity into linguistic Low / Medium / High risk bands. A cost-aware decision layer maps those bands to Monitor, Soft-block, or Escalate actions under an explicit relative cost model. In a reproducible CPU-scale experiment, gradient boosting attains the highest ROC-AUC (0.947). The fuzzy–neural policy, using the neural propensity scores, reduces mean expected triage cost to 3.069 versus 3.264 for a hard 0.5 threshold and 4.309 for a top-20% escalate rule, while raising attack coverage to 0.686. The claimed contribution is therefore decision-facing knowledge representation and cost-aware actioning, not a new state-of-the-art detector. The design aligns with *Knowledge-Based Systems* aims for intelligent decision support, computational intelligence, and knowledge presentation in prediction and warning systems.
+Security operations centres often receive strong alert scores from machine learning models, but the step from score to operational action is still handled with brittle thresholds. This short communication proposes a fuzzy–neural decision intelligence framework that treats cyber alert triage as a knowledge-based decision problem rather than a classification endpoint. A compact multilayer perceptron estimates attack propensity from NSL-KDD features. Triangular fuzzy membership functions convert propensity into linguistic Low / Medium / High risk bands. A cost-aware decision layer maps those bands to Monitor, Soft-block, or Escalate actions under an explicit relative cost model. In a reproducible CPU-scale experiment, gradient boosting attains the highest ROC-AUC (0.947). The fuzzy–neural policy, using the neural propensity scores, reduces mean expected triage cost to 3.069 versus 3.264 for a hard 0.5 threshold and 4.309 for a top-20% escalate rule, while raising attack coverage to 0.686. The contribution is decision-facing knowledge representation and cost-aware actioning, not a new state-of-the-art detector. That framing matches *Knowledge-Based Systems* aims for intelligent decision support, computational intelligence, and knowledge presentation in prediction and warning systems.
 
 **Keywords:** fuzzy systems; neural networks; decision intelligence; intrusion detection; intelligent decision support systems; knowledge-based systems; cost-sensitive triage
 
@@ -20,11 +20,11 @@ Security operations centres routinely obtain high-quality alert scores from mach
 
 ## 1. Introduction
 
-Artificial intelligence and knowledge-based methods are widely used to support prediction and human decision-making in security operations. For intrusion and phishing-style alerts, the practical question for analysts is not only classification accuracy. It is which alerts to monitor quietly, which to soft-contain, and which to escalate when response capacity and false-alarm cost are limited.
+Artificial intelligence and knowledge-based methods already support prediction in security operations. For intrusion alerts, analysts still need a second answer beyond accuracy: which events to monitor, which to soft-contain, and which to escalate when capacity and false-alarm cost are limited.
 
-Two incomplete patterns dominate the literature. Accuracy-centric intrusion detectors optimise ROC-AUC or F1 and stop at a score or a binary label. Pure expert rule bases are transparent but brittle when traffic distributions shift. Fuzzy–neural and neuro-fuzzy methods sit between these extremes: they retain learning capacity while exposing linguistic grades that operators can inspect. That combination matches the editorial scope of *Knowledge-Based Systems*: systems that support prediction and decision-making through data science and computation, with balanced theory and practice, including intelligent decision support and computational intelligence.
+Two incomplete patterns dominate the literature. Accuracy-centric detectors optimise ROC-AUC or F1 and stop at a score or label. Pure expert rule bases are transparent but brittle when traffic shifts. Fuzzy–neural methods sit between these extremes: they learn from data while exposing linguistic grades operators can inspect. That mix matches the scope of *Knowledge-Based Systems*, which seeks systems that support prediction and decision-making with both theory and practical study.
 
-**Research gap.** Prior fuzzy and neural IDS work largely improves detection rates. Far fewer studies close the loop from learned propensity to linguistic knowledge bands to cost-aware triage *actions*, and evaluate that loop with decision metrics (expected cost, coverage) rather than classifier metrics alone.
+**Research gap.** Prior fuzzy and neural IDS work mainly lifts detection rates. Fewer studies close the loop from learned propensity to linguistic knowledge bands to cost-aware triage actions, and then evaluate that loop with decision metrics such as expected cost and coverage rather than classifier metrics alone.
 
 **Contributions.**
 1. A three-layer fuzzy–neural decision pipeline for cyber alert triage (propensity → fuzzy bands → cost-aware actions).
@@ -41,7 +41,7 @@ Two incomplete patterns dominate the literature. Accuracy-centric intrusion dete
 
 **Cost-sensitive and decision-support security analytics.** Cost-sensitive learning formalises asymmetric false negatives and false positives [3]. Security analytics and SOC tooling increasingly emphasise prioritisation and decision support [13,18]. Explainability methods such as SHAP can complement black-box scores for analyst trust [14], but explanation alone does not select Monitor / Soft-block / Escalate under budget.
 
-**Positioning.** We do not claim a new highest AUC on NSL-KDD. We claim a compact knowledge-based decision layer that turns propensity into linguistic risk and cost-aware actions, evaluated with decision metrics that accuracy-only IDS papers omit.
+**Positioning.** We do not claim a new highest AUC on NSL-KDD. We claim a compact knowledge-based decision layer that turns propensity into linguistic risk and cost-aware actions, scored with decision metrics that accuracy-only IDS papers usually omit.
 
 ---
 
@@ -111,9 +111,9 @@ Prediction metrics of the proposed system match the neural ablation by construct
 
 ## 6. Discussion
 
-**Alignment with journal aims.** The work combines data-driven learning, fuzzy knowledge presentation, and an intelligent decision-support output for prediction/warning settings in cybersecurity operations.
+**Alignment with journal aims.** The work joins data-driven learning, fuzzy knowledge presentation, and decision-support outputs for prediction and warning tasks in cybersecurity operations.
 
-**What is and is not claimed.** We claim a decision-intelligence contribution. We do not claim state-of-the-art NSL-KDD detection; pairing the fuzzy–cost layer with a stronger propensity model (for example boosting scores) is a natural extension and would preserve the knowledge-based action narrative.
+**What is and is not claimed.** We claim a decision-intelligence contribution. We do not claim state-of-the-art NSL-KDD detection. Pairing the fuzzy–cost layer with a stronger propensity model, for example boosting scores, is a natural extension that keeps the knowledge-based action narrative.
 
 **Limitations.** Public benchmark traffic; scenario-default costs; training subsample for speed; no live SOC A/B test; fairness and concept drift left for future work.
 
@@ -123,7 +123,7 @@ Prediction metrics of the proposed system match the neural ablation by construct
 
 ## 7. Conclusion
 
-This short communication presented a fuzzy–neural decision intelligence framework for cost-aware cyber alert triage. A neural propensity model, fuzzy linguistic risk bands, and a cost-aware action policy together produce Monitor / Soft-block / Escalate decisions that improve expected triage cost and attack coverage over simple threshold and top-\(k\) policies on a reproducible NSL-KDD experiment. Future work includes ANFIS-style adaptive membership learning, operator-calibrated costs, stronger propensity backbones under the same decision layer, and evaluation on phishing URL corpora for cross-threat validation.
+This short communication presented a fuzzy–neural decision intelligence framework for cost-aware cyber alert triage. Neural propensity, fuzzy linguistic risk bands, and a cost-aware action policy jointly produce Monitor / Soft-block / Escalate decisions that improve expected triage cost and attack coverage over simple threshold and top-\(k\) policies on a reproducible NSL-KDD experiment. Future work includes ANFIS-style adaptive membership learning, operator-calibrated costs, stronger propensity backbones under the same decision layer, and phishing URL evaluation for cross-threat validation.
 
 ---
 
