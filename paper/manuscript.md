@@ -3,7 +3,7 @@
 **Short communication draft for *Knowledge-Based Systems* (Elsevier, Scopus Q1)**  
 **Reproducible artifacts:** https://github.com/nithin427/fuzzy-neural-cyber-triage (private)
 
-**Authors:** Sai Nithin Erigineni, Midwest University, serigineni@midwest.edu  
+**Authors:** Sai Nithin Erigineni, DBA, Midwest University, 851 Parr Rd, Wentzville, MO 63385, United States, serigineni@midwest.edu  
 **Corresponding author:** Sai Nithin Erigineni (serigineni@midwest.edu)
 
 > Metrics below match `results/summary.json` (seed = 42). Do not invent additional numbers.
