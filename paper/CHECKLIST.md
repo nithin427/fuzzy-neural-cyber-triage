@@ -11,5 +11,5 @@
 | References | **Locked** | 23 entries with verified DOIs (IEEE / ScienceDirect / Springer / MDPI / PLOS / Nature Portfolio) |
 | Exactly 2 figures + 2 tables | Locked | From experiment code |
 | Repo | Done | https://github.com/nithin427/fuzzy-neural-cyber-triage |
-| Elsevier KBS template | Pending | Next preferred step |
+| Elsevier KBS template | **Done** | `paper/elsevier/main.tex` + `refs.bib` |
 | Narration regression pass | Optional | After template |
