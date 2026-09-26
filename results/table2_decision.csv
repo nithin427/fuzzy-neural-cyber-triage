@@ -1,0 +1,4 @@
+Policy,expected_cost,attack_coverage,unnecessary_escalations,n_monitor,n_soft,n_escalate
+Prob. threshold 0.5,3.2635,0.6545742713744827,623.0,11943.0,0.0,8057.0
+Top-20% by score,4.30905,0.3480672712864313,47.0,16000.0,0.0,4000.0
+Fuzzy–cost (proposed),3.06755,0.6856564233512371,603.0,11554.0,776.0,7670.0

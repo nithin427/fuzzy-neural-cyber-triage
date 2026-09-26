@@ -1,0 +1,67 @@
+{
+  "seed": 42,
+  "n_train": 34000,
+  "n_val": 6000,
+  "n_test": 20000,
+  "attack_rate_test": 0.56785,
+  "table1": {
+    "Logistic regression": {
+      "accuracy": 0.75175,
+      "f1": 0.7395204868579822,
+      "roc_auc": 0.8177483335099355,
+      "pr_auc": 0.8792926316712302
+    },
+    "Gradient boosting": {
+      "accuracy": 0.78605,
+      "f1": 0.7738013427076175,
+      "roc_auc": 0.9466856585933099,
+      "pr_auc": 0.9505014126647229
+    },
+    "Neural net (ablation)": {
+      "accuracy": 0.7727,
+      "f1": 0.7658390851962501,
+      "roc_auc": 0.9075534947536052,
+      "pr_auc": 0.9229041057330601
+    },
+    "Fuzzy\u2013neural (proposed)": {
+      "accuracy": 0.7727,
+      "f1": 0.7658390851962501,
+      "roc_auc": 0.9075534947536052,
+      "pr_auc": 0.9229041057330601
+    }
+  },
+  "table2": {
+    "Prob. threshold 0.5": {
+      "expected_cost": 3.2635,
+      "attack_coverage": 0.6545742713744827,
+      "unnecessary_escalations": 623,
+      "n_monitor": 11943,
+      "n_soft": 0,
+      "n_escalate": 8057
+    },
+    "Top-20% by score": {
+      "expected_cost": 4.30905,
+      "attack_coverage": 0.3480672712864313,
+      "unnecessary_escalations": 47,
+      "n_monitor": 16000,
+      "n_soft": 0,
+      "n_escalate": 4000
+    },
+    "Fuzzy\u2013cost (proposed)": {
+      "expected_cost": 3.06755,
+      "attack_coverage": 0.6856564233512371,
+      "unnecessary_escalations": 603,
+      "n_monitor": 11554,
+      "n_soft": 776,
+      "n_escalate": 7670
+    }
+  },
+  "figures": {
+    "fig1": "/workspace/fuzzy-neural-cyber-triage/figures/fig1_architecture.png",
+    "fig2": "/workspace/fuzzy-neural-cyber-triage/figures/fig2_roc_and_cost.png"
+  },
+  "notes": [
+    "Proposed model shares neural propensity with ablation; novelty is fuzzy+cost decision layer.",
+    "Train subsampled to 40k for <2h CPU reproducibility; document in paper limitations."
+  ]
+}
