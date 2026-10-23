@@ -10,7 +10,7 @@ pdflatex main && bibtex main && pdflatex main && pdflatex main
 | File | Purpose |
 |---|---|
 | `main.tex` | Manuscript source (elsarticle `preprint,12pt`, numbered references `elsarticle-num`) |
-| `refs.bib` | 29 references; DOIs checked against Crossref on 2026-10-23 |
+| `refs.bib` | 28 references; DOIs checked against Crossref on 2026-10-23 |
 | `figures/fig1_architecture.pdf`, `figures/fig2_roc_and_cost.pdf` | Vector figures used by `main.tex` (300-dpi PNG copies alongside) |
 | `figures/graphical_abstract.png` | Optional graphical abstract (upload separately if used) |
 | `highlights.txt` | 5 highlights, each ≤ 85 characters (upload as a separate file) |

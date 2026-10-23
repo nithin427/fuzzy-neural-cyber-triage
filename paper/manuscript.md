@@ -2,7 +2,7 @@
 
 **Article type:** Short Communication — *Knowledge-Based Systems* (Elsevier)  
 **Author:** Sai Nithin Erigineni, DBA, Midwest University, 851 Parr Rd, Wentzville, MO 63385, United States (corresponding author: serigineni@midwest.edu)  
-**Code and results:** https://github.com/nithin427/fuzzy-neural-cyber-triage
+**Code and results:** GitHub repository, to be made public on acceptance; available to the editor and reviewers on reasonable request
 
 > Markdown mirror of `paper/elsevier/main.tex` (the LaTeX file is the submission source). Generated with pandoc; every number comes from `results/summary.json` and `results/*.csv`.
 
@@ -16,9 +16,9 @@ Security operations centres (SOCs) receive risk scores from machine-learning det
 
 SOC analysts face far more alerts than they can investigate, and alert fatigue is now recognised as a central operational risk of security operations [1,2]. Recent work prioritises alerts with reinforcement learning or human–AI teaming [2,3], but most intrusion-detection research still ends at a score or a label and is judged by accuracy or ROC-AUC [4–7]. For a SOC manager the business question is different: given finite analyst capacity and asymmetric costs of missed attacks and needless escalations, which alerts should be monitored, contained automatically, or escalated? Answering it explicitly is part of the digital transformation of security operations from tool-centric to data-driven decision processes [8,9].
 
-Fuzzy and neuro-fuzzy systems are a natural vehicle for this step because they express learned evidence in linguistic terms that operators can audit [10–12]. In intrusion detection, however, fuzzy–neural hybrids have mainly been used to raise detection rates [13–15]; cost-sensitive learning has been applied to the classifier rather than to the action [16,17]; and explainable-AI work explains scores without choosing actions [18–20]. Knowledge-based decision support for cyber risk, such as knowledge-graph risk assessment [21] and rule-based knowledge layers in other high-stakes domains [22], shows the value of explicit rule representations, but a learned-score-to-action rule base for alert triage that is evaluated with decision metrics, paired tests and ablations is still missing.
+Fuzzy and neuro-fuzzy systems are a natural vehicle for this step because they express learned evidence in linguistic terms that operators can audit [10–12]. In intrusion detection, however, fuzzy–neural hybrids have mainly been used to raise detection rates [13–15]; cost-sensitive learning has been applied to the classifier rather than to the action [16,17]; and explainable-AI work explains scores without choosing actions [18–20]. Knowledge-based decision support for cyber risk, such as explainable knowledge-graph risk assessment [21], shows the value of explicit knowledge representations, but a learned-score-to-action rule base for alert triage that is evaluated with decision metrics, paired tests and ablations is still missing.
 
-This Short Communication closes that gap with three contributions: (i) a compact knowledge-based triage layer that converts neural propensity into fuzzy risk bands and then into SOC actions through a stated production-rule base (Section 2); (ii) a decision-centric evaluation protocol, comprising mean triage cost, attack coverage and unnecessary escalations, with paired bootstrap confidence intervals, Wilcoxon tests, a 10-seed repetition, and cost-ratio and membership sweeps (Sections 3–4); and (iii) an ablation that locates where the gain comes from and how far the rule base is from a cost-optimal reference. The design differs structurally from the strongest baseline, gradient boosting [23]: boosting is a detector whose output still requires a threshold, whereas the proposed layer is detector-agnostic and acts on any propensity score. Section 4 demonstrates this by applying the same rules to boosting scores.
+This Short Communication closes that gap with three contributions: (i) a compact knowledge-based triage layer that converts neural propensity into fuzzy risk bands and then into SOC actions through a stated production-rule base (Section 2); (ii) a decision-centric evaluation protocol, comprising mean triage cost, attack coverage and unnecessary escalations, with paired bootstrap confidence intervals, Wilcoxon tests, a 10-seed repetition, and cost-ratio and membership sweeps (Sections 3–4); and (iii) an ablation that locates where the gain comes from and how far the rule base is from a cost-optimal reference. The design differs structurally from the strongest baseline, gradient boosting [22]: boosting is a detector whose output still requires a threshold, whereas the proposed layer is detector-agnostic and acts on any propensity score. Section 4 demonstrates this by applying the same rules to boosting scores.
 
 # Proposed fuzzy–neural decision framework
 
@@ -26,7 +26,7 @@ This Short Communication closes that gap with three contributions: (i) a compact
 
 ## Neural propensity model
 
-Each alert $i$ has features $x_i$ (38 numeric NSL-KDD fields standardised; protocol, service and flag one-hot encoded) and label $y_i\in\{0,1\}$ (normal, attack). A multilayer perceptron $g_\theta$ with ReLU layers of width 128 and 64, dropout 0.2 and one logit output [24] gives the attack propensity $$\begin{split}
+Each alert $i$ has features $x_i$ (38 numeric NSL-KDD fields standardised; protocol, service and flag one-hot encoded) and label $y_i\in\{0,1\}$ (normal, attack). A multilayer perceptron $g_\theta$ with ReLU layers of width 128 and 64, dropout 0.2 and one logit output [23] gives the attack propensity $$\begin{split}
 p_i&=\sigma\big(g_\theta(x_i)\big),\\
 \mathcal{L}(\theta)&=-\frac{1}{N}\sum_{i=1}^{N}\Big[w_{+}\,y_i\log p_i+(1-y_i)\log(1-p_i)\Big],\qquad w_{+}=\frac{N_{-}}{N_{+}},
 \end{split}
@@ -85,11 +85,11 @@ Step 9: **evaluation only:** report $\bar C$, coverage and unnecessary escalatio
 
 # Experimental design
 
-*Data.* We use NSL-KDD [25], a public benchmark of labelled network-connection records, with labels binarised as normal versus attack. For CPU-scale reproducibility, 40,000 training records are sampled (34,000 for training and 6,000 for validation) and the test set is capped at 20,000 records (test attack rate 0.568). The test file contains attack types absent from training, so a train/test distribution shift is part of the task.
+*Data.* We use NSL-KDD [24], a public benchmark of labelled network-connection records, with labels binarised as normal versus attack. For CPU-scale reproducibility, 40,000 training records are sampled (34,000 for training and 6,000 for validation) and the test set is capped at 20,000 records (test attack rate 0.568). The test file contains attack types absent from training, so a train/test distribution shift is part of the task.
 
-*Baselines.* Detectors are logistic regression (class-balanced), gradient boosting [23] (scikit-learn defaults), and the MLP without the rule layer (neural ablation). The proposed system shares the neural propensity, so it has the same predictive metrics by construction, and its contribution must show at the decision level. Decision baselines on the same neural scores are a Monitor/Escalate threshold at 0.5, the same threshold tuned on validation data to minimise cost, and escalation of the top 20% of scores (a fixed analyst-capacity rule). The Bayes rule of Eq. (7) is a reference, not a competitor, because it requires the cost matrix and calibrated probabilities at run time. Learned triage policies (e.g., reinforcement learning [3]) are excluded because they need interaction data and a matched reward protocol.
+*Baselines.* Detectors are logistic regression (class-balanced), gradient boosting [22] (scikit-learn defaults), and the MLP without the rule layer (neural ablation). The proposed system shares the neural propensity, so it has the same predictive metrics by construction, and its contribution must show at the decision level. Decision baselines on the same neural scores are a Monitor/Escalate threshold at 0.5, the same threshold tuned on validation data to minimise cost, and escalation of the top 20% of scores (a fixed analyst-capacity rule). The Bayes rule of Eq. (7) is a reference, not a competitor, because it requires the cost matrix and calibrated probabilities at run time. Learned triage policies (e.g., reinforcement learning [3]) are excluded because they need interaction data and a matched reward protocol.
 
-*Statistics.* On the seed-42 test set we report percentile 95% confidence intervals from 2,000 paired bootstrap resamples of alerts [26] and two-sided Wilcoxon signed-rank tests on per-alert cost differences [27]. The full pipeline (subsample, split, initialisation and training) is then repeated for seeds 42–51 and compared with a paired Wilcoxon test across seeds. Sensitivity is examined by sweeping $C_{FN}\in[2,30]$ and the half-width of the Medium band (0.25–0.45). All numbers are produced by a single script (Data Availability), run with one PyTorch thread so that results are bit-identical between runs.
+*Statistics.* On the seed-42 test set we report percentile 95% confidence intervals from 2,000 paired bootstrap resamples of alerts [25] and two-sided Wilcoxon signed-rank tests on per-alert cost differences [26]. The full pipeline (subsample, split, initialisation and training) is then repeated for seeds 42–51 and compared with a paired Wilcoxon test across seeds. Sensitivity is examined by sweeping $C_{FN}\in[2,30]$ and the half-width of the Medium band (0.25–0.45). All numbers are produced by a single script (Data Availability), run with one PyTorch thread so that results are bit-identical between runs.
 
 # Results and discussion
 
@@ -132,7 +132,7 @@ Step 9: **evaluation only:** report $\bar C$, coverage and unnecessary escalatio
 
 *Failure modes.* The sensitivity results already show two failure boundaries: below $C_{FN}\approx3$ the capacity-capped top-20% rule is cheaper, and seed 48 is the weakest replicate (cost 3.282, coverage 0.626): its MLP has a typical ROC-AUC (0.900) but the lowest accuracy at 0.5 (0.757), showing that fixed band positions are sensitive to how scores are distributed, not only to how well they rank. More fundamentally, the rule base is not cost-optimal under its own matrix. The Bayes reference shows the size of the gap, and adaptive memberships (e.g., ANFIS-style tuning [11]) or cost-derived band positions are the obvious next step. The present bands were set by expert judgement and not tuned on test data.
 
-*Data and scope.* NSL-KDD (2009) is a dated laboratory benchmark whose traffic does not reflect modern enterprise, cloud or IoT telemetry [28,29]. The training data were subsampled to 40,000 records and the test set was capped at 20,000 for CPU-scale reproducibility, and a single train/test protocol is used. The cost matrix is illustrative, not elicited from a SOC, and coverage counts automatic containment as covering an attack. No live SOC deployment, concept-drift analysis or user study was performed, so the operational value for analysts remains to be validated.
+*Data and scope.* NSL-KDD (2009) is a dated laboratory benchmark whose traffic does not reflect modern enterprise, cloud or IoT telemetry [27,28]. The training data were subsampled to 40,000 records and the test set was capped at 20,000 for CPU-scale reproducibility, and a single train/test protocol is used. The cost matrix is illustrative, not elicited from a SOC, and coverage counts automatic containment as covering an attack. No live SOC deployment, concept-drift analysis or user study was performed, so the operational value for analysts remains to be validated.
 
 # Conclusion
 
@@ -140,7 +140,7 @@ This Short Communication framed cyber alert triage as a knowledge-based decision
 
 # Data availability
 
-NSL-KDD is publicly available from the Canadian Institute for Cybersecurity, University of New Brunswick. The experiment script, result tables (CSV/JSON) and figure-generation code are available at <https://github.com/nithin427/fuzzy-neural-cyber-triage>. The repository will be public no later than acceptance and is available to the editor and reviewers on request.
+The NSL-KDD dataset is publicly available from the Canadian Institute for Cybersecurity, University of New Brunswick [24]. The code and results (experiment script, result tables in CSV/JSON and figure-generation code) are held in a GitHub repository that will be made public on acceptance; until then they are available to the editor and reviewers on reasonable request.
 
 # Declaration of competing interest
 
@@ -202,18 +202,17 @@ This research did not receive any specific grant from funding agencies in the pu
 
 [21] S. Bag, S. Sarkar, I. Bose, Enhancing cybersecurity risk assessment using temporal knowledge graph-based explainable decision support system, Decision Support Systems 198 (2025) 114526. https://doi.org/10.1016/j.dss.2025.114526.
 
-[22] S.K. Thota, Quantum-inspired knowledge-guided decision support for risk-aware UAV mission planning in contested environments, Knowledge-Based Systems 351 (2026) 116815. https://doi.org/10.1016/j.knosys.2026.116815.
 
-[23] J.H. Friedman, Greedy function approximation: A gradient boosting machine, The Annals of Statistics 29 (2001) 1189–1232. https://doi.org/10.1214/aos/1013203451.
+[22] J.H. Friedman, Greedy function approximation: A gradient boosting machine, The Annals of Statistics 29 (2001) 1189–1232. https://doi.org/10.1214/aos/1013203451.
 
-[24] I. Goodfellow, Y. Bengio, A. Courville, Deep learning, MIT Press, Cambridge, MA, 2016.
+[23] I. Goodfellow, Y. Bengio, A. Courville, Deep learning, MIT Press, Cambridge, MA, 2016.
 
-[25] M. Tavallaee, E. Bagheri, W. Lu, A.A. Ghorbani, A detailed analysis of the KDD CUP 99 data set, in: Proceedings of the 2009 IEEE Symposium on Computational Intelligence for Security and Defense Applications (CISDA), 2009: pp. 1–6. https://doi.org/10.1109/CISDA.2009.5356528.
+[24] M. Tavallaee, E. Bagheri, W. Lu, A.A. Ghorbani, A detailed analysis of the KDD CUP 99 data set, in: Proceedings of the 2009 IEEE Symposium on Computational Intelligence for Security and Defense Applications (CISDA), 2009: pp. 1–6. https://doi.org/10.1109/CISDA.2009.5356528.
 
-[26] B. Efron, R.J. Tibshirani, An introduction to the bootstrap, Chapman & Hall/CRC, New York, 1994. https://doi.org/10.1201/9780429246593.
+[25] B. Efron, R.J. Tibshirani, An introduction to the bootstrap, Chapman & Hall/CRC, New York, 1994. https://doi.org/10.1201/9780429246593.
 
-[27] F. Wilcoxon, Individual comparisons by ranking methods, Biometrics Bulletin 1 (1945) 80–83. https://doi.org/10.2307/3001968.
+[26] F. Wilcoxon, Individual comparisons by ranking methods, Biometrics Bulletin 1 (1945) 80–83. https://doi.org/10.2307/3001968.
 
-[28] M. Ring, S. Wunderlich, D. Scheuring, D. Landes, A. Hotho, A survey of network-based intrusion detection data sets, Computers & Security 86 (2019) 147–167. https://doi.org/10.1016/j.cose.2019.06.005.
+[27] M. Ring, S. Wunderlich, D. Scheuring, D. Landes, A. Hotho, A survey of network-based intrusion detection data sets, Computers & Security 86 (2019) 147–167. https://doi.org/10.1016/j.cose.2019.06.005.
 
-[29] M.A. Al-Garadi, A. Mohamed, A.K. Al-Ali, X. Du, I. Ali, M. Guizani, A survey of machine and deep learning methods for Internet of Things (IoT) security, IEEE Communications Surveys & Tutorials 22 (2020) 1646–1685. https://doi.org/10.1109/COMST.2020.2988293.
+[28] M.A. Al-Garadi, A. Mohamed, A.K. Al-Ali, X. Du, I. Ali, M. Guizani, A survey of machine and deep learning methods for Internet of Things (IoT) security, IEEE Communications Surveys & Tutorials 22 (2020) 1646–1685. https://doi.org/10.1109/COMST.2020.2988293.

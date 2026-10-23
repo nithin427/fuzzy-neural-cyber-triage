@@ -21,9 +21,9 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
 | Artwork: vector PDF/EPS, halftone ≥ 300 dpi | OK | Figures used as vector PDF; PNG copies at 300 dpi |
 | "Do not submit different images or graphs combined into one" | **FLAG** | Fig. 1 has 2 panels and Fig. 2 has 4. This was kept because the brief requires exactly 2 figures. If the editor objects, split the panels into separate files and accept more figure numbers |
 | Figures uploaded as separate files | **FLAG** (at upload) | Upload `figures/*.pdf` separately in Editorial Manager |
-| References: numbered in square brackets, order of citation | OK | `elsarticle-num`; 29 entries, all cited, none missing (checked by script) |
+| References: numbered in square brackets, order of citation | OK | `elsarticle-num`; 28 entries, all cited, none missing (checked by script; 0 undefined citations after removing Thota 2026) |
 | Journal-name abbreviations (LTWA) | FLAG (minor) | Full journal names used; the guide accepts any consistent style. Abbreviation is applied at proof |
-| Data availability statement | OK / **FLAG** | Present with the repo URL. The repo is **private**: make it public before acceptance or give reviewers access |
+| Data availability statement | OK (resolved) | NSL-KDD is public (CIC, UNB; cited). Code and results are in a GitHub repository that will be made public on acceptance and are available to the editor and reviewers on reasonable request. No link to the private repo is given in the paper |
 | Declaration of competing interest | OK | Present |
 | Generative-AI declaration (guide wording, before references) | OK / **FLAG** | Uses the guide template and names "Grok Bot". The author must confirm the tool name and the uses listed |
 | Funding statement | OK | Exact guide sentence for "no funding" |
@@ -63,7 +63,7 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
 | Text numbers | `summary.json` | Checked by hand: 776 differing alerts, 8,631 soft-blocks, t = 0.53, seed 48 (3.282/0.626), sweep endpoints |
 
 ## 4. Reference / DOI report
-- 29 references. Every DOI resolved through the Crossref REST API on 2026-10-23 (the arXiv DOI through doi.org). 2 items have no DOI and are cited by venue: Elkan 2001 (IJCAI) and Goodfellow 2016 (book).
+- 28 references (29 before Thota 2026 was removed). Every DOI resolved through the Crossref REST API on 2026-10-23 (the arXiv DOI through doi.org). 2 items have no DOI and are cited by venue: Elkan 2001 (IJCAI) and Goodfellow 2016 (book).
 - **Errors fixed from the previous draft**:
   - Sun et al. 2019: the DOI 10.1109/COMST.2018.2876973 returned 404; corrected to 10.1109/COMST.2018.2885561.
   - BAT (IEEE Access 2020): the authors were wrong (Yang, Zheng, …); corrected to Su, Sun, Zhu, Wang, Li.
@@ -74,13 +74,13 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
   - Modi et al. 2013, Liao et al. 2013, Liu & Lang 2019, Mirsky et al. 2018, Pinto et al. 2023
   - the self-citation of the GitHub repository (it is now in Data availability)
 - **Added**:
-  - 2023–2026: Tariq et al. 2025 (ACM CSUR), Baruwal Chhetri et al. 2024 (ACM TOIT), Wang et al. 2024 AlertPro (Comput. Secur.), Telikani et al. 2024 (IEEE TII), Mohale & Obagbuwa 2025 (Front. AI), AL & Sagiroglu 2025 (EAAI), Bag et al. 2025 (DSS), Thota 2026 (KBS)
+  - 2023–2026: Tariq et al. 2025 (ACM CSUR), Baruwal Chhetri et al. 2024 (ACM TOIT), Wang et al. 2024 AlertPro (Comput. Secur.), Telikani et al. 2024 (IEEE TII), Mohale & Obagbuwa 2025 (Front. AI), AL & Sagiroglu 2025 (EAAI), Bag et al. 2025 (DSS)
   - Foundational: Vial 2019, Provost & Fawcett 2013, de Campos Souza 2020, Friedman 2001, Efron & Tibshirani 1994, Wilcoxon 1945
-- **FLAG**: Thota 2026 (KBS, UAV mission planning) is cited as an example of a rule-based knowledge layer in another domain. It is the course instructor's paper. Keep it only if the author considers it relevant, because editors watch for courtesy citations.
+- **RESOLVED (Thota citation)**: Thota 2026 (KBS, UAV / QKG-QI mission planning) was removed from `refs.bib`, `main.tex`, `manuscript.md` and `manuscript.docx`. The Introduction sentence now cites only Bag et al. 2025 for knowledge-based cyber-risk decision support. References [23]–[29] were renumbered [22]–[28]; no other reference changed.
 
 ## 5. Unresolved issues
 1. **Page limit** (see §1). This is the main compliance risk.
-2. The repository is private; the Data availability statement promises access.
+2. ~~The repository is private; the Data availability statement promises access.~~ **RESOLVED (private repo vs data statement)**: the statement now says the code and results will be made public on acceptance and are available to the editor and reviewers on reasonable request.
 3. The multi-panel figures conflict with the guide's "do not combine images" sentence.
 4. The guide was read from a mirror snapshot; the live page could not be fetched.
 5. The GenAI declaration wording and tool name need the author's confirmation.
@@ -99,4 +99,9 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
 - LaTeX: compiles with no errors, no undefined references or citations, and no overfull boxes except a 2.6 pt page-output box.
 
 ## 7. Recommendation
-**Minor revision** on scientific content: the claims are honest, scoped and statistically supported. The paper is **not ready to submit** until the page-limit decision (§5.1) and the repository-access step (§5.2) are resolved.
+**Minor revision** on scientific content: the claims are honest, scoped and statistically supported. The paper is **not ready to submit** until the page-limit decision (§5.1) is resolved. The repository-access step (§5.2) is resolved by the revised Data availability statement.
+
+## 8. Revision log
+- **2026-10-23, Thota citation removed.** Deleted `thota2026` from `refs.bib` and its citation from the Introduction (all versions). The sentence was rewritten to read: "Knowledge-based decision support for cyber risk, such as explainable knowledge-graph risk assessment [21], shows the value of explicit knowledge representations, ...". Reference count 29 → 28; numeric order re-checked (citation order unchanged apart from the shift [23]–[29] → [22]–[28]). No numbers changed.
+- **2026-10-23, Data availability updated for the private repository.** `main.tex`, `manuscript.md` (and its header line) and `manuscript.docx` now read: "The NSL-KDD dataset is publicly available from the Canadian Institute for Cybersecurity, University of New Brunswick [24]. The code and results (experiment script, result tables in CSV/JSON and figure-generation code) are held in a GitHub repository that will be made public on acceptance; until then they are available to the editor and reviewers on reasonable request." The Grok Bot AI declaration is unchanged.
+- `manuscript.docx` regenerated with pandoc 3.8.2 from `manuscript.md` (mirror note removed, `\tag{n}` written as `\qquad(n)`, figure paths `figures/`, run in `paper/elsevier/`); PDF recompiled with tectonic 0.15.0: 0 undefined citations or references.
