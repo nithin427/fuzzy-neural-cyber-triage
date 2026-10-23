@@ -1,12 +1,21 @@
-# Elsevier Knowledge-Based Systems LaTeX draft
+# Knowledge-Based Systems submission folder (Elsevier `elsarticle`)
 
-Compile (TeX Live / Overleaf with `elsarticle`):
+This folder is self-contained. Upload it to Overleaf as a zip and set `main.tex` as the main document, or compile locally:
 
 ```bash
-pdflatex main
-bibtex main
-pdflatex main
-pdflatex main
+pdflatex main && bibtex main && pdflatex main && pdflatex main
+# or: tectonic main.tex      (tested with tectonic 0.15.0; compiles cleanly)
 ```
 
-Or upload `paper/elsevier/` to Overleaf and set main document to `main.tex`.
+| File | Purpose |
+|---|---|
+| `main.tex` | Manuscript source (elsarticle `preprint,12pt`, numbered references `elsarticle-num`) |
+| `refs.bib` | 29 references; DOIs checked against Crossref on 2026-10-23 |
+| `figures/fig1_architecture.pdf`, `figures/fig2_roc_and_cost.pdf` | Vector figures used by `main.tex` (300-dpi PNG copies alongside) |
+| `figures/graphical_abstract.png` | Optional graphical abstract (upload separately if used) |
+| `highlights.txt` | 5 highlights, each ≤ 85 characters (upload as a separate file) |
+| `manuscript.docx` | Word version generated from the same content with pandoc |
+| `fuzzy-neural-cyber-triage-kbs.pdf` | PDF compiled from this folder |
+
+For double-spaced review, change the class options to `review,12pt`.
+All figures are produced by `src/experiment.py`. Rerunning the script refreshes the copies in `figures/`.

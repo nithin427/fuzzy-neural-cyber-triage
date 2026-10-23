@@ -56,12 +56,1113 @@
       "n_escalate": 7670
     }
   },
+  "cost_matrix": {
+    "rows": [
+      "Monitor",
+      "Soft-block",
+      "Escalate"
+    ],
+    "cols": [
+      "benign",
+      "attack"
+    ],
+    "values": [
+      [
+        0.0,
+        10.0
+      ],
+      [
+        2.0,
+        1.0
+      ],
+      [
+        6.0,
+        3.0
+      ]
+    ]
+  },
+  "membership_breakpoints": {
+    "low_end": 0.45,
+    "med_lo": 0.15,
+    "med_peak": 0.5,
+    "med_hi": 0.85,
+    "high_start": 0.55
+  },
+  "fuzzy_switch_points": [
+    0.28125,
+    0.7187500000000001
+  ],
+  "inference_vs_proposed_seed42": {
+    "Prob. threshold 0.5": {
+      "cost_ref_ci": [
+        3.01629375,
+        3.1178575
+      ],
+      "cost_alt_ci": [
+        3.2098875000000002,
+        3.3162725
+      ],
+      "d_cost_ci": [
+        0.17989874999999994,
+        0.21285125
+      ],
+      "cov_ref_ci": [
+        0.6767426772433817,
+        0.6940265791576604
+      ],
+      "cov_alt_ci": [
+        0.6455077576162069,
+        0.663631209902583
+      ],
+      "d_cov_ci": [
+        -0.03436207833536556,
+        -0.028018415364819787
+      ],
+      "p_bootstrap_cost": 0.0005,
+      "p_bootstrap_is_upper_bound": true,
+      "wilcoxon_stat": 7272.0,
+      "p_wilcoxon_cost": 7.297034067997071e-124,
+      "n_nonzero_pairs": 776
+    },
+    "Top-20% by score": {
+      "cost_ref_ci": [
+        3.01629375,
+        3.1178575
+      ],
+      "cost_alt_ci": [
+        4.245795,
+        4.37236375
+      ],
+      "d_cost_ci": [
+        1.1961462500000002,
+        1.2852025
+      ],
+      "cov_ref_ci": [
+        0.6767426772433817,
+        0.6940265791576604
+      ],
+      "cov_alt_ci": [
+        0.33915208059880336,
+        0.3567224197211598
+      ],
+      "d_cov_ci": [
+        -0.3466881715005194,
+        -0.32842146072863676
+      ],
+      "p_bootstrap_cost": 0.0005,
+      "p_bootstrap_is_upper_bound": true,
+      "wilcoxon_stat": 187578.0,
+      "p_wilcoxon_cost": 0.0,
+      "n_nonzero_pairs": 4446
+    }
+  },
+  "ci95_seed42": {
+    "Fuzzy\u2013cost (proposed)": {
+      "cost": [
+        3.01629375,
+        3.1178575
+      ],
+      "coverage": [
+        0.6767426772433817,
+        0.6940265791576604
+      ]
+    },
+    "Prob. threshold 0.5": {
+      "cost": [
+        3.2098875000000002,
+        3.3162725
+      ],
+      "coverage": [
+        0.6455077576162069,
+        0.663631209902583
+      ]
+    },
+    "Top-20% by score": {
+      "cost": [
+        4.245795,
+        4.37236375
+      ],
+      "coverage": [
+        0.33915208059880336,
+        0.3567224197211598
+      ]
+    }
+  },
+  "ablation_seed42": {
+    "policies": {
+      "Crisp bands at fuzzy switch points (0.281/0.719)": {
+        "expected_cost": 3.06755,
+        "attack_coverage": 0.6856564233512371,
+        "unnecessary_escalations": 603,
+        "n_monitor": 11554,
+        "n_soft": 776,
+        "n_escalate": 7670
+      },
+      "Validation-tuned threshold (t=0.53)": {
+        "expected_cost": 3.2778,
+        "attack_coverage": 0.6505239059610812,
+        "unnecessary_escalations": 617,
+        "n_monitor": 11995,
+        "n_soft": 0,
+        "n_escalate": 8005
+      },
+      "Bayes cost rule (reference)": {
+        "expected_cost": 2.16415,
+        "attack_coverage": 0.7008012679404773,
+        "unnecessary_escalations": 0,
+        "n_monitor": 11369,
+        "n_soft": 8631,
+        "n_escalate": 0
+      },
+      "Fuzzy\u2013cost on GB scores": {
+        "expected_cost": 3.0039,
+        "attack_coverage": 0.6757066126617944,
+        "unnecessary_escalations": 222,
+        "n_monitor": 12068,
+        "n_soft": 625,
+        "n_escalate": 7307
+      },
+      "Threshold 0.5 on GB scores": {
+        "expected_cost": 3.18915,
+        "attack_coverage": 0.6444483578409791,
+        "unnecessary_escalations": 241,
+        "n_monitor": 12440,
+        "n_soft": 0,
+        "n_escalate": 7560
+      }
+    },
+    "inference_vs_proposed": {
+      "Crisp bands at fuzzy switch points (0.281/0.719)": {
+        "cost_ref_ci": [
+          3.01629375,
+          3.1178575
+        ],
+        "cost_alt_ci": [
+          3.01629375,
+          3.1178575
+        ],
+        "d_cost_ci": [
+          0.0,
+          0.0
+        ],
+        "cov_ref_ci": [
+          0.6767426772433817,
+          0.6940265791576604
+        ],
+        "cov_alt_ci": [
+          0.6767426772433817,
+          0.6940265791576604
+        ],
+        "d_cov_ci": [
+          0.0,
+          0.0
+        ],
+        "p_bootstrap_cost": 1.0,
+        "p_bootstrap_is_upper_bound": false,
+        "wilcoxon_stat": null,
+        "p_wilcoxon_cost": null,
+        "n_nonzero_pairs": 0
+      },
+      "Validation-tuned threshold (t=0.53)": {
+        "cost_ref_ci": [
+          3.01629375,
+          3.1178575
+        ],
+        "cost_alt_ci": [
+          3.2241437499999996,
+          3.33002625
+        ],
+        "d_cost_ci": [
+          0.1935487500000001,
+          0.22785625000000007
+        ],
+        "cov_ref_ci": [
+          0.6767426772433817,
+          0.6940265791576604
+        ],
+        "cov_alt_ci": [
+          0.6414971885820492,
+          0.6593760029812676
+        ],
+        "d_cov_ci": [
+          -0.03851908116794511,
+          -0.031946482066195415
+        ],
+        "p_bootstrap_cost": 0.0005,
+        "p_bootstrap_is_upper_bound": true,
+        "wilcoxon_stat": 7644.0,
+        "p_wilcoxon_cost": 2.306164144992855e-123,
+        "n_nonzero_pairs": 776
+      },
+      "Bayes cost rule (reference)": {
+        "cost_ref_ci": [
+          3.01629375,
+          3.1178575
+        ],
+        "cost_alt_ci": [
+          2.1127,
+          2.21625125
+        ],
+        "d_cost_ci": [
+          -0.9211524999999999,
+          -0.8852500000000001
+        ],
+        "cov_ref_ci": [
+          0.6767426772433817,
+          0.6940265791576604
+        ],
+        "cov_alt_ci": [
+          0.6921280753348602,
+          0.7091249555305786
+        ],
+        "d_cov_ci": [
+          0.013008817279737173,
+          0.017425742570382104
+        ],
+        "p_bootstrap_cost": 0.0005,
+        "p_bootstrap_is_upper_bound": true,
+        "wilcoxon_stat": 46026.5,
+        "p_wilcoxon_cost": 0.0,
+        "n_nonzero_pairs": 7855
+      },
+      "Fuzzy\u2013cost on GB scores": {
+        "cost_ref_ci": [
+          3.01629375,
+          3.1178575
+        ],
+        "cost_alt_ci": [
+          2.9524424999999996,
+          3.05525375
+        ],
+        "d_cost_ci": [
+          -0.09065125000000011,
+          -0.03679499999999998
+        ],
+        "cov_ref_ci": [
+          0.6767426772433817,
+          0.6940265791576604
+        ],
+        "cov_alt_ci": [
+          0.6666084927690361,
+          0.68429474426274
+        ],
+        "d_cov_ci": [
+          -0.014941913074442318,
+          -0.004742197899265179
+        ],
+        "p_bootstrap_cost": 0.0005,
+        "p_bootstrap_is_upper_bound": true,
+        "wilcoxon_stat": 750597.0,
+        "p_wilcoxon_cost": 0.017118074487500887,
+        "n_nonzero_pairs": 1791
+      },
+      "Threshold 0.5 on GB scores": {
+        "cost_ref_ci": [
+          3.01629375,
+          3.1178575
+        ],
+        "cost_alt_ci": [
+          3.1366475,
+          3.24111375
+        ],
+        "d_cost_ci": [
+          0.09308750000000018,
+          0.1491550000000001
+        ],
+        "cov_ref_ci": [
+          0.6767426772433817,
+          0.6940265791576604
+        ],
+        "cov_alt_ci": [
+          0.6353000672762895,
+          0.6535278982462794
+        ],
+        "d_cov_ci": [
+          -0.04683853501217813,
+          -0.03572809145284372
+        ],
+        "p_bootstrap_cost": 0.0005,
+        "p_bootstrap_is_upper_bound": true,
+        "wilcoxon_stat": 481308.5,
+        "p_wilcoxon_cost": 6.358330152451234e-40,
+        "n_nonzero_pairs": 1738
+      }
+    },
+    "crisp_bands_identical_to_fuzzy": true,
+    "validation_tuned_threshold": 0.53,
+    "test_oracle_threshold_not_a_valid_baseline": {
+      "threshold": 0.01,
+      "expected_cost": 2.9286,
+      "thresholds_beating_fuzzy": [
+        0.01,
+        0.02,
+        0.03,
+        0.04,
+        0.05,
+        0.06,
+        0.07,
+        0.08,
+        0.09,
+        0.1
+      ]
+    },
+    "bayes_soft_block_threshold": 0.18181818181818182
+  },
+  "cost_ratio_sweep": [
+    {
+      "c_fn": 2,
+      "policy": "Prob. threshold 0.5",
+      "expected_cost": 1.6943,
+      "attack_coverage": 0.6545742713744827,
+      "unnecessary_escalations": 623,
+      "n_monitor": 11943,
+      "n_soft": 0,
+      "n_escalate": 8057
+    },
+    {
+      "c_fn": 2,
+      "policy": "Top-20% by score",
+      "expected_cost": 1.34745,
+      "attack_coverage": 0.3480672712864313,
+      "unnecessary_escalations": 47,
+      "n_monitor": 16000,
+      "n_soft": 0,
+      "n_escalate": 4000
+    },
+    {
+      "c_fn": 2,
+      "policy": "Fuzzy\u2013cost (proposed)",
+      "expected_cost": 1.63955,
+      "attack_coverage": 0.6856564233512371,
+      "unnecessary_escalations": 603,
+      "n_monitor": 11554,
+      "n_soft": 776,
+      "n_escalate": 7670
+    },
+    {
+      "c_fn": 2,
+      "policy": "Bayes cost rule (reference)",
+      "expected_cost": 0.8396,
+      "attack_coverage": 0.6285110504534648,
+      "unnecessary_escalations": 0,
+      "n_monitor": 12254,
+      "n_soft": 7746,
+      "n_escalate": 0
+    },
+    {
+      "c_fn": 3,
+      "policy": "Prob. threshold 0.5",
+      "expected_cost": 1.89045,
+      "attack_coverage": 0.6545742713744827,
+      "unnecessary_escalations": 623,
+      "n_monitor": 11943,
+      "n_soft": 0,
+      "n_escalate": 8057
+    },
+    {
+      "c_fn": 3,
+      "policy": "Top-20% by score",
+      "expected_cost": 1.71765,
+      "attack_coverage": 0.3480672712864313,
+      "unnecessary_escalations": 47,
+      "n_monitor": 16000,
+      "n_soft": 0,
+      "n_escalate": 4000
+    },
+    {
+      "c_fn": 3,
+      "policy": "Fuzzy\u2013cost (proposed)",
+      "expected_cost": 1.81805,
+      "attack_coverage": 0.6856564233512371,
+      "unnecessary_escalations": 603,
+      "n_monitor": 11554,
+      "n_soft": 776,
+      "n_escalate": 7670
+    },
+    {
+      "c_fn": 3,
+      "policy": "Bayes cost rule (reference)",
+      "expected_cost": 1.02245,
+      "attack_coverage": 0.6545742713744827,
+      "unnecessary_escalations": 0,
+      "n_monitor": 11943,
+      "n_soft": 8057,
+      "n_escalate": 0
+    },
+    {
+      "c_fn": 5,
+      "policy": "Prob. threshold 0.5",
+      "expected_cost": 2.28275,
+      "attack_coverage": 0.6545742713744827,
+      "unnecessary_escalations": 623,
+      "n_monitor": 11943,
+      "n_soft": 0,
+      "n_escalate": 8057
+    },
+    {
+      "c_fn": 5,
+      "policy": "Top-20% by score",
+      "expected_cost": 2.45805,
+      "attack_coverage": 0.3480672712864313,
+      "unnecessary_escalations": 47,
+      "n_monitor": 16000,
+      "n_soft": 0,
+      "n_escalate": 4000
+    },
+    {
+      "c_fn": 5,
+      "policy": "Fuzzy\u2013cost (proposed)",
+      "expected_cost": 2.17505,
+      "attack_coverage": 0.6856564233512371,
+      "unnecessary_escalations": 603,
+      "n_monitor": 11554,
+      "n_soft": 776,
+      "n_escalate": 7670
+    },
+    {
+      "c_fn": 5,
+      "policy": "Bayes cost rule (reference)",
+      "expected_cost": 1.36455,
+      "attack_coverage": 0.6777317953684951,
+      "unnecessary_escalations": 0,
+      "n_monitor": 11656,
+      "n_soft": 8344,
+      "n_escalate": 0
+    },
+    {
+      "c_fn": 7.5,
+      "policy": "Prob. threshold 0.5",
+      "expected_cost": 2.773125,
+      "attack_coverage": 0.6545742713744827,
+      "unnecessary_escalations": 623,
+      "n_monitor": 11943,
+      "n_soft": 0,
+      "n_escalate": 8057
+    },
+    {
+      "c_fn": 7.5,
+      "policy": "Top-20% by score",
+      "expected_cost": 3.38355,
+      "attack_coverage": 0.3480672712864313,
+      "unnecessary_escalations": 47,
+      "n_monitor": 16000,
+      "n_soft": 0,
+      "n_escalate": 4000
+    },
+    {
+      "c_fn": 7.5,
+      "policy": "Fuzzy\u2013cost (proposed)",
+      "expected_cost": 2.6213,
+      "attack_coverage": 0.6856564233512371,
+      "unnecessary_escalations": 603,
+      "n_monitor": 11554,
+      "n_soft": 776,
+      "n_escalate": 7670
+    },
+    {
+      "c_fn": 7.5,
+      "policy": "Bayes cost rule (reference)",
+      "expected_cost": 1.766,
+      "attack_coverage": 0.6934049484899181,
+      "unnecessary_escalations": 0,
+      "n_monitor": 11460,
+      "n_soft": 8540,
+      "n_escalate": 0
+    },
+    {
+      "c_fn": 10,
+      "policy": "Prob. threshold 0.5",
+      "expected_cost": 3.2635,
+      "attack_coverage": 0.6545742713744827,
+      "unnecessary_escalations": 623,
+      "n_monitor": 11943,
+      "n_soft": 0,
+      "n_escalate": 8057
+    },
+    {
+      "c_fn": 10,
+      "policy": "Top-20% by score",
+      "expected_cost": 4.30905,
+      "attack_coverage": 0.3480672712864313,
+      "unnecessary_escalations": 47,
+      "n_monitor": 16000,
+      "n_soft": 0,
+      "n_escalate": 4000
+    },
+    {
+      "c_fn": 10,
+      "policy": "Fuzzy\u2013cost (proposed)",
+      "expected_cost": 3.06755,
+      "attack_coverage": 0.6856564233512371,
+      "unnecessary_escalations": 603,
+      "n_monitor": 11554,
+      "n_soft": 776,
+      "n_escalate": 7670
+    },
+    {
+      "c_fn": 10,
+      "policy": "Bayes cost rule (reference)",
+      "expected_cost": 2.16415,
+      "attack_coverage": 0.7008012679404773,
+      "unnecessary_escalations": 0,
+      "n_monitor": 11369,
+      "n_soft": 8631,
+      "n_escalate": 0
+    },
+    {
+      "c_fn": 15,
+      "policy": "Prob. threshold 0.5",
+      "expected_cost": 4.24425,
+      "attack_coverage": 0.6545742713744827,
+      "unnecessary_escalations": 623,
+      "n_monitor": 11943,
+      "n_soft": 0,
+      "n_escalate": 8057
+    },
+    {
+      "c_fn": 15,
+      "policy": "Top-20% by score",
+      "expected_cost": 6.16005,
+      "attack_coverage": 0.3480672712864313,
+      "unnecessary_escalations": 47,
+      "n_monitor": 16000,
+      "n_soft": 0,
+      "n_escalate": 4000
+    },
+    {
+      "c_fn": 15,
+      "policy": "Fuzzy\u2013cost (proposed)",
+      "expected_cost": 3.96005,
+      "attack_coverage": 0.6856564233512371,
+      "unnecessary_escalations": 603,
+      "n_monitor": 11554,
+      "n_soft": 776,
+      "n_escalate": 7670
+    },
+    {
+      "c_fn": 15,
+      "policy": "Bayes cost rule (reference)",
+      "expected_cost": 2.96595,
+      "attack_coverage": 0.7069648674826099,
+      "unnecessary_escalations": 0,
+      "n_monitor": 11286,
+      "n_soft": 8714,
+      "n_escalate": 0
+    },
+    {
+      "c_fn": 20,
+      "policy": "Prob. threshold 0.5",
+      "expected_cost": 5.225,
+      "attack_coverage": 0.6545742713744827,
+      "unnecessary_escalations": 623,
+      "n_monitor": 11943,
+      "n_soft": 0,
+      "n_escalate": 8057
+    },
+    {
+      "c_fn": 20,
+      "policy": "Top-20% by score",
+      "expected_cost": 8.01105,
+      "attack_coverage": 0.3480672712864313,
+      "unnecessary_escalations": 47,
+      "n_monitor": 16000,
+      "n_soft": 0,
+      "n_escalate": 4000
+    },
+    {
+      "c_fn": 20,
+      "policy": "Fuzzy\u2013cost (proposed)",
+      "expected_cost": 4.85255,
+      "attack_coverage": 0.6856564233512371,
+      "unnecessary_escalations": 603,
+      "n_monitor": 11554,
+      "n_soft": 776,
+      "n_escalate": 7670
+    },
+    {
+      "c_fn": 20,
+      "policy": "Bayes cost rule (reference)",
+      "expected_cost": 3.75915,
+      "attack_coverage": 0.7106630272078894,
+      "unnecessary_escalations": 0,
+      "n_monitor": 11233,
+      "n_soft": 8767,
+      "n_escalate": 0
+    },
+    {
+      "c_fn": 30,
+      "policy": "Prob. threshold 0.5",
+      "expected_cost": 7.1865,
+      "attack_coverage": 0.6545742713744827,
+      "unnecessary_escalations": 623,
+      "n_monitor": 11943,
+      "n_soft": 0,
+      "n_escalate": 8057
+    },
+    {
+      "c_fn": 30,
+      "policy": "Top-20% by score",
+      "expected_cost": 11.71305,
+      "attack_coverage": 0.3480672712864313,
+      "unnecessary_escalations": 47,
+      "n_monitor": 16000,
+      "n_soft": 0,
+      "n_escalate": 4000
+    },
+    {
+      "c_fn": 30,
+      "policy": "Fuzzy\u2013cost (proposed)",
+      "expected_cost": 6.63755,
+      "attack_coverage": 0.6856564233512371,
+      "unnecessary_escalations": 603,
+      "n_monitor": 11554,
+      "n_soft": 776,
+      "n_escalate": 7670
+    },
+    {
+      "c_fn": 30,
+      "policy": "Bayes cost rule (reference)",
+      "expected_cost": 5.2711,
+      "attack_coverage": 0.7186757066126618,
+      "unnecessary_escalations": 0,
+      "n_monitor": 11133,
+      "n_soft": 8867,
+      "n_escalate": 0
+    }
+  ],
+  "fuzzy_beats_thr05_at_c_fn": [
+    2.0,
+    3.0,
+    5.0,
+    7.5,
+    10.0,
+    15.0,
+    20.0,
+    30.0
+  ],
+  "membership_width_sensitivity": [
+    {
+      "medium_half_width": 0.25,
+      "switch_points": [
+        0.32143000000000005,
+        0.6785800000000001
+      ],
+      "expected_cost": 3.1011,
+      "attack_coverage": 0.6801091837633177,
+      "unnecessary_escalations": 606,
+      "n_monitor": 11626,
+      "n_soft": 646,
+      "n_escalate": 7728
+    },
+    {
+      "medium_half_width": 0.3,
+      "switch_points": [
+        0.30000000000000004,
+        0.7000000000000001
+      ],
+      "expected_cost": 3.08405,
+      "attack_coverage": 0.6828387778462622,
+      "unnecessary_escalations": 603,
+      "n_monitor": 11589,
+      "n_soft": 717,
+      "n_escalate": 7694
+    },
+    {
+      "medium_half_width": 0.35,
+      "switch_points": [
+        0.28126,
+        0.7187500000000001
+      ],
+      "expected_cost": 3.06755,
+      "attack_coverage": 0.6856564233512371,
+      "unnecessary_escalations": 603,
+      "n_monitor": 11554,
+      "n_soft": 776,
+      "n_escalate": 7670
+    },
+    {
+      "medium_half_width": 0.4,
+      "switch_points": [
+        0.26471,
+        0.7353000000000001
+      ],
+      "expected_cost": 3.0507,
+      "attack_coverage": 0.6883860174341816,
+      "unnecessary_escalations": 603,
+      "n_monitor": 11522,
+      "n_soft": 838,
+      "n_escalate": 7640
+    },
+    {
+      "medium_half_width": 0.45,
+      "switch_points": [
+        0.25001,
+        0.7500000000000001
+      ],
+      "expected_cost": 3.03415,
+      "attack_coverage": 0.691115611517126,
+      "unnecessary_escalations": 602,
+      "n_monitor": 11488,
+      "n_soft": 900,
+      "n_escalate": 7612
+    }
+  ],
+  "multi_seed": {
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51
+    ],
+    "per_seed": [
+      {
+        "seed": 42,
+        "auc_lr": 0.8177483335099355,
+        "acc_lr": 0.75175,
+        "auc_gb": 0.9466856585933099,
+        "acc_gb": 0.78605,
+        "auc_nn": 0.9075534947536052,
+        "acc_nn": 0.7727,
+        "thr05": 3.2635,
+        "cov_thr05": 0.6545742713744827,
+        "top20": 4.30905,
+        "cov_top20": 0.3480672712864313,
+        "fuzzy": 3.06755,
+        "cov_fuzzy": 0.6856564233512371,
+        "bayes": 2.16415,
+        "cov_bayes": 0.7008012679404773,
+        "fuzzy_gb": 3.0039,
+        "cov_fuzzy_gb": 0.6757066126617944
+      },
+      {
+        "seed": 43,
+        "auc_lr": 0.8120609005560078,
+        "acc_lr": 0.75065,
+        "auc_gb": 0.9337890060690835,
+        "acc_gb": 0.79955,
+        "auc_nn": 0.8925709062399105,
+        "acc_nn": 0.7863,
+        "thr05": 3.17385,
+        "cov_thr05": 0.6778187565858799,
+        "top20": 4.32195,
+        "cov_top20": 0.34747102212855635,
+        "fuzzy": 3.0773,
+        "cov_fuzzy": 0.6923076923076923,
+        "bayes": 2.1878,
+        "cov_bayes": 0.6970495258166491,
+        "fuzzy_gb": 2.91375,
+        "cov_fuzzy_gb": 0.696259220231823
+      },
+      {
+        "seed": 44,
+        "auc_lr": 0.8097309036619733,
+        "acc_lr": 0.74985,
+        "auc_gb": 0.9187069648435154,
+        "acc_gb": 0.7817,
+        "auc_nn": 0.8963200625651312,
+        "acc_nn": 0.7872,
+        "thr05": 3.1699,
+        "cov_thr05": 0.6811009817671809,
+        "top20": 4.3326,
+        "cov_top20": 0.3467741935483871,
+        "fuzzy": 3.05215,
+        "cov_fuzzy": 0.6953892005610098,
+        "bayes": 2.15665,
+        "cov_bayes": 0.7039796633941094,
+        "fuzzy_gb": 3.0415,
+        "cov_fuzzy_gb": 0.6649719495091164
+      },
+      {
+        "seed": 45,
+        "auc_lr": 0.8070711430477604,
+        "acc_lr": 0.7513,
+        "auc_gb": 0.9333357934638139,
+        "acc_gb": 0.7822,
+        "auc_nn": 0.9067328778257974,
+        "acc_nn": 0.77215,
+        "thr05": 3.27245,
+        "cov_thr05": 0.654052155588726,
+        "top20": 4.3244,
+        "cov_top20": 0.34717710071121255,
+        "fuzzy": 3.0056,
+        "cov_fuzzy": 0.7027833874791466,
+        "bayes": 2.1322,
+        "cov_bayes": 0.7082272368074458,
+        "fuzzy_gb": 3.04095,
+        "cov_fuzzy_gb": 0.6689788392308368
+      },
+      {
+        "seed": 46,
+        "auc_lr": 0.8210133845893687,
+        "acc_lr": 0.7517,
+        "auc_gb": 0.9281530749789111,
+        "acc_gb": 0.77955,
+        "auc_nn": 0.8924734218980614,
+        "acc_nn": 0.77815,
+        "thr05": 3.2302,
+        "cov_thr05": 0.6600422089342244,
+        "top20": 4.31395,
+        "cov_top20": 0.3479599015124868,
+        "fuzzy": 3.06835,
+        "cov_fuzzy": 0.6805311290889905,
+        "bayes": 2.1931,
+        "cov_bayes": 0.6955680619064368,
+        "fuzzy_gb": 3.0593,
+        "cov_fuzzy_gb": 0.6603939500527611
+      },
+      {
+        "seed": 47,
+        "auc_lr": 0.8041256085468151,
+        "acc_lr": 0.7522,
+        "auc_gb": 0.9495898977916516,
+        "acc_gb": 0.78435,
+        "auc_nn": 0.8968079483832043,
+        "acc_nn": 0.78145,
+        "thr05": 3.2187,
+        "cov_thr05": 0.6448548812664908,
+        "top20": 4.3136,
+        "cov_top20": 0.34793315743183817,
+        "fuzzy": 3.03305,
+        "cov_fuzzy": 0.6736147757255937,
+        "bayes": 2.1663,
+        "cov_bayes": 0.6993843447669306,
+        "fuzzy_gb": 2.9842,
+        "cov_fuzzy_gb": 0.6793315743183818
+      },
+      {
+        "seed": 48,
+        "auc_lr": 0.8225792812555299,
+        "acc_lr": 0.7524,
+        "auc_gb": 0.9465640712469938,
+        "acc_gb": 0.78275,
+        "auc_nn": 0.8995011454959134,
+        "acc_nn": 0.75725,
+        "thr05": 3.3888,
+        "cov_thr05": 0.6105946325206104,
+        "top20": 4.32895,
+        "cov_top20": 0.3470443781792668,
+        "fuzzy": 3.28195,
+        "cov_fuzzy": 0.6261182248728293,
+        "bayes": 2.46905,
+        "cov_bayes": 0.6426065602525872,
+        "fuzzy_gb": 3.0165,
+        "cov_fuzzy_gb": 0.6714611471671637
+      },
+      {
+        "seed": 49,
+        "auc_lr": 0.8206340082702376,
+        "acc_lr": 0.75155,
+        "auc_gb": 0.9405627680558402,
+        "acc_gb": 0.78915,
+        "auc_nn": 0.9098760104403677,
+        "acc_nn": 0.79115,
+        "thr05": 3.1392,
+        "cov_thr05": 0.6829053816391136,
+        "top20": 4.312,
+        "cov_top20": 0.34822370735138936,
+        "fuzzy": 3.0228,
+        "cov_fuzzy": 0.7006683081252199,
+        "bayes": 2.1294,
+        "cov_bayes": 0.7071755188181499,
+        "fuzzy_gb": 2.8315,
+        "cov_fuzzy_gb": 0.7075272599366866
+      },
+      {
+        "seed": 50,
+        "auc_lr": 0.8104908617320659,
+        "acc_lr": 0.75555,
+        "auc_gb": 0.9368802330163344,
+        "acc_gb": 0.8101,
+        "auc_nn": 0.906319930597417,
+        "acc_nn": 0.765,
+        "thr05": 3.31845,
+        "cov_thr05": 0.6397570208645127,
+        "top20": 4.3055,
+        "cov_top20": 0.3486222378730522,
+        "fuzzy": 3.15975,
+        "cov_fuzzy": 0.6642310062505502,
+        "bayes": 2.2551,
+        "cov_bayes": 0.6826305132494057,
+        "fuzzy_gb": 2.76005,
+        "cov_fuzzy_gb": 0.7270886521700854
+      },
+      {
+        "seed": 51,
+        "auc_lr": 0.7979588588563705,
+        "acc_lr": 0.7499,
+        "auc_gb": 0.9303797229677855,
+        "acc_gb": 0.7852,
+        "auc_nn": 0.88875198643435,
+        "acc_nn": 0.7697,
+        "thr05": 3.2874,
+        "cov_thr05": 0.6489053020311264,
+        "top20": 4.31575,
+        "cov_top20": 0.34775345115624723,
+        "fuzzy": 3.1133,
+        "cov_fuzzy": 0.6765145520091445,
+        "bayes": 2.21575,
+        "cov_bayes": 0.6913743075705618,
+        "fuzzy_gb": 3.01675,
+        "cov_fuzzy_gb": 0.6737887980304229
+      }
+    ],
+    "summary": {
+      "auc_lr": {
+        "mean": 0.8123413284026066,
+        "sd": 0.008099862834345216,
+        "min": 0.7979588588563705,
+        "max": 0.8225792812555299
+      },
+      "acc_lr": {
+        "mean": 0.751685,
+        "sd": 0.0016162456496461234,
+        "min": 0.74985,
+        "max": 0.75555
+      },
+      "auc_gb": {
+        "mean": 0.936464719102724,
+        "sd": 0.009626927216469423,
+        "min": 0.9187069648435154,
+        "max": 0.9495898977916516
+      },
+      "acc_gb": {
+        "mean": 0.78806,
+        "sd": 0.009547303284174037,
+        "min": 0.77955,
+        "max": 0.8101
+      },
+      "auc_nn": {
+        "mean": 0.8996907784633759,
+        "sd": 0.007462844723145784,
+        "min": 0.88875198643435,
+        "max": 0.9098760104403677
+      },
+      "acc_nn": {
+        "mean": 0.776105,
+        "sd": 0.010714643406727698,
+        "min": 0.75725,
+        "max": 0.79115
+      },
+      "thr05": {
+        "mean": 3.2462449999999996,
+        "sd": 0.07583465731444948,
+        "min": 3.1392,
+        "max": 3.3888
+      },
+      "cov_thr05": {
+        "mean": 0.6554605592572349,
+        "sd": 0.02198308302522885,
+        "min": 0.6105946325206104,
+        "max": 0.6829053816391136
+      },
+      "top20": {
+        "mean": 4.317775,
+        "sd": 0.008833624209047222,
+        "min": 4.3055,
+        "max": 4.3326
+      },
+      "cov_top20": {
+        "mean": 0.3477026421178868,
+        "sd": 0.000577079887996643,
+        "min": 0.3467741935483871,
+        "max": 0.3486222378730522
+      },
+      "fuzzy": {
+        "mean": 3.08818,
+        "sd": 0.08142397340123148,
+        "min": 3.0056,
+        "max": 3.28195
+      },
+      "cov_fuzzy": {
+        "mean": 0.6797814699771413,
+        "sd": 0.022536869669787934,
+        "min": 0.6261182248728293,
+        "max": 0.7027833874791466
+      },
+      "bayes": {
+        "mean": 2.20695,
+        "sd": 0.09959179740877822,
+        "min": 2.1294,
+        "max": 2.46905
+      },
+      "cov_bayes": {
+        "mean": 0.6928797000522754,
+        "sd": 0.019228172339988334,
+        "min": 0.6426065602525872,
+        "max": 0.7082272368074458
+      },
+      "fuzzy_gb": {
+        "mean": 2.96684,
+        "sd": 0.10008039212997161,
+        "min": 2.76005,
+        "max": 3.0593
+      },
+      "cov_fuzzy_gb": {
+        "mean": 0.6825508003309072,
+        "sd": 0.021177724429765826,
+        "min": 0.6603939500527611,
+        "max": 0.7270886521700854
+      }
+    },
+    "wilcoxon_fuzzy_vs_thr05": {
+      "p": 0.001953125,
+      "statistic": 0.0,
+      "fuzzy_lower_in_n_seeds": 10,
+      "n": 10
+    },
+    "wilcoxon_fuzzy_vs_top20": {
+      "p": 0.001953125,
+      "statistic": 0.0,
+      "fuzzy_lower_in_n_seeds": 10,
+      "n": 10
+    },
+    "wilcoxon_fuzzy_vs_bayes": {
+      "p": 0.001953125,
+      "statistic": 0.0,
+      "fuzzy_lower_in_n_seeds": 0,
+      "n": 10
+    },
+    "gb_auc_higher_than_nn_in_n_seeds": 10,
+    "fuzzy_cov_higher_than_thr05_in_n_seeds": 10
+  },
   "figures": {
-    "fig1": "/workspace/fuzzy-neural-cyber-triage/figures/fig1_architecture.png",
-    "fig2": "/workspace/fuzzy-neural-cyber-triage/figures/fig2_roc_and_cost.png"
+    "fig1": [
+      "/workspace/fuzzy-neural-cyber-triage/figures/fig1_architecture.png",
+      "/workspace/fuzzy-neural-cyber-triage/figures/fig1_architecture.pdf"
+    ],
+    "fig2": [
+      "/workspace/fuzzy-neural-cyber-triage/figures/fig2_roc_and_cost.png",
+      "/workspace/fuzzy-neural-cyber-triage/figures/fig2_roc_and_cost.pdf"
+    ],
+    "graphical_abstract": "/workspace/fuzzy-neural-cyber-triage/figures/graphical_abstract.png"
+  },
+  "config": {
+    "n_boot": 2000,
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51
+    ],
+    "n_train_cap": 40000,
+    "n_test_cap": 20000,
+    "torch": "2.14.1+cpu"
   },
   "notes": [
-    "Proposed model shares neural propensity with ablation; novelty is fuzzy+cost decision layer.",
-    "Train subsampled to 40k for <2h CPU reproducibility; document in paper limitations."
+    "Proposed model shares the neural propensity with the ablation; the contribution is the fuzzy rule-based decision layer.",
+    "Train subsampled to 40k (34k train / 6k validation) and test capped at 20k for CPU-scale reproducibility.",
+    "Under the Eq. (5) cost matrix Soft-block dominates Escalate for every p, so the Bayes cost rule never escalates."
   ]
 }

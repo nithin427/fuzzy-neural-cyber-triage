@@ -1,0 +1,6 @@
+Highlights
+- Fuzzy production rules map neural alert scores to Monitor, Soft-block or Escalate
+- Mean triage cost 3.068 vs 3.264 for a 0.5 threshold; paired 95% CI of gap 0.18-0.21
+- Cheaper than threshold and top-20% rules in all 10 seeds (Wilcoxon p = 0.002)
+- Gradient boosting keeps the best ROC-AUC (0.947); the gain is decision-level
+- Ablation: gain comes from the Soft-block band; a Bayes cost rule is cheaper still
