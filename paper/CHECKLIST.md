@@ -9,7 +9,7 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
 | Item (guide requirement) | Status | Evidence / note |
 |---|---|---|
 | Article type: Short Communication | OK | `\tnotetext` in `main.tex`; select the type in Editorial Manager |
-| Length: ≤ 10 double-spaced pages incl. tables and figures | **FLAG** | Compiled: 14 pp (`preprint,12pt`); 19 pp with `review,12pt`, of which ~14 come before the references. Over the limit. Options: trim the Discussion/Limitations, move Algorithm 1 or the sensitivity paragraph to supplementary material, or ask the editor |
+| Length: ≤ 10 double-spaced pages incl. tables and figures | OK (resolved, see note) | Trimmed on 2026-10-23: compiled PDF is now **10 pp** (`preprint,12pt`, references included; was 14). With `review,12pt` it is 14 pp, of which ~11 come before the references; if the editor counts double-spaced pages strictly, trim the Introduction further or ask the editor |
 | Abstract ≤ 250 words, no citations | OK | 221 words (script count), no citations |
 | 1–7 keywords | OK | 7 keywords |
 | Highlights: 3–5 bullets, ≤ 85 characters, separate file named "highlights" | OK | `elsevier/highlights.txt`: 5 bullets, 76–83 characters including spaces |
@@ -41,7 +41,7 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
   - Medium-band width sweep
   - ablations: crisp bands, validation-tuned threshold, rules on GB scores, Bayes cost rule, and a test-oracle threshold disclosed as invalid
 - **Determinism**: `torch.set_num_threads(1)` makes reruns bit-identical. The seed-42 headline numbers are unchanged.
-- **Formalism**: numbered equations, a production-rule base R1–R3, Algorithm 1, the derived switch points (9/32, 23/32) and a Bayes reference rule (Eq. 7).
+- **Formalism**: numbered equations, a production-rule base R1–R3, the derived switch points (9/32, 23/32) and a Bayes reference rule (Eq. 7). (Algorithm 1 was removed in the page-limit trim; Eqs. (1)–(7) and R1–R3 define the method, and its data-split step now sits in Section 3.)
 - **Honest negatives now in the paper**:
   - GB is the best detector in 10/10 seeds.
   - Fuzzy and crisp bands give identical actions, so the gain comes from the Soft-block band.
@@ -79,7 +79,7 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
 - **RESOLVED (Thota citation)**: Thota 2026 (KBS, UAV / QKG-QI mission planning) was removed from `refs.bib`, `main.tex`, `manuscript.md` and `manuscript.docx`. The Introduction sentence now cites only Bag et al. 2025 for knowledge-based cyber-risk decision support. References [23]–[29] were renumbered [22]–[28]; no other reference changed.
 
 ## 5. Unresolved issues
-1. **Page limit** (see §1). This is the main compliance risk.
+1. ~~**Page limit** (see §1).~~ **RESOLVED (page limit)**: trimmed to 10 compiled pages (see §8). Double-spaced `review` mode is still ~11 pages before the references.
 2. ~~The repository is private; the Data availability statement promises access.~~ **RESOLVED (private repo vs data statement)**: the statement now says the code and results will be made public on acceptance and are available to the editor and reviewers on reasonable request.
 3. The multi-panel figures conflict with the guide's "do not combine images" sentence.
 4. The guide was read from a mirror snapshot; the live page could not be fetched.
@@ -96,12 +96,19 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
 - Numbers: Table 1 and Table 2 are re-verified by script against the regenerated `summary.json` (identical to the previous run).
 - Claims: every comparative claim has a CI or test behind it. Every claim of superiority is scoped: "vs crisp rules on the same scores", never "vs the best possible policy".
 - Consistency: the corrected 10-seed AUC values are GB 0.936 ± 0.010 and NN 0.900 ± 0.007. The membership example was recomputed (p = 0.60 → μM 0.71, μH 0.11). The text explanation for seed 48 was corrected (its ROC-AUC is typical; its accuracy at 0.5 is the lowest).
-- LaTeX: compiles with no errors, no undefined references or citations, and no overfull boxes except a 2.6 pt page-output box.
+- LaTeX: compiles with no errors, no undefined references or citations, and no overfull boxes except a 2.6 pt page-output box (still true after the 2026-10-23 trim).
 
 ## 7. Recommendation
-**Minor revision** on scientific content: the claims are honest, scoped and statistically supported. The paper is **not ready to submit** until the page-limit decision (§5.1) is resolved. The repository-access step (§5.2) is resolved by the revised Data availability statement.
+**Minor revision** on scientific content: the claims are honest, scoped and statistically supported. The page limit (§5.1) and the repository-access step (§5.2) are resolved; the remaining items in §5 are author confirmations and upload-time checks.
 
 ## 8. Revision log
 - **2026-10-23, Thota citation removed.** Deleted `thota2026` from `refs.bib` and its citation from the Introduction (all versions). The sentence was rewritten to read: "Knowledge-based decision support for cyber risk, such as explainable knowledge-graph risk assessment [21], shows the value of explicit knowledge representations, ...". Reference count 29 → 28; numeric order re-checked (citation order unchanged apart from the shift [23]–[29] → [22]–[28]). No numbers changed.
 - **2026-10-23, Data availability updated for the private repository.** `main.tex`, `manuscript.md` (and its header line) and `manuscript.docx` now read: "The NSL-KDD dataset is publicly available from the Canadian Institute for Cybersecurity, University of New Brunswick [24]. The code and results (experiment script, result tables in CSV/JSON and figure-generation code) are held in a GitHub repository that will be made public on acceptance; until then they are available to the editor and reviewers on reasonable request." The Grok Bot AI declaration is unchanged.
 - `manuscript.docx` regenerated with pandoc 3.8.2 from `manuscript.md` (mirror note removed, `\tag{n}` written as `\qquad(n)`, figure paths `figures/`, run in `paper/elsevier/`); PDF recompiled with tectonic 0.15.0: 0 undefined citations or references.
+- **2026-10-23, page-limit trim (author-approved).** Compiled PDF 14 → 10 pages (`preprint,12pt`, tectonic). Nothing in the results changed: a script check confirms that every numeric token in the previous `main.tex` still appears in the new one (values removed from the prose remain in Tables 1–2 or the abstract). Both figures, both tables, Eqs. (1)–(7), R1–R3, the negative findings (GB best AUC; crisp = fuzzy; Bayes rule cheaper; top-20% cheaper at C_FN 2–3; seed 48 weakest; test-oracle threshold), the Limitations, all declarations (including the Grok Bot AI declaration) and the Data availability statement are kept. Cuts:
+  - Introduction and related work tightened (same citations, same order).
+  - Algorithm 1 removed (it repeated Eqs. (1)–(5)); its 85/15 stratified split and train-only encoder fitting moved into Section 3 *Data*.
+  - Sentences repeating table values removed from Results (e.g., the 10-seed AUCs and costs, 3.004, 2.164, 2.207 ± 0.100, 623 → 603 UE, the Δ CI and p of the 0.5-threshold comparison); the "Prediction versus decision" and "Triage cost" paragraphs merged.
+  - Ablation, managerial and explainability paragraphs shortened to their key points; Conclusion cut to three sentences; the verbal restatement of the cost matrix before Eq. (6) removed.
+  - Layout: figure widths 0.66 × text width, Table 1 set in `\small` instead of being scaled up, rule list in `\small`, reference list in `\footnotesize` with tight spacing.
+  - `manuscript.md` and `manuscript.docx` regenerated to match `main.tex`.
