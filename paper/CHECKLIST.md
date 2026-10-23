@@ -1,4 +1,4 @@
-# Editor checklist: KBS Short Communication (final pass, 2026-10-23)
+# Editor checklist: KBS Short Communication (final pass, 2026-10-23; Q1-reference revision)
 
 Source of journal rules: the *Knowledge-Based Systems* Guide for Authors, read from a PDF snapshot dated 8 Jun 2026
 taken from a public GitHub mirror. The live sciencedirect.com page returned HTTP 400/403 (Cloudflare) to every
@@ -9,7 +9,7 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
 | Item (guide requirement) | Status | Evidence / note |
 |---|---|---|
 | Article type: Short Communication | OK | `\tnotetext` + `\tnoteref` on the title in `main.tex`; select the type in Editorial Manager |
-| Length: ≤ 10 double-spaced pages incl. tables and figures | OK (resolved, see note) | Trimmed on 2026-10-23: compiled PDF is now **10 pp** (`preprint,12pt`, references included; was 14). With `review,12pt` it is 14 pp, of which ~11 come before the references; if the editor counts double-spaced pages strictly, trim the Introduction further or ask the editor |
+| Length: ≤ 10 double-spaced pages incl. tables and figures | OK (resolved, see note) | Trimmed on 2026-10-23: compiled PDF is now **10 pp** (still 10 pp after the Q1-reference revision with 34 references) (`preprint,12pt`, references included; was 14). With `review,12pt` it is 14 pp, of which ~11 come before the references; if the editor counts double-spaced pages strictly, trim the Introduction further or ask the editor |
 | Abstract ≤ 250 words, no citations | OK | 221 words (script count), no citations |
 | 1–7 keywords | OK | 7 keywords |
 | Highlights: 3–5 bullets, ≤ 85 characters, separate file named "highlights" | OK | `elsevier/highlights.txt`: 5 bullets, 76–83 characters including spaces |
@@ -21,9 +21,9 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
 | Artwork: vector PDF/EPS, halftone ≥ 300 dpi | OK | Figures used as vector PDF; PNG copies at 300 dpi |
 | "Do not submit different images or graphs combined into one" | **FLAG** | Fig. 1 has 2 panels and Fig. 2 has 4. This was kept because the brief requires exactly 2 figures. If the editor objects, split the panels into separate files and accept more figure numbers |
 | Figures uploaded as separate files | **FLAG** (at upload) | Upload `figures/*.pdf` separately in Editorial Manager |
-| References: numbered in square brackets, order of citation | OK | `elsarticle-num`; 28 entries, all cited, none missing (checked by script; 0 undefined citations after removing Thota 2026) |
-| Journal-name abbreviations (LTWA) | FLAG (minor) | Full journal names used; the guide accepts any consistent style. Abbreviation is applied at proof |
-| Data availability statement | OK (resolved; repository public) | NSL-KDD is public (CIC, UNB; cited [24]). The code, result tables and figure-generation scripts are publicly available at https://github.com/nithin427/fuzzy-neural-cyber-triage (repository made public on 2026-10-23) |
+| References: numbered in square brackets, order of citation | OK | `elsarticle-num` with `sort&compress` (e.g. [5–7]); 34 entries numbered in order of first citation, all cited, none missing (checked from `main.bbl`/`main.aux`; 0 undefined citations or references) |
+| Journal-name abbreviations (LTWA) | OK (resolved) | All journal and proceedings names abbreviated per ISO 4 / LTWA, as the guide asks (e.g. Comput. Secur., IEEE Commun. Surv. Tutor., Inf. Fusion) |
+| Data availability statement | OK (resolved; repository public) | NSL-KDD is public (CIC, UNB; cited [30]). The code, result tables and figure-generation scripts are publicly available at https://github.com/nithin427/fuzzy-neural-cyber-triage (repository made public on 2026-10-23) |
 | Declaration of competing interest | OK | Present |
 | Generative-AI declaration (guide wording, before references) | OK / **FLAG** | Uses the guide template and names "Grok Bot". The author must confirm the tool name and the uses listed |
 | Funding statement | OK | Exact guide sentence for "no funding" |
@@ -62,27 +62,67 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
 | Fig. 2 | `figures/fig2_roc_and_cost.{png,pdf}` | Legend AUCs 0.818/0.947/0.908; cost lines 3.068/4.309/2.164; sweep and per-seed panels from the same run |
 | Text numbers | `summary.json` | Checked by hand: 776 differing alerts, 8,631 soft-blocks, t = 0.53, seed 48 (3.282/0.626), sweep endpoints |
 
-## 4. Reference / DOI report
-- 28 references (29 before Thota 2026 was removed). Every DOI resolved through the Crossref REST API on 2026-10-23 (the arXiv DOI through doi.org). 2 items have no DOI and are cited by venue: Elkan 2001 (IJCAI) and Goodfellow 2016 (book).
-- **Errors fixed from the previous draft**:
-  - Sun et al. 2019: the DOI 10.1109/COMST.2018.2876973 returned 404; corrected to 10.1109/COMST.2018.2885561.
-  - BAT (IEEE Access 2020): the authors were wrong (Yang, Zheng, …); corrected to Su, Sun, Zhu, Wang, Li.
-  - The old claim of "23 DOI-verified references" was inaccurate: 3 had no DOI, 1 was the author's own repository, and the bib file held only 14 entries.
-- **Removed** (not cited in the revised text, or not appropriate):
-  - XGBoost (Chen & Guestrin 2016): the code uses scikit-learn GB, so Friedman 2001 is cited instead
-  - Moro et al. 2014 (bank telemarketing, off-topic)
-  - Modi et al. 2013, Liao et al. 2013, Liu & Lang 2019, Mirsky et al. 2018, Pinto et al. 2023
-  - the self-citation of the GitHub repository (it is now in Data availability)
-- **Added**:
-  - 2023–2026: Tariq et al. 2025 (ACM CSUR), Baruwal Chhetri et al. 2024 (ACM TOIT), Wang et al. 2024 AlertPro (Comput. Secur.), Telikani et al. 2024 (IEEE TII), Mohale & Obagbuwa 2025 (Front. AI), AL & Sagiroglu 2025 (EAAI), Bag et al. 2025 (DSS)
-  - Foundational: Vial 2019, Provost & Fawcett 2013, de Campos Souza 2020, Friedman 2001, Efron & Tibshirani 1994, Wilcoxon 1945
-- **RESOLVED (Thota citation)**: Thota 2026 (KBS, UAV / QKG-QI mission planning) was removed from `refs.bib`, `main.tex`, `manuscript.md` and `manuscript.docx`. The Introduction sentence now cites only Bag et al. 2025 for knowledge-based cyber-risk decision support. References [23]–[29] were renumbered [22]–[28]; no other reference changed.
+## 4. Reference / DOI report (Q1-reference revision, 2026-10-23)
+- **34 references**: 25 from Q1 journals of the three target publishers (Elsevier/ScienceDirect 13, IEEE 10, MDPI 2), 2 essential ACM journal articles (both also Q1 in SJR, but off-publisher), and 7 foundational, dataset or method sources that are **not Q1 journal articles** (Zadeh 1965, Jang 1993, Elkan 2001, Friedman 2001, Tavallaee 2009, Efron & Tibshirani 1994, Wilcoxon 1945).
+- **Crossref**: every entry with a DOI (33 of 34) was compared field by field with the Crossref REST API on 2026-10-23 (title, author surnames, journal, year, volume, pages/article number): all match. Benign Crossref differences: Wilcoxon 1945 lists only the first page (80; bib has 80–83); Crossref splits "María José del Jesus" as given "Maria"/family "Jose del Jesus" (bib uses the correct del Jesus, M. J.); Crossref stores Zhou & Liu's full names in the family field. Elkan 2001 (IJCAI) has no registered DOI and is cited by venue and pages.
+- **SJR quartiles**: SCImago Journal Rank, most recent year (2025), read from scimagojr.com journal pages on 2026-10-23; the best quartile in a relevant category is given. MDPI *Sensors* is Q1 in Instrumentation and Electrical & Electronic Engineering (Q2 in Information Systems); MDPI *Mathematics* (Q2) was rejected.
+- **Relevance**: each new reference's abstract was read and cited only where it supports the sentence (column "Supports").
+
+| # | Reference | Journal / venue | Publisher | SJR quartile (year; category) | DOI | DOI verified | Supports |
+|---|---|---|---|---|---|---|---|
+| [1] | Vielberth et al. 2020 | IEEE Access | IEEE | Q1 (2025; Computer Science misc.) | 10.1109/ACCESS.2020.3045514 | yes (Crossref) | SOC definition and challenges |
+| [2] | Tariq et al. 2025 | ACM Computing Surveys | ACM | Q1 (2025; SJR 5.985; Computer Science misc.) | 10.1145/3723158 | yes (Crossref) | Alert fatigue as SOC risk |
+| [3] | Baruwal Chhetri et al. 2024 | ACM Trans. Internet Technology | ACM | Q1 (2025; SJR 1.043; Computer Networks & Communications) | 10.1145/3670009 | yes (Crossref) | Human–AI teaming for alert fatigue |
+| [4] | Wang et al. 2024 (AlertPro) | Computers & Security | Elsevier | Q1 (2025; SJR 1.598; Computer Science misc.) | 10.1016/j.cose.2023.103583 | yes (Crossref) | RL alert prioritisation |
+| [5] | Liao et al. 2013 | J. Network and Computer Applications | Elsevier | Q1 (2025; SJR 1.704; Computer Networks & Communications) | 10.1016/j.jnca.2012.09.004 | yes (Crossref) | IDS survey (score-centric evaluation) |
+| [6] | Buczak & Guven 2016 | IEEE Commun. Surveys & Tutorials | IEEE | Q1 (2025; SJR 14.838; Electrical & Electronic Eng.) | 10.1109/COMST.2015.2494502 | yes (Crossref) | ML/DM IDS survey |
+| [7] | Sun et al. 2019 | IEEE Commun. Surveys & Tutorials | IEEE | Q1 (2025; SJR 14.838; Electrical & Electronic Eng.) | 10.1109/COMST.2018.2885561 | yes (Crossref) | Data-driven incident prediction survey |
+| [8] | Vinayakumar et al. 2019 | IEEE Access | IEEE | Q1 (2025; Computer Science misc.) | 10.1109/ACCESS.2019.2895334 | yes (Crossref) | Deep IDS on NSL-KDD; MLP design |
+| [9] | Su et al. 2020 (BAT) | IEEE Access | IEEE | Q1 (2025; Computer Science misc.) | 10.1109/ACCESS.2020.2972627 | yes (Crossref) | Deep IDS on NSL-KDD |
+| [10] | Vial 2019 | J. Strategic Information Systems | Elsevier | Q1 (2025; SJR 4.030; Information Systems) | 10.1016/j.jsis.2019.01.003 | yes (Crossref) | Digital transformation |
+| [11] | Duan et al. 2019 | Int. J. Information Management | Elsevier | Q1 (2025; SJR 5.899; Information Systems) | 10.1016/j.ijinfomgt.2019.01.021 | yes (Crossref) | AI for decision-making |
+| [12] | Zadeh 1965 | Information and Control | Elsevier | n/a (title discontinued; foundational) | 10.1016/S0019-9958(65)90241-X | yes (Crossref) | Fuzzy sets |
+| [13] | Jang 1993 (ANFIS) | IEEE Trans. Systems, Man, and Cybernetics | IEEE | n/a (title discontinued 1995; foundational) | 10.1109/21.256541 | yes (Crossref) | Neuro-fuzzy inference; adaptive bands |
+| [14] | de Campos Souza 2020 | Applied Soft Computing | Elsevier | Q1 (2025; SJR 1.456; Software) | 10.1016/j.asoc.2020.106275 | yes (Crossref) | Fuzzy/neuro-fuzzy review |
+| [15] | Fernández et al. 2019 | IEEE Computational Intelligence Mag. | IEEE | Q1 (2025; SJR 1.580) | 10.1109/MCI.2018.2881645 | yes (Crossref) | Fuzzy systems for explainable AI |
+| [16] | Toosi & Kahani 2007 | Computer Communications | Elsevier | Q1 (2025; SJR 1.040; Computer Networks & Communications) | 10.1016/j.comcom.2007.05.002 | yes (Crossref) | Neuro-fuzzy IDS (accuracy goal) |
+| [17] | Hamamoto et al. 2018 | Expert Systems with Applications | Elsevier | Q1 (2025; SJR 1.939; Artificial Intelligence) | 10.1016/j.eswa.2017.09.013 | yes (Crossref) | Fuzzy-logic anomaly detection (accuracy goal) |
+| [18] | Alalhareth & Hong 2023 | Sensors | MDPI | Q1 (2025; SJR 0.802; Instrumentation, Electrical & Electronic Eng.; Q2 Information Systems) | 10.3390/s23229247 | yes (Crossref) | Fuzzy-based adaptive IDS (accuracy goal) |
+| [19] | Elkan 2001 | Proc. IJCAI 2001 | IJCAI (proceedings) | n/a (conference; foundational) | — | no DOI registered | Cost-sensitive learning foundations |
+| [20] | Zhou & Liu 2006 | IEEE Trans. Knowledge and Data Eng. | IEEE | Q1 (2025; SJR 3.025; Information Systems) | 10.1109/TKDE.2006.17 | yes (Crossref) | Threshold moving / cost-sensitive NNs |
+| [21] | Gupta et al. 2022 (CSE-IDS) | Computers & Security | Elsevier | Q1 (2025; SJR 1.598) | 10.1016/j.cose.2021.102499 | yes (Crossref) | Cost-sensitive deep IDS on NSL-KDD |
+| [22] | Telikani et al. 2024 | IEEE Trans. Industrial Informatics | IEEE | Q1 (2025; SJR 2.983; Information Systems) | 10.1109/TII.2023.3314208 | yes (Crossref) | Cost-sensitive IDS |
+| [23] | Barredo Arrieta et al. 2020 | Information Fusion | Elsevier | Q1 (2025; SJR 4.197; Information Systems) | 10.1016/j.inffus.2019.12.012 | yes (Crossref) | XAI concepts and taxonomy |
+| [24] | Wang et al. 2020 | IEEE Access | IEEE | Q1 (2025; Computer Science misc.) | 10.1109/ACCESS.2020.2988359 | yes (Crossref) | SHAP explanations for IDS |
+| [25] | Alabbadi & Bajaber 2025 | Sensors | MDPI | Q1 (2025; SJR 0.802; Instrumentation, Electrical & Electronic Eng.; Q2 Information Systems) | 10.3390/s25030847 | yes (Crossref) | XAI IDS on IoT streams |
+| [26] | AL & Sagiroglu 2025 | Eng. Applications of Artificial Intelligence | Elsevier | Q1 (2025; SJR 1.782; Artificial Intelligence) | 10.1016/j.engappai.2025.110145 | yes (Crossref) | XAI models in IDS |
+| [27] | Bag et al. 2025 | Decision Support Systems | Elsevier | Q1 (2025; SJR 2.079; Information Systems) | 10.1016/j.dss.2025.114526 | yes (Crossref) | Knowledge-graph cyber-risk DSS |
+| [28] | Friedman 2001 | Annals of Statistics | Institute of Mathematical Statistics | foundational (statistics; off-publisher) | 10.1214/aos/1013203451 | yes (Crossref) | Gradient boosting baseline |
+| [29] | Abdar et al. 2021 | Information Fusion | Elsevier | Q1 (2025; SJR 4.197) | 10.1016/j.inffus.2021.05.008 | yes (Crossref) | Uncertainty/calibration of deep models |
+| [30] | Tavallaee et al. 2009 | Proc. IEEE CISDA 2009 | IEEE (conference) | n/a (conference; dataset source) | 10.1109/CISDA.2009.5356528 | yes (Crossref) | NSL-KDD dataset |
+| [31] | Efron & Tibshirani 1994 | book (Chapman & Hall/CRC) | CRC Press | n/a (book; method) | 10.1201/9780429246593 | yes (Crossref) | Bootstrap CIs |
+| [32] | Wilcoxon 1945 | Biometrics Bulletin | JSTOR / Int. Biometric Society | n/a (title discontinued; method) | 10.2307/3001968 | yes (Crossref) | Wilcoxon signed-rank test |
+| [33] | Ring et al. 2019 | Computers & Security | Elsevier | Q1 (2025; SJR 1.598) | 10.1016/j.cose.2019.06.005 | yes (Crossref) | IDS dataset survey (NSL-KDD age) |
+| [34] | Al-Garadi et al. 2020 | IEEE Commun. Surveys & Tutorials | IEEE | Q1 (2025; SJR 14.838) | 10.1109/COMST.2020.2988293 | yes (Crossref) | Newer ML/IoT security data (future work) |
+
+- **Removed in this revision (reason)**:
+  - Provost & Fawcett 2013 (*Big Data*, Mary Ann Liebert; off-publisher, not Q1) → Duan et al. 2019 (IJIM).
+  - Khraisat et al. 2019 (*Cybersecurity*, Springer; off-publisher) → Liao et al. 2013 (JNCA).
+  - Srilatha & Thangavel 2021 (*Cluster Computing*, Springer), Liu et al. 2022 (*PLOS ONE*), Liu et al. 2022 (*Scientific Reports*) (off-publisher) → Toosi & Kahani 2007, Hamamoto et al. 2018, Alalhareth & Hong 2023.
+  - Lundberg & Lee 2017 (NeurIPS proceedings, not a journal) → Wang et al. 2020 (IEEE Access), Barredo Arrieta et al. 2020.
+  - Mohale & Obagbuwa 2025 (*Frontiers in AI*, off-publisher) → Alabbadi & Bajaber 2025 (Sensors), Barredo Arrieta et al. 2020.
+  - Goodfellow et al. 2016 (MIT Press book) → Vinayakumar et al. 2019 (deep IDS MLP design).
+  - Mishra et al. 2019 (IEEE COMST) and Capuano et al. 2022 (IEEE Access) were verified and drafted in, then dropped to keep 10 pages (redundant with [5–7] and [23–26]).
+- **Added in this revision**: Vielberth 2020, Liao 2013, Vinayakumar 2019, Duan 2019, Fernández 2019, Toosi 2007, Hamamoto 2018, Alalhareth 2023, Zhou & Liu 2006, Gupta 2022, Barredo Arrieta 2020, Wang 2020, Alabbadi 2025, Abdar 2021.
+- **Earlier history**: Thota 2026 removed (author request); Sun et al. 2019 DOI and BAT authors corrected; XGBoost, Moro 2014, Modi 2013, Liu & Lang 2019, Mirsky 2018, Pinto 2023 and the repository self-citation removed in the first editor pass.
 
 ## 5. Unresolved issues
 1. ~~**Page limit** (see §1).~~ **RESOLVED (page limit)**: trimmed to 10 compiled pages (see §8). Double-spaced `review` mode is still ~11 pages before the references.
 2. ~~The repository is private; the Data availability statement promises access.~~ **RESOLVED (private repo vs data statement)**: the statement now says the code and results will be made public on acceptance and are available to the editor and reviewers on reasonable request. **Superseded 2026-10-23:** the repository is now public and the statement gives the link.
 3. The multi-panel figures conflict with the guide's "do not combine images" sentence.
 4. The guide was read from a mirror snapshot; the live page could not be fetched.
+8. Two cited ACM journals (Tariq 2025, Baruwal Chhetri 2024) are outside the requested IEEE/Elsevier/MDPI set; kept because they are the only journal sources specifically on SOC alert fatigue. Seven foundational/dataset/method sources are not Q1 journal articles (§4).
+9. To stay within 10 pages the reference list is set at 9 pt on 10 pt leading and the figures at 0.62 × text width; Elsevier re-typesets at proof.
 5. The GenAI declaration wording and tool name need the author's confirmation.
 6. `manuscript.docx` uses Word-native (OMML) equations. LibreOffice's headless preview did not render them, so check the file in Microsoft Word.
 7. Science limits, disclosed in the paper:
@@ -97,6 +137,7 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
 - Claims: every comparative claim has a CI or test behind it. Every claim of superiority is scoped: "vs crisp rules on the same scores", never "vs the best possible policy".
 - Consistency: the corrected 10-seed AUC values are GB 0.936 ± 0.010 and NN 0.900 ± 0.007. The membership example was recomputed (p = 0.60 → μM 0.71, μH 0.11). The text explanation for seed 48 was corrected (its ROC-AUC is typical; its accuracy at 0.5 is the lowest).
 - LaTeX: compiles with no errors, no undefined references or citations, and no overfull boxes (the former 2.6 pt first-page footer box was fixed in the 2026-10-23 clean-up).
+- Q1-reference revision re-audit: 10 pp; 34/34 references cited and resolved; citation numbers in `manuscript.md` and the docx match the PDF in every place and all 34 reference texts match the PDF (script); numeric tokens in `main.tex` unchanged except layout values (figure width 0.66 → 0.62, bib font) and the equivalent restatement “$C_{FN}\\le3$” of the existing C_FN = 2, 3 results; Eqs. (1)–(7) re-checked against `src/experiment.py` (MLP 128-64-1, dropout 0.2, Adam 1e-3, batch 512, 20 epochs, pos_weight N−/N+, memberships 0.15/0.45/0.5/0.55/0.85, switch points 9/32 and 23/32, Bayes soft-block threshold 2/11).
 
 ## 7. Recommendation
 **Minor revision** on scientific content: the claims are honest, scoped and statistically supported. The page limit (§5.1) and the repository-access step (§5.2) are resolved; the remaining items in §5 are author confirmations and upload-time checks.
@@ -121,3 +162,4 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
   - Unused `algorithm`/`algpseudocode` packages removed from `main.tex`.
   - Markdown mirror/generator note removed from `manuscript.md`; title moved to YAML metadata so the docx has a Title followed by Heading 1 sections (Abstract was Heading 2 before); table captions now labelled “Table 1.”/“Table 2.” like the figure captions. Docx checked with python-docx: single line spacing, both figures embedded, no raw LaTeX, no `??` or `[?]`, references numbered [1]–[28].
 - **2026-10-23, repository made public (author-approved).** Pre-release audit of the working tree and the full git history (all 13 commits, the `pre-editor-pass` tag, every blob): no tokens, keys, passwords or `.env` files; the only e-mail is the author's; NSL-KDD files were never committed (`data/*.txt` is git-ignored). The only stray machine paths were absolute figure paths in `results/summary.json`; they are now repository-relative, and `src/experiment.py` writes relative paths (no result value changed). History was not rewritten (nothing secret). Data availability in `main.tex`, `manuscript.md`, `manuscript.docx` and `README.md` now reads: "The code, result tables and figure-generation scripts are publicly available at https://github.com/nithin427/fuzzy-neural-cyber-triage. The NSL-KDD dataset is publicly available from the Canadian Institute for Cybersecurity, University of New Brunswick [24]." The `manuscript.md` header line now links the public repository. PDF still 10 pp, 28 references, 0 undefined citations/references.
+- **2026-10-23, Q1-reference revision and editor pass (backup tag `pre-q1-refs`).** Reference list rebuilt around Q1 IEEE, Elsevier and MDPI journals: 28 → 34 entries (25 Q1 from the three publishers, 2 ACM, 7 foundational); 8 off-publisher or non-journal items removed and 14 Crossref-verified Q1 articles added (§4). Introduction rewritten to anchor the gap: SOC context [1], surveys [5–7] and NSL-KDD deep detectors [8,9] stop at scores; fuzzy/neuro-fuzzy IDS target accuracy [16–18]; cost-sensitive learning targets the classifier or binary threshold [19–22]; XAI explains scores [23–26]. New method citations: MLP design [8], calibration caveat for the Bayes rule [29], threshold moving for the tuned baseline [20], post-hoc XAI contrast [24,25]. Journal names abbreviated per LTWA; `\biboptions{sort&compress}`. To hold 10 pages: bib font 9/10 pt, figures 0.62 × text width, the sentence "One deterministic script (one PyTorch thread) produces every number." removed (determinism is documented in the README), and wording tightened ("intermediate" dropped before Soft-block band; "relative to" → "versus"; "band positions" → "bands"). No result value changed. `manuscript.md` (citations renumbered, reference list regenerated from `refs.bib`) and `manuscript.docx` regenerated with the same pandoc recipe.
