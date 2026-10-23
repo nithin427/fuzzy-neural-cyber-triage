@@ -1,20 +1,24 @@
 %% Knowledge-Based Systems -- Short Communication (Elsevier elsarticle, numbered references)
-%% Compile: pdflatex main && bibtex main && pdflatex main && pdflatex main  (or upload this folder to Overleaf)
+%% Compile: pdflatex main && bibtex main && pdflatex main && pdflatex main (or upload this folder to Overleaf)
 \documentclass[preprint,12pt]{elsarticle}
 \usepackage{amssymb,amsmath}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{makecell}
-\usepackage{algorithm}
-\usepackage{algpseudocode}
 \usepackage[hidelinks]{hyperref}
 \usepackage{url}
 \journal{Knowledge-Based Systems}
+%% Single-line first-page footer (avoids a 2.6pt overfull box from the class default)
+\makeatletter
+\def\ps@pprintTitle{\let\@oddhead\@empty\let\@evenhead\@empty
+\def\@oddfoot{\footnotesize\itshape Preprint submitted to \@journal\hfill\today}%
+\let\@evenfoot\@oddfoot}
+\makeatother
 
 \begin{document}
 \begin{frontmatter}
 
-\title{Fuzzy--Neural Decision Intelligence for Cost-Aware Cyber Alert Triage}
+\title{Fuzzy--Neural Decision Intelligence for Cost-Aware Cyber Alert Triage\tnoteref{t1}}
 \tnotetext[t1]{Article type: Short Communication.}
 
 \author[mu]{Sai Nithin Erigineni\corref{cor1}}

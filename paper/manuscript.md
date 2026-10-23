@@ -1,12 +1,12 @@
-# Fuzzy–Neural Decision Intelligence for Cost-Aware Cyber Alert Triage
+---
+title: "Fuzzy–Neural Decision Intelligence for Cost-Aware Cyber Alert Triage"
+---
 
-**Article type:** Short Communication — *Knowledge-Based Systems* (Elsevier)  
-**Author:** Sai Nithin Erigineni, DBA, Midwest University, 851 Parr Rd, Wentzville, MO 63385, United States (corresponding author: serigineni@midwest.edu)  
+**Article type:** Short Communication — *Knowledge-Based Systems* (Elsevier)\
+**Author:** Sai Nithin Erigineni, DBA, Midwest University, 851 Parr Rd, Wentzville, MO 63385, United States (corresponding author: serigineni@midwest.edu)\
 **Code and results:** GitHub repository, to be made public on acceptance; available to the editor and reviewers on reasonable request
 
-> Markdown mirror of `paper/elsevier/main.tex` (the LaTeX file is the submission source). Generated with pandoc; every number comes from `results/summary.json` and `results/*.csv`.
-
-## Abstract
+# Abstract
 
 Security operations centres (SOCs) receive risk scores from machine-learning detectors, yet the step from score to action is usually a single hand-set threshold. This Short Communication treats cyber alert triage as a knowledge-based decision problem. A multilayer perceptron estimates attack propensity; triangular fuzzy membership functions map it to Low, Medium and High risk bands; and a three-rule production base assigns Monitor, Soft-block or Escalate, scored under an explicit relative cost matrix. On the NSL-KDD benchmark (seed 42; 20,000 test alerts), gradient boosting remains the strongest detector (ROC-AUC 0.947 versus 0.908 for the neural model). The fuzzy rule layer lowers the mean triage cost to 3.068 [95% bootstrap CI 3.016–3.118], against 3.264 for a 0.5 threshold and 4.309 for a top-20% escalation rule, and raises attack coverage from 0.655 to 0.686 (paired Wilcoxon $p<10^{-100}$). It is cheaper than both crisp rules in all ten repeated runs ($p=0.002$) and at every missed-attack cost from 2 to 30, except that top-20% escalation is cheaper when missed attacks cost 2–3 units. Ablations bound the claim. The gain comes from the intermediate Soft-block band, which is decision-equivalent to crisp cut-points at $p=9/32$ and $23/32$, and a Bayes rule that uses the cost matrix directly is cheaper still (2.164). The contribution is therefore an interpretable, auditable decision layer and a decision-centric evaluation protocol, not a new detector.
 
@@ -40,19 +40,18 @@ Propensity is mapped to three linguistic risk bands [10] with shoulder and tria
 \mu_H(p)&=\big[(p-0.55)/0.45\big]_0^1. \tag{4}
 \end{align}$$ The knowledge layer is the production-rule base $\mathcal{R}=\{R_1,R_2,R_3\}$:
 
-|  |  |
+| | |
 |:-|:-----------------------------------------------------------|
 | $R_1$: | IF risk IS Low THEN action $=$ Monitor (log the alert; no intervention); |
 | $R_2$: | IF risk IS Medium THEN action $=$ Soft-block (automatic containment, e.g., rate-limiting); |
 | $R_3$: | IF risk IS High THEN action $=$ Escalate (hand over to a human analyst). |
-
 
 Each rule fires with strength $\mu_k(p_i)$, and conflicts are resolved by winner-take-all, with ties going to the less severe action: $$a_i = A\big(k_i^{*}\big),\qquad k_i^{*}=\arg\max_{k\in(L,M,H)}\mu_k(p_i),
 \tag{5}$$ where $A$ maps $(L,M,H)$ to (Monitor, Soft-block, Escalate). Firing strengths are logged with every decision as its explanation (e.g., “$p=0.60$: $\mu_M=0.71$, $\mu_H=0.11$, Soft-block”). Solving $\mu_L=\mu_M$ and $\mu_M=\mu_H$ shows that Eq. (5) switches action at $p=9/32=0.281$ and $p=23/32=0.719$ (Fig. 1b).
 
 ## Cost model and decision metrics
 
-Actions are scored with the relative cost matrix $$egin{aligned}
+Actions are scored with the relative cost matrix $$\begin{aligned}
 C(\text{Monitor},y)&=C_{FN}\,y, & C(\text{Soft-block},y)&=1+(1-y),\\
 C(\text{Escalate},y)&=3+3(1-y), & C_{FN}&=10.
 \end{aligned}
@@ -76,21 +75,21 @@ C(\text{Escalate},y)&=3+3(1-y), & C_{FN}&=10.
 | Neural net (ablation) | 0.773 | 0.766 | 0.908 | 0.923 | $0.900\pm0.007$ |
 | Fuzzy–neural (proposed) | 0.773 | 0.766 | 0.908 | 0.923 | $0.900\pm0.007$ |
 
-: Predictive performance on the NSL-KDD test sample (seed 42; last column: mean $\pm$ SD of ROC-AUC over seeds 42–51). The proposed system uses the neural propensity, so its predictive metrics are identical by construction.
+: **Table 1.** Predictive performance on the NSL-KDD test sample (seed 42; last column: mean $\pm$ SD of ROC-AUC over seeds 42–51). The proposed system uses the neural propensity, so its predictive metrics are identical by construction.
 
 | Policy | Scores | $\bar C$ | Coverage | UE | $\Delta\bar C$ | $p$ | 10 seeds |
 |:---|:---|:--:|:--:|:--:|:--:|:--:|:--:|
 | Threshold 0.5 | NN | 3.264 [3.210, 3.316] | 0.655 [0.646, 0.664] | 623 | $+0.196$ [0.180, 0.213] | $7.3{\times}10^{-124}$ | $3.246\pm0.076$ |
 | Top-20% escalate | NN | 4.309 [4.246, 4.372] | 0.348 [0.339, 0.357] | **47** | $+1.242$ [1.196, 1.285] | $<10^{-300}$ | $4.318\pm0.009$ |
 | **Fuzzy (proposed)** | NN | **3.068** [3.016, 3.118] | **0.686** [0.677, 0.694] | 603 | – | – | $\mathbf{3.088\pm0.081}$ |
-| *Ablation and reference policies* |  |  |  |  |  |  |  |
+| *Ablation and reference policies* | | | | | | | |
 | Crisp bands$^{c}$ | NN | 3.068 | 0.686 | 603 | 0 | – | – |
 | Tuned thr. $t{=}0.53$ | NN | 3.278 [3.224, 3.330] | 0.651 [0.641, 0.659] | 617 | $+0.210$ [0.194, 0.228] | $2.3{\times}10^{-123}$ | – |
 | Fuzzy | GB | 3.004 [2.952, 3.055] | 0.676 [0.667, 0.684] | 222 | $-0.064$ [$-0.091$, $-0.037$] | 0.017 | $2.967\pm0.100$ |
 | Threshold 0.5 | GB | 3.189 [3.137, 3.241] | 0.644 [0.635, 0.654] | 241 | $+0.122$ [0.093, 0.149] | $6.4{\times}10^{-40}$ | – |
 | Bayes rule$^{b}$ | NN | 2.164 [2.113, 2.216] | 0.701 [0.692, 0.709] | 0 | $-0.903$ [$-0.921$, $-0.885$] | $<10^{-300}$ | $2.207\pm0.100$ |
 
-: Decision quality on the seed-42 test sample ($N=20{,}000$). Brackets: paired bootstrap 95% CIs; $\Delta\bar C$: mean cost relative to the proposed policy (positive = alternative more expensive); $p$: two-sided Wilcoxon signed-rank test on per-alert costs; last column: mean $\pm$ SD of $\bar C$ over seeds 42–51. UE = unnecessary escalations; NN/GB = neural/gradient-boosting propensity. $^{b}$Reference only: soft-blocks every alert with $p>2/11$ (8,631 of 20,000) and never escalates. $^{c}$Crisp cut-points at $p=9/32$ and $23/32$; actions identical to the proposed policy.
+: **Table 2.** Decision quality on the seed-42 test sample ($N=20{,}000$). Brackets: paired bootstrap 95% CIs; $\Delta\bar C$: mean cost relative to the proposed policy (positive = alternative more expensive); $p$: two-sided Wilcoxon signed-rank test on per-alert costs; last column: mean $\pm$ SD of $\bar C$ over seeds 42–51. UE = unnecessary escalations; NN/GB = neural/gradient-boosting propensity. $^{b}$Reference only: soft-blocks every alert with $p>2/11$ (8,631 of 20,000) and never escalates. $^{c}$Crisp cut-points at $p=9/32$ and $23/32$; actions identical to the proposed policy.
 
 ![**Fig. 2.** Predictive and decision evidence. (a) ROC curves (seed 42). (b) Mean triage cost of a Monitor/Escalate threshold policy versus threshold; horizontal lines: proposed, top-20% and Bayes-rule costs. (c) Sensitivity to the missed-attack cost $C_{FN}$ (default 10, dotted). (d) Paired per-seed costs for seeds 42–51; black markers: mean $\pm$ SD.](../figures/fig2_roc_and_cost.png)
 
@@ -152,7 +151,7 @@ This research did not receive any specific grant from funding agencies in the pu
 
 [9] F. Provost, T. Fawcett, Data science and its relationship to big data and data-driven decision making, Big Data 1 (2013) 51–59. https://doi.org/10.1089/big.2013.1508.
 
-[10] L.A. Zadeh, Fuzzy sets, Information and Control 8 (1965) 338–353. https://doi.org/10.1016/S0019-9958(65)90241-X90241-X).
+[10] L.A. Zadeh, Fuzzy sets, Information and Control 8 (1965) 338–353. https://doi.org/10.1016/S0019-9958(65)90241-X.
 
 [11] J.-S.R. Jang, ANFIS: Adaptive-network-based fuzzy inference system, IEEE Transactions on Systems, Man, and Cybernetics 23 (1993) 665–685. https://doi.org/10.1109/21.256541.
 
@@ -176,14 +175,13 @@ This research did not receive any specific grant from funding agencies in the pu
 
 [21] S. Bag, S. Sarkar, I. Bose, Enhancing cybersecurity risk assessment using temporal knowledge graph-based explainable decision support system, Decision Support Systems 198 (2025) 114526. https://doi.org/10.1016/j.dss.2025.114526.
 
-
 [22] J.H. Friedman, Greedy function approximation: A gradient boosting machine, The Annals of Statistics 29 (2001) 1189–1232. https://doi.org/10.1214/aos/1013203451.
 
-[23] I. Goodfellow, Y. Bengio, A. Courville, Deep learning, MIT Press, Cambridge, MA, 2016.
+[23] I. Goodfellow, Y. Bengio, A. Courville, Deep Learning, MIT Press, Cambridge, MA, 2016.
 
 [24] M. Tavallaee, E. Bagheri, W. Lu, A.A. Ghorbani, A detailed analysis of the KDD CUP 99 data set, in: Proceedings of the 2009 IEEE Symposium on Computational Intelligence for Security and Defense Applications (CISDA), 2009: pp. 1–6. https://doi.org/10.1109/CISDA.2009.5356528.
 
-[25] B. Efron, R.J. Tibshirani, An introduction to the bootstrap, Chapman & Hall/CRC, New York, 1994. https://doi.org/10.1201/9780429246593.
+[25] B. Efron, R.J. Tibshirani, An Introduction to the Bootstrap, Chapman & Hall/CRC, New York, 1994. https://doi.org/10.1201/9780429246593.
 
 [26] F. Wilcoxon, Individual comparisons by ranking methods, Biometrics Bulletin 1 (1945) 80–83. https://doi.org/10.2307/3001968.
 

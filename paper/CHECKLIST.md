@@ -8,7 +8,7 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
 ## 1. Template / Guide-for-Authors compliance
 | Item (guide requirement) | Status | Evidence / note |
 |---|---|---|
-| Article type: Short Communication | OK | `\tnotetext` in `main.tex`; select the type in Editorial Manager |
+| Article type: Short Communication | OK | `\tnotetext` + `\tnoteref` on the title in `main.tex`; select the type in Editorial Manager |
 | Length: ≤ 10 double-spaced pages incl. tables and figures | OK (resolved, see note) | Trimmed on 2026-10-23: compiled PDF is now **10 pp** (`preprint,12pt`, references included; was 14). With `review,12pt` it is 14 pp, of which ~11 come before the references; if the editor counts double-spaced pages strictly, trim the Introduction further or ask the editor |
 | Abstract ≤ 250 words, no citations | OK | 221 words (script count), no citations |
 | 1–7 keywords | OK | 7 keywords |
@@ -96,7 +96,7 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
 - Numbers: Table 1 and Table 2 are re-verified by script against the regenerated `summary.json` (identical to the previous run).
 - Claims: every comparative claim has a CI or test behind it. Every claim of superiority is scoped: "vs crisp rules on the same scores", never "vs the best possible policy".
 - Consistency: the corrected 10-seed AUC values are GB 0.936 ± 0.010 and NN 0.900 ± 0.007. The membership example was recomputed (p = 0.60 → μM 0.71, μH 0.11). The text explanation for seed 48 was corrected (its ROC-AUC is typical; its accuracy at 0.5 is the lowest).
-- LaTeX: compiles with no errors, no undefined references or citations, and no overfull boxes except a 2.6 pt page-output box (still true after the 2026-10-23 trim).
+- LaTeX: compiles with no errors, no undefined references or citations, and no overfull boxes (the former 2.6 pt first-page footer box was fixed in the 2026-10-23 clean-up).
 
 ## 7. Recommendation
 **Minor revision** on scientific content: the claims are honest, scoped and statistically supported. The page limit (§5.1) and the repository-access step (§5.2) are resolved; the remaining items in §5 are author confirmations and upload-time checks.
@@ -112,3 +112,11 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
   - Ablation, managerial and explainability paragraphs shortened to their key points; Conclusion cut to three sentences; the verbal restatement of the cost matrix before Eq. (6) removed.
   - Layout: figure widths 0.66 × text width, Table 1 set in `\small` instead of being scaled up, rule list in `\small`, reference list in `\footnotesize` with tight spacing.
   - `manuscript.md` and `manuscript.docx` regenerated to match `main.tex`.
+- **2026-10-23, clean-up pass (no number changed; still 10 pp, 28 references, 0 undefined citations/references, 0 overfull boxes).**
+  - `manuscript.md`/docx: Zadeh DOI fixed (`…(65)90241-X90241-X).` → `https://doi.org/10.1016/S0019-9958(65)90241-X`); Goodfellow and Efron book titles set in title case as in `refs.bib`; extra blank line left by the Thota removal deleted. All 26 DOIs in the md and docx now match `refs.bib` exactly.
+  - Eq. (6) was raw LaTeX in the md/docx (`\begin` lost to a backspace character during the trim); restored, so the docx now renders all equations as Word math.
+  - Double spaces removed: `main.tex` 1 → 0, `manuscript.md` 11 → 0 (empty table cells and trailing-space line breaks, now `\` breaks), docx 4 → 0 (all inside the broken Eq. (6)). No spaces before punctuation or doubled words found.
+  - Overfull 2.6 pt box: caused by the elsarticle first-page footer; fixed with a one-line footer redefinition in the preamble.
+  - `\tnotetext` (Article type: Short Communication) was not attached to the title; added `\tnoteref{t1}`.
+  - Unused `algorithm`/`algpseudocode` packages removed from `main.tex`.
+  - Markdown mirror/generator note removed from `manuscript.md`; title moved to YAML metadata so the docx has a Title followed by Heading 1 sections (Abstract was Heading 2 before); table captions now labelled “Table 1.”/“Table 2.” like the figure captions. Docx checked with python-docx: single line spacing, both figures embedded, no raw LaTeX, no `??` or `[?]`, references numbered [1]–[28].
