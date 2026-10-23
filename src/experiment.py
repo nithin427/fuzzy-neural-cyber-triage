@@ -3,7 +3,8 @@
 
 Single reproducible script behind the Knowledge-Based Systems short communication.
 It (i) trains the propensity models, (ii) applies the fuzzy production-rule triage
-layer, (iii) writes Table 1 / Table 2 and Fig. 1 / Fig. 2, and (iv) produces the
+layer, (iii) writes the predictive and decision result tables (merged into Table 2 of the
+paper) and calls make_figures.py for Fig. 1 / Fig. 2, and (iv) produces the
 robustness evidence reported in the paper: paired bootstrap 95% CIs, Wilcoxon tests,
 a 10-seed repetition, a cost-ratio sweep, a membership-width sweep and decision-layer
 ablations. The seed-42 headline run is identical to the original pipeline.
@@ -22,7 +23,6 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
-import matplotlib.ticker  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 import torch  # noqa: E402
@@ -37,7 +37,6 @@ from sklearn.metrics import (  # noqa: E402
     average_precision_score,
     f1_score,
     roc_auc_score,
-    roc_curve,
 )
 from sklearn.model_selection import train_test_split  # noqa: E402
 from sklearn.preprocessing import OneHotEncoder, StandardScaler  # noqa: E402
@@ -55,7 +54,7 @@ def _rel(path) -> str:
     return Path(path).resolve().relative_to(ROOT).as_posix()
 
 
-SEED = 42                        # headline run (Table 1 / Table 2 point estimates)
+SEED = 42                        # headline run (Table 2 point estimates)
 SEEDS = list(range(42, 52))      # 10-seed repetition (subsample, split, model init)
 N_TRAIN, N_TEST_CAP = 40_000, 20_000
 N_BOOT = 2000                    # paired bootstrap resamples
@@ -316,117 +315,6 @@ def _save(fig, stem: str) -> list[str]:
     return outs
 
 
-def _box(ax, x, y, w, h, text, fc="#e8f1fb", ec="#1f4e79", fs=8.5, bold_first=True):
-    ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.02,rounding_size=0.08",
-                                facecolor=fc, edgecolor=ec, linewidth=1.2))
-    lines = text.split("\n")
-    if bold_first:
-        ax.text(x + w / 2, y + h - 0.14, lines[0], ha="center", va="top", fontsize=fs, weight="bold")
-        ax.text(x + w / 2, y + h - 0.46, "\n".join(lines[1:]), ha="center", va="top", fontsize=fs - 1,
-                linespacing=1.35)
-    else:
-        ax.text(x + w / 2, y + h / 2, text, ha="center", va="center", fontsize=fs)
-
-
-def _arrow(ax, x0, x1, y):
-    ax.annotate("", xy=(x1, y), xytext=(x0, y), arrowprops=dict(arrowstyle="-|>", color="#1f4e79", lw=1.3))
-
-
-def draw_fig1(cuts) -> list[str]:
-    """Fig. 1: (a) pipeline with production-rule base; (b) membership functions."""
-    fig = plt.figure(figsize=(7.2, 4.9))
-    ax = fig.add_axes([0.0, 0.60, 1.0, 0.38])
-    ax.set_xlim(0, 12.4)
-    ax.set_ylim(0, 2.3)
-    ax.axis("off")
-    _box(ax, 0.1, 0.45, 2.5, 1.55, "Alert features\n41 NSL-KDD fields;\nscaled + one-hot")
-    _box(ax, 3.2, 0.45, 2.5, 1.55, "Neural propensity\nMLP 128-64-1\n$p=f_\\theta(x)\\in[0,1]$")
-    _box(ax, 6.3, 0.45, 2.6, 1.55, "Fuzzy risk bands\n$\\mu_L,\\ \\mu_M,\\ \\mu_H$\nEqs. (2)-(4)")
-    _box(ax, 9.5, 0.45, 2.8, 1.55, "Production rules\nR1: Low $\\rightarrow$ Monitor\nR2: Medium $\\rightarrow$ Soft-block\n"
-         "R3: High $\\rightarrow$ Escalate", fc="#fdf2e9", ec="#a04000")
-    for x0, x1 in [(2.6, 3.2), (5.7, 6.3), (8.9, 9.5)]:
-        _arrow(ax, x0 + 0.02, x1 - 0.02, 1.22)
-    ax.text(10.9, 0.12, "actions scored with cost matrix, Eq. (5)", ha="center", fontsize=7.5, style="italic")
-    ax.text(0.0, 2.2, "(a)", fontsize=10, weight="bold")
-
-    ax2 = fig.add_axes([0.09, 0.09, 0.86, 0.40])
-    p = np.linspace(0, 1, 1001)
-    mu_l, mu_m, mu_h = fuzzy_memberships(p)
-    ax2.plot(p, mu_l, color="#2a9d8f", lw=1.8, label="Low")
-    ax2.plot(p, mu_m, color="#e69f00", lw=1.8, label="Medium")
-    ax2.plot(p, mu_h, color="#c0392b", lw=1.8, label="High")
-    for c in cuts:
-        ax2.axvline(c, color="k", ls=":", lw=0.9)
-    ax2.text(cuts[0] / 2, 1.07, "Monitor", ha="center", fontsize=8)
-    ax2.text((cuts[0] + cuts[1]) / 2, 1.07, "Soft-block", ha="center", fontsize=8)
-    ax2.text((cuts[1] + 1) / 2, 1.07, "Escalate", ha="center", fontsize=8)
-    ax2.set_xlim(0, 1)
-    ax2.set_ylim(0, 1.18)
-    ax2.set_xlabel("Neural attack propensity p")
-    ax2.set_ylabel("Membership degree")
-    ax2.legend(loc="center right", frameon=False)
-    ax2.set_title(f"dominant-band switch points p = {cuts[0]:.3f} and {cuts[1]:.3f}", fontsize=8.5)
-    fig.text(0.0, 0.53, "(b)", fontsize=10, weight="bold")
-    return _save(fig, "fig1_architecture")
-
-
-def draw_fig2(y, scores, sweep, seed_rows) -> list[str]:
-    """Fig. 2: (a) ROC; (b) cost vs threshold; (c) cost-ratio sweep; (d) 10-seed costs."""
-    fig, axes = plt.subplots(2, 2, figsize=(7.2, 6.0))
-    ax = axes[0, 0]
-    for key, name in [("lr", "Logistic regression"), ("gb", "Gradient boosting"), ("nn", "Neural MLP")]:
-        fpr, tpr, _ = roc_curve(y, scores[key])
-        ax.plot(fpr, tpr, color=COL[key], lw=1.5, label=f"{name} (AUC {roc_auc_score(y, scores[key]):.3f})")
-    ax.plot([0, 1], [0, 1], "k--", lw=0.7)
-    ax.set(xlabel="False positive rate", ylabel="True positive rate", title="(a) Predictive ROC (seed 42)")
-    ax.legend(loc="lower right", frameon=False)
-
-    ax = axes[0, 1]
-    p_nn = scores["nn"]
-    ts = np.round(np.arange(0.05, 0.951, 0.025), 3)
-    ax.plot(ts, [alert_costs(y, threshold_actions(p_nn, t)).mean() for t in ts], color=COL["thr"], lw=1.5,
-            label="Monitor/Escalate threshold")
-    for a, key, ls, lab in [(fuzzy_actions(p_nn), "fz", "--", "Fuzzy-cost (proposed)"),
-                            (topk_actions(p_nn), "top", ":", "Top-20% escalate"),
-                            (bayes_actions(p_nn), "bayes", "-.", "Bayes cost rule (reference)")]:
-        c = alert_costs(y, a).mean()
-        ax.axhline(c, color=COL[key], ls=ls, lw=1.4, label=f"{lab}: {c:.3f}")
-    ax.set(xlabel="Threshold on propensity p", ylabel="Mean triage cost per alert",
-           title="(b) Decision cost, neural scores (seed 42)")
-    ax.set_ylim(1.9, 4.75)
-    ax.legend(frameon=False, loc="center right", bbox_to_anchor=(1.0, 0.62))
-
-    ax = axes[1, 0]
-    sw = pd.DataFrame(sweep)
-    for pol, key, mk in [("Prob. threshold 0.5", "thr", "s"), ("Top-20% by score", "top", "^"),
-                         ("Fuzzy–cost (proposed)", "fz", "o"), ("Bayes cost rule (reference)", "bayes", "d")]:
-        d = sw[sw.policy == pol]
-        ax.plot(d.c_fn, d.expected_cost, marker=mk, ms=3.5, lw=1.3, color=COL[key], label=pol.replace("–", "-"))
-    ax.axvline(C_FN, color="k", ls=":", lw=0.8)
-    ax.set_xscale("log")
-    ax.set_xticks([2, 3, 5, 10, 20, 30])
-    ax.set_xticklabels(["2", "3", "5", "10", "20", "30"])
-    ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
-    ax.set(xlabel="Missed-attack cost $C_{FN}$ (log scale)", ylabel="Mean triage cost per alert",
-           title="(c) Cost-ratio sensitivity (seed 42)")
-    ax.legend(frameon=False, loc="upper left")
-
-    ax = axes[1, 1]
-    sr = pd.DataFrame(seed_rows)
-    pols = [("thr05", "Thr. 0.5", "thr"), ("top20", "Top-20%", "top"), ("fuzzy", "Fuzzy-cost", "fz"),
-            ("bayes", "Bayes rule", "bayes")]
-    for _, row in sr.iterrows():
-        ax.plot(range(len(pols)), [row[k] for k, _, _ in pols], color="#bbbbbb", lw=0.7, zorder=1)
-    for j, (k, lab, key) in enumerate(pols):
-        ax.scatter(np.full(len(sr), j), sr[k], color=COL[key], s=14, zorder=2)
-        ax.errorbar(j + 0.18, sr[k].mean(), yerr=sr[k].std(ddof=1), fmt="o", color="k", ms=3, capsize=2)
-    ax.set_xticks(range(len(pols)))
-    ax.set_xticklabels([lab for _, lab, _ in pols])
-    ax.set(ylabel="Mean triage cost per alert", title=f"(d) Paired costs, {len(sr)} seeds (black: mean ± SD)")
-    fig.tight_layout()
-    return _save(fig, "fig2_roc_and_cost")
-
-
 def draw_graphical_abstract(t2, coverage) -> str:
     """Graphical abstract, 1328 x 531 px ratio (2.5:1), rendered at 2x."""
     fig = plt.figure(figsize=(13.28, 5.31))
@@ -485,7 +373,7 @@ def main(quick: bool = False):
     test_full = load_nsl(DATA / "KDDTest+.txt")
     long_rows = []  # one tidy CSV with all supplementary evidence
 
-    # ---- 1. Headline run (seed 42): unchanged Table 1 / Table 2 point estimates ----
+    # ---- 1. Headline run (seed 42): unchanged Table 2 point estimates ----
     run = run_pipeline(SEED, train_full, test_full)
     y, P = run["y_test"], run["p_test"]
     p_nn = P["nn"]
@@ -632,14 +520,13 @@ def main(quick: bool = False):
     t2.to_markdown(RES / "table2_decision.md")
     pd.DataFrame(long_rows).to_csv(RES / "evidence_extended.csv", index=False)
 
-    # ---- Figures ----
-    fig1 = draw_fig1(cuts)
-    fig2 = draw_fig2(y, P, sweep, seed_rows)
+    # ---- Graphical abstract (Fig. 1 / Fig. 2 are drawn from the saved results by make_figures.py) ----
     cov = [table2[k]["attack_coverage"] for k in ("Prob. threshold 0.5", "Top-20% by score", "Fuzzy–cost (proposed)")]
     ga = draw_graphical_abstract(table2, cov)
     PAPER_FIG.mkdir(parents=True, exist_ok=True)
-    for f in fig1 + fig2 + [ga]:
-        shutil.copy2(f, PAPER_FIG / Path(f).name)
+    shutil.copy2(ga, PAPER_FIG / Path(ga).name)
+    fig1 = [str(FIG / f"fig1_decision_bands.{e}") for e in ("png", "pdf")]
+    fig2 = [str(FIG / f"fig2_cost_sensitivity.{e}") for e in ("png", "pdf")]
 
     summary = {
         "seed": SEED, "n_train": run["n_train"], "n_val": run["n_val"], "n_test": run["n_test"],
@@ -668,6 +555,8 @@ def main(quick: bool = False):
     }
     with open(RES / "summary.json", "w") as f:
         json.dump(summary, f, indent=2, default=float)
+    import make_figures  # single-panel Fig. 1 and Fig. 2, read back from results/summary.json
+    make_figures.main()
 
     print(t1.round(4).to_string())
     print(t2.drop(columns=["group"]).to_string())

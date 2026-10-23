@@ -24,7 +24,8 @@ pip install numpy pandas scipy scikit-learn torch matplotlib tabulate
 # NSL-KDD (Canadian Institute for Cybersecurity, UNB: https://www.unb.ca/cic/datasets/nsl.html)
 # put KDDTrain+.txt and KDDTest+.txt in data/   (files are not redistributed here)
 python src/experiment.py            # full run: seed 42 + seeds 42-51, about 3 min on CPU
-python src/experiment.py --quick    # seed 42 only (Tables 1-2 headline numbers and figures)
+python src/experiment.py --quick    # seed 42 only (Table 2 headline numbers and figures)
+python src/make_figures.py          # redraw Fig. 1 and Fig. 2 from results/ (no retraining)
 ```
 
 Data files used (sha256):
@@ -45,21 +46,22 @@ Tested with Python 3.13, torch 2.14.1+cpu, scikit-learn 1.9.1, numpy 2.5.4, pand
    - full re-runs for seeds 42–51 with a Wilcoxon test across seeds
    - a missed-attack cost sweep (C_FN = 2–30) and a Medium-band width sweep
    - ablations: crisp bands, a validation-tuned threshold, the rules on GB scores, the Bayes cost rule, and a test-oracle threshold (reported as invalid)
-5. Writes the two tables, the two figures (PNG 300 dpi + vector PDF) and the graphical abstract. It also copies the figures into `paper/elsevier/figures/`.
+5. Writes the result tables (merged into Table 2 of the paper) and the graphical abstract, then calls `src/make_figures.py`, which draws Fig. 1 and Fig. 2 (PNG 300 dpi + vector PDF) from `results/summary.json` and `results/table2_decision.csv` and copies them into `paper/elsevier/figures/`.
 
 ## Outputs
 | File | Content |
 |---|---|
-| `results/table1_predictive.{csv,md}` | Table 1: Acc/F1/ROC-AUC/PR-AUC (seed 42) + 10-seed AUC |
-| `results/table2_decision.{csv,md}` | Table 2: cost, coverage, unnecessary escalations, CIs, tests, ablations |
+| `results/table1_predictive.{csv,md}` | Table 2, Panel A: Acc/F1/ROC-AUC/PR-AUC (seed 42) + 10-seed AUC |
+| `results/table2_decision.{csv,md}` | Table 2, Panels B1-B2: cost, coverage, unnecessary escalations, CIs, tests, ablations |
 | `results/evidence_extended.csv` | Long-format sensitivity, ablation and per-seed numbers |
 | `results/summary.json` | Every number quoted in the paper |
-| `figures/fig1_architecture.{png,pdf}` | Fig. 1: pipeline + membership functions |
-| `figures/fig2_roc_and_cost.{png,pdf}` | Fig. 2: ROC, cost vs threshold, C_FN sweep, 10-seed paired costs |
+| `figures/fig1_decision_bands.{png,pdf}` | Fig. 1: membership functions, rule bands R1-R3 with alert counts, switch points and Bayes threshold |
+| `figures/fig2_cost_sensitivity.{png,pdf}` | Fig. 2: mean triage cost vs missed-attack cost C_FN with 95% CIs at C_FN = 10 |
 | `figures/graphical_abstract.png` | Graphical abstract (2656×1062 px; 1328×531 ratio) |
 
 ## Paper
 - `paper/elsevier/` holds the self-contained Overleaf/LaTeX submission folder: `main.tex`, `refs.bib`, figures, `highlights.txt`,
   `manuscript.docx` and the compiled `fuzzy-neural-cyber-triage-kbs.pdf`. See its README.
 - `paper/manuscript.md` is a Markdown mirror of `main.tex`.
+- Table 1 of the paper (related work by design property, with citations in the cells) is written directly in `main.tex`.
 - `paper/CHECKLIST.md` contains the journal-compliance checklist, the reference/DOI report and the open issues.

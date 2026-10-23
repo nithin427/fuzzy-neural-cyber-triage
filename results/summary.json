@@ -1133,12 +1133,12 @@
   },
   "figures": {
     "fig1": [
-      "figures/fig1_architecture.png",
-      "figures/fig1_architecture.pdf"
+      "figures/fig1_decision_bands.png",
+      "figures/fig1_decision_bands.pdf"
     ],
     "fig2": [
-      "figures/fig2_roc_and_cost.png",
-      "figures/fig2_roc_and_cost.pdf"
+      "figures/fig2_cost_sensitivity.png",
+      "figures/fig2_cost_sensitivity.pdf"
     ],
     "graphical_abstract": "figures/graphical_abstract.png"
   },
