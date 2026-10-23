@@ -9,7 +9,8 @@ robustness evidence reported in the paper: paired bootstrap 95% CIs, Wilcoxon te
 a 10-seed repetition, a cost-ratio sweep, a membership-width sweep and decision-layer
 ablations. The seed-42 headline run is identical to the original pipeline.
 
-Usage:  python src/experiment.py            (full run, ~5 min on a laptop CPU)
+Usage:  python src/experiment.py            (full run: seed 42 + seeds 42-51, about 3 min wall-clock;
+                                             2 min 47-50 s measured on an 8-vCPU Intel Xeon)
         python src/experiment.py --quick    (seed 42 only; skips the 10-seed loop)
 """
 from __future__ import annotations
@@ -78,7 +79,7 @@ COLUMNS = [
 CAT_COLS = ["protocol_type", "service", "flag"]
 
 # ---------------------------------------------------------------------------
-# Cost model (relative units), Eq. (5) of the paper.
+# Cost model (relative units), Eq. (6) of the paper.
 #   Monitor : C_MONITOR + C_FN * y            -> 0 (benign), 10 (missed attack)
 #   SoftBlk : C_SOFT + C_FP_SOFT * (1 - y)    -> 2 (benign), 1 (attack)
 #   Escalate: C_ESC + C_FP_ESC * (1 - y)      -> 6 (benign), 3 (attack)
@@ -549,8 +550,8 @@ def main(quick: bool = False):
                    "n_test_cap": N_TEST_CAP, "torch": torch.__version__},
         "notes": [
             "Proposed model shares the neural propensity with the ablation; the contribution is the fuzzy rule-based decision layer.",
-            "Train subsampled to 40k (34k train / 6k validation) and test capped at 20k for CPU-scale reproducibility.",
-            "Under the Eq. (5) cost matrix Soft-block dominates Escalate for every p, so the Bayes cost rule never escalates.",
+            "Train subsampled to 40k (34k train / 6k validation) and test capped at 20k so the full run (seed 42 + seeds 42-51) takes about 3 min on a CPU (2 min 47-50 s measured on 8 vCPUs).",
+            "Under the Eq. (6) cost matrix Soft-block dominates Escalate for every p, so the Bayes cost rule never escalates.",
         ],
     }
     with open(RES / "summary.json", "w") as f:

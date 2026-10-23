@@ -23,7 +23,7 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install numpy pandas scipy scikit-learn torch matplotlib tabulate
 # NSL-KDD (Canadian Institute for Cybersecurity, UNB: https://www.unb.ca/cic/datasets/nsl.html)
 # put KDDTrain+.txt and KDDTest+.txt in data/   (files are not redistributed here)
-python src/experiment.py            # full run: seed 42 + seeds 42-51, about 3 min on CPU
+python src/experiment.py            # full run: seed 42 + seeds 42-51, about 3 min wall-clock on CPU (2 min 47-50 s measured on 8 vCPUs)
 python src/experiment.py --quick    # seed 42 only (Table 2 headline numbers and figures)
 python src/make_figures.py          # redraw Fig. 1 and Fig. 2 from results/ (no retraining)
 ```
@@ -38,7 +38,7 @@ Tested with Python 3.13, torch 2.14.1+cpu, scikit-learn 1.9.1, numpy 2.5.4, pand
 
 ## What the script does (`src/experiment.py`, one file)
 1. Subsamples NSL-KDD (40,000 train records split 85/15 into train/validation, stratified; 20,000 test records).
-   Encoders are fitted on the training split only.
+   The scaler and encoders are fitted on the training split only.
 2. Trains logistic regression, gradient boosting and a 128-64-1 MLP (class-weighted BCE).
 3. Applies the fuzzy memberships, Eqs. (2)–(4), and the rule base R1–R3, Eq. (5), then scores policies with the cost matrix, Eq. (6).
 4. Evidence:

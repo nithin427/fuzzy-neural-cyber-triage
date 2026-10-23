@@ -1162,7 +1162,7 @@
   },
   "notes": [
     "Proposed model shares the neural propensity with the ablation; the contribution is the fuzzy rule-based decision layer.",
-    "Train subsampled to 40k (34k train / 6k validation) and test capped at 20k for CPU-scale reproducibility.",
-    "Under the Eq. (5) cost matrix Soft-block dominates Escalate for every p, so the Bayes cost rule never escalates."
+    "Train subsampled to 40k (34k train / 6k validation) and test capped at 20k so the full run (seed 42 + seeds 42-51) takes about 3 min on a CPU (2 min 47-50 s measured on 8 vCPUs).",
+    "Under the Eq. (6) cost matrix Soft-block dominates Escalate for every p, so the Bayes cost rule never escalates."
   ]
 }
