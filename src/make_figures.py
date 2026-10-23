@@ -68,26 +68,26 @@ def fig1(summary):
     n = summary["n_test"]
     p = np.linspace(0, 1, 2001)
     mu_l, mu_m, mu_h = memberships(p, mf)
-    fig, ax = plt.subplots(figsize=(5.2, 2.35))
+    fig, ax = plt.subplots(figsize=(4.0, 1.9))
     spans = [(0, cuts[0], COL["L"], "R1: Monitor", t2["n_monitor"]),
              (cuts[0], cuts[1], COL["M"], "R2: Soft-block", t2["n_soft"]),
              (cuts[1], 1, COL["H"], "R3: Escalate", t2["n_escalate"])]
     for a, b, c, lab, cnt in spans:
         ax.axvspan(a, b, color=c, alpha=0.08, lw=0)
-        ax.text((a + b) / 2, 1.20, lab, ha="center", va="bottom", fontsize=8.5, weight="bold", color=c)
-        ax.text((a + b) / 2, 1.09, f"{cnt:,} alerts ({cnt / n:.1%})", ha="center", va="bottom", fontsize=7)
+        ax.text((a + b) / 2, 1.19, lab, ha="center", va="bottom", fontsize=8, weight="bold", color=c)
+        ax.text((a + b) / 2, 1.09, f"{cnt:,} ({cnt / n:.1%})", ha="center", va="bottom", fontsize=7)
     ax.plot(p, mu_l, color=COL["L"], lw=1.9, label=r"Low  $\mu_L$")
     ax.plot(p, mu_m, color=COL["M"], lw=1.9, label=r"Medium  $\mu_M$")
     ax.plot(p, mu_h, color=COL["H"], lw=1.9, label=r"High  $\mu_H$")
     for c, txt in zip(cuts, ("9/32", "23/32")):
         ax.axvline(c, color="k", ls=":", lw=0.9)
-        ax.text(c + 0.008, 0.93, f"switch point\np = {txt} = {c:.3f}", fontsize=7, va="center")
+        ax.text(c + 0.008, 0.93, f"switch point\np = {txt}", fontsize=7, va="center")
     ax.axvline(bayes_t, ymax=1.08 / 1.32, color=COL["bayes"], ls="--", lw=1.0)
     ax.text(bayes_t - 0.008, 0.03, "Bayes rule: p = 2/11", fontsize=7,
             rotation=90, va="bottom", ha="right", color=COL["bayes"],
             bbox=dict(fc="white", ec="none", alpha=0.75, pad=0.6))
     ax.set_xlim(0, 1)
-    ax.set_ylim(0, 1.32)
+    ax.set_ylim(0, 1.34)
     ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0])
     ax.set_xlabel("Neural attack propensity p")
     ax.set_ylabel("Membership degree")
@@ -100,7 +100,7 @@ def fig2(summary):
     sw = pd.DataFrame(summary["cost_ratio_sweep"])
     t2 = pd.read_csv(RES / "table2_decision.csv").set_index("Policy")
     c10 = summary["config"].get("c_fn_default", 10)
-    fig, ax = plt.subplots(figsize=(5.2, 2.5))
+    fig, ax = plt.subplots(figsize=(4.0, 2.05))
     pols = [("Prob. threshold 0.5", "thr", "s", "Threshold 0.5"),
             ("Top-20% by score", "top", "^", "Top-20% escalation"),
             (PROPOSED, "fz", "o", "Fuzzy rule policy (proposed)"),
@@ -110,7 +110,7 @@ def fig2(summary):
     xmax_top = max(lo_cross[lo_cross].index) if lo_cross.any() else None
     if xmax_top is not None:
         ax.axvspan(1.9, xmax_top * 1.12, color="#e69f00", alpha=0.10, lw=0)
-        ax.text(2.0, 3.3, f"top-20% cheaper\nonly for $C_{{FN}}\\leq{xmax_top:g}$", fontsize=7, va="top")
+        ax.text(2.0, 12.4, f"top-20%\ncheaper only\nfor $C_{{FN}}\\leq{xmax_top:g}$", fontsize=6.5, va="top")
     for pol, key, mk, lab in pols:
         d = sw[sw.policy == pol].sort_values("c_fn")
         ls = "--" if key == "bayes" else "-"
@@ -121,12 +121,6 @@ def fig2(summary):
         ax.errorbar(c10, m, yerr=[[m - lo], [hi - m]], fmt="none", ecolor="k", elinewidth=1.0, capsize=3,
                     zorder=4)
     ax.axvline(c10, color="k", ls=":", lw=0.8)
-    fz = t2.loc[PROPOSED]
-    ax.annotate(f"At $C_{{FN}}$ = 10: proposed {fz.expected_cost:.3f} {fz.cost_ci95}\n"
-                f"threshold 0.5 {t2.loc['Prob. threshold 0.5', 'expected_cost']:.3f}; "
-                f"top-20% {t2.loc['Top-20% by score', 'expected_cost']:.3f}",
-                xy=(c10, fz.expected_cost), xytext=(3.4, 5.6), fontsize=7,
-                arrowprops=dict(arrowstyle="-", color="0.4", lw=0.7))
     ax.set_xscale("log")
     ax.set_xticks([2, 3, 5, 7.5, 10, 15, 20, 30])
     ax.set_xticklabels(["2", "3", "5", "7.5", "10", "15", "20", "30"])
@@ -135,7 +129,7 @@ def fig2(summary):
     ax.set_xlabel("Missed-attack cost $C_{FN}$ (log scale; default 10)")
     ax.set_ylabel("Mean triage cost per alert")
     ax.errorbar([], [], yerr=[], fmt="none", ecolor="k", capsize=3, label="95% bootstrap CI ($C_{FN}$ = 10)")
-    ax.legend(loc="upper left", frameon=False)
+    ax.legend(loc="upper left", bbox_to_anchor=(0.205, 1.02), frameon=True, facecolor="white", edgecolor="none", framealpha=0.9, fontsize=7)
     return _save(fig, "fig2_cost_sensitivity")
 
 

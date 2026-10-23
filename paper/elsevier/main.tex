@@ -36,7 +36,7 @@
 \address[mu]{DBA, Midwest University, 851 Parr Rd, Wentzville, MO 63385, United States}
 
 \begin{abstract}
-Security operations centres (SOCs) receive risk scores from machine-learning detectors, yet the step from score to action is usually a single hand-set threshold. We treat alert triage as a knowledge-based decision problem: a multilayer perceptron (MLP) estimates attack propensity, fuzzy membership functions map it to Low, Medium and High risk bands, and three production rules assign Monitor, Soft-block or Escalate under an explicit cost matrix. On NSL-KDD (20,000 test alerts), gradient boosting is the stronger detector (ROC-AUC 0.947 versus 0.908), but on the same MLP scores the rule base lowers the mean triage cost to 3.068 (95\% CI [3.016, 3.118]) from 3.264 for a 0.5 threshold and 4.309 for top-20\% escalation, and raises attack coverage from 0.655 to 0.686 (Wilcoxon $p<10^{-100}$). It is cheaper than both crisp rules in all ten repeated runs ($p=0.002$) and than the threshold at every tested missed-attack cost from 2 to 30. Ablations bound the claim: the gain comes from the Soft-block band, and a Bayes cost rule is cheaper still (2.164). The contribution is an auditable decision layer with a decision-centric evaluation, not a new detector.
+Security operations centres (SOCs) receive risk scores from machine-learning detectors, but the step from score to action usually rests on a single hand-set threshold. This paper treats alert triage as a knowledge-based decision problem. A multilayer perceptron (MLP) estimates attack propensity, fuzzy membership functions map it to Low, Medium and High risk bands, and three production rules assign Monitor, Soft-block or Escalate. On 20,000 NSL-KDD test alerts, gradient boosting is the stronger detector (ROC-AUC 0.947 against 0.908). On the same MLP scores, however, the rule base lowers the mean triage cost to 3.068 (95\% CI [3.016, 3.118]), compared with 3.264 for a 0.5 threshold and 4.309 for top-20\% escalation. It also raises attack coverage from 0.655 to 0.686 (Wilcoxon $p<10^{-100}$). The rule base is cheaper than both crisp rules in all ten repeated runs ($p=0.002$) and cheaper than the threshold at every tested missed-attack cost from 2 to 30. Ablations show that the gain comes from the Soft-block band and that a Bayes cost rule is cheaper still (2.164). The contribution is an auditable decision layer, not a new detector.
 \end{abstract}
 
 \begin{keyword}
@@ -48,48 +48,44 @@ Fuzzy logic \sep Neural networks \sep Decision intelligence \sep Intrusion detec
 %% ---------------------------------------------------------------------------
 \section{Introduction}
 \label{sec:intro}
-Security operations centres (SOCs) centralise the handling of security alerts~\cite{vielberth2020}, yet analysts receive more alerts than they can investigate, and alert fatigue is a central operational risk~\cite{tariq2025,chhetri2024}. Intrusion-detection research, from classical data mining~\cite{liao2013,buczak2016} to deep networks on NSL-KDD~\cite{vinayakumar2019,su2020}, usually stops at a score judged by accuracy or the area under the receiver operating characteristic curve (ROC-AUC). A SOC manager must instead decide, under finite analyst capacity and asymmetric error costs, which alerts to monitor, contain or escalate: a data-driven decision task~\cite{vial2019,duan2019}.
-
-Fuzzy and neuro-fuzzy systems suit this step because they express learned evidence as linguistic rules that operators can audit~\cite{zadeh1965,jang1993,souza2020,fernandez2019}. Table~\ref{tab:rw} shows the gap. Fuzzy intrusion detectors use rules to raise accuracy but output a binary alarm~\cite{toosi2007,hamamoto2018,alalhareth2023}; cost-sensitive learning~\cite{elkan2001,zhou2006} enters intrusion detection through training losses~\cite{gupta2022,telikani2024}, not through the choice of action; explainable AI (XAI) explains scores after the fact~\cite{arrieta2020,wang2020xai,alabbadi2025}; and reinforcement-learning prioritisation ranks alerts without assigning actions~\cite{wang2024alertpro}. Knowledge-based decision support~\cite{bag2025} shows the value of explicit knowledge, but none of these studies combines an action-cost model, readable rules and graded responses.
+Security operations centres (SOCs) collect, analyse and respond to an organisation's security alerts~\cite{vielberth2020}. Their analysts receive far more alerts than they can investigate, and the resulting alert fatigue is a central operational risk~\cite{tariq2025,chhetri2024}. Intrusion-detection research has progressed from classical data mining~\cite{liao2013,buczak2016} to deep networks trained on benchmarks such as NSL-KDD~\cite{vinayakumar2019,su2020}. Most of this work, however, ends with a risk score and judges it by accuracy or by the area under the receiver operating characteristic curve (ROC-AUC). A SOC manager faces a different question: with limited analyst capacity and unequal error costs, which alerts should be monitored, contained or escalated? This is a data-driven decision task rather than a prediction task~\cite{vial2019,duan2019}.
 
 \begin{table}[!t]
 \centering
-\caption{Related work by design property. Only this work couples an explicit action-cost model, readable rules and graded SOC actions with significance tests; the cited studies end in an alarm, a class label or a ranking. Properties, not accuracies, are compared, because data sets and tasks differ.}
+\caption{Related work compared by design property rather than accuracy, because data sets and tasks differ. Only this work combines an explicit action-cost model, readable rules and graded actions with significance testing.}
 \label{tab:rw}
-{\scriptsize\setlength{\tabcolsep}{3pt}
+{\scriptsize\setlength{\tabcolsep}{2.5pt}
 \begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}Xlcccc@{}}
 \toprule
 Study & Approach & Data & Cost & Rules & Graded & Tests \\
 \midrule
-\multicolumn{7}{@{}l}{\textit{Fuzzy and neuro-fuzzy intrusion detection}}\\
-Toosi~\cite{toosi2007} & ANFIS + GA-tuned fuzzy rules & KDD Cup 99 & \prt & \yes & \no & \no \\
-Hamamoto~\cite{hamamoto2018} & GA flow signature + fuzzy logic & Campus IP flows & \no & \yes & \no & n.r. \\
+Toosi~\cite{toosi2007} & Neuro-fuzzy + genetic tuning & KDD Cup 99 & \prt & \yes & \no & \no \\
+Hamamoto~\cite{hamamoto2018} & Genetic signature + fuzzy logic & Campus IP flows & \no & \yes & \no & n.r. \\
 Alalhareth~\cite{alalhareth2023} & LSTM, fuzzy-tuned training & WUSTL-EHMS-2020 & \prt & \no & \no & \no \\
-\multicolumn{7}{@{}l}{\textit{Deep and cost-sensitive detectors}}\\
-Vinayakumar~\cite{vinayakumar2019} & Deep neural network & NSL-KDD and 5 others & \no & \no & \no & \no \\
-Su~\cite{su2020} & BLSTM + attention (BAT-MC) & NSL-KDD & \no & \no & \no & \no \\
-Gupta~\cite{gupta2022} & Cost-sensitive DNN ensemble & NSL-KDD and 2 others & \prt & \no & \no & n.r. \\
-Telikani~\cite{telikani2024} & Cost-sensitive AE + SVM & UNSW-NB15, BoT-IoT & \prt & \no & \no & n.r. \\
-\multicolumn{7}{@{}l}{\textit{Explanation, prioritisation and decision support}}\\
+Vinayakumar~\cite{vinayakumar2019} & Deep neural network & NSL-KDD + 5 others & \no & \no & \no & \no \\
+Su~\cite{su2020} & Bidirectional LSTM + attention & NSL-KDD & \no & \no & \no & \no \\
+Gupta~\cite{gupta2022} & Cost-sensitive deep ensemble & NSL-KDD + 2 others & \prt & \no & \no & n.r. \\
+Telikani~\cite{telikani2024} & Cost-sensitive autoencoder + SVM & UNSW-NB15, BoT-IoT & \prt & \no & \no & n.r. \\
 Wang~\cite{wang2020xai} & SHAP explanations & NSL-KDD & \no & \prt & \no & \no \\
-Alabbadi~\cite{alabbadi2025} & CNN/DNN/TabNet + XAI & TON\_IoT & \no & \prt & \no & n.r. \\
-Wang~\cite{wang2024alertpro} & RL alert prioritisation & 5 multi-step sets & \no & \no & \prt & n.r. \\
-Bag~\cite{bag2025} & Temporal knowledge-graph DSS & 190 firms + 4 sets & \no & \prt & \no & \yes \\
+Alabbadi~\cite{alabbadi2025} & Deep models + XAI & TON\_IoT & \no & \prt & \no & n.r. \\
+Wang~\cite{wang2024alertpro} & Reinforcement-learning ranking & 5 multi-step sets & \no & \no & \prt & n.r. \\
+Bag~\cite{bag2025} & Knowledge-graph decision support & 190 firms + 4 sets & \no & \prt & \no & \yes \\
 \midrule
 \textbf{This work} & \textbf{MLP + fuzzy rules $R_1$--$R_3$} & \textbf{NSL-KDD, 10 seeds} & \yes & \yes & \yes & \yes \\
 \bottomrule
 \end{tabularx}}
 \par\smallskip
-\parbox{\linewidth}{\scriptsize Cost: actions chosen under an explicit cost model; Rules: operator-readable decision logic; Graded: more than two actions; Tests: significance tests or CIs. \yes~present; \prt~partial (cost in training or binary decision only; post hoc explanation; ranking without actions); \no~absent; n.r.~not reported in the accessible text. AE: autoencoder; (B)LSTM: (bidirectional) long short-term memory; DNN: deep neural network; DSS: decision support system; GA: genetic algorithm; RL: reinforcement learning; SHAP: Shapley additive explanations; SVM: support vector machine.}
+\parbox{\linewidth}{\scriptsize\raggedright Cost: actions chosen under an explicit cost model. Rules: readable decision logic. Graded: more than two actions. Tests: significance tests or confidence intervals. \yes~present, \prt~partial, \no~absent, n.r.~not reported. LSTM: long short-term memory; SHAP: Shapley additive explanations; SVM: support vector machine.}
 \end{table}
 
-This Short Communication contributes (i) a knowledge-based layer that maps neural propensity to fuzzy risk bands and then to SOC actions through a stated production-rule base (Section~\ref{sec:method}); (ii) a decision-centric evaluation with paired tests, repeated runs and sensitivity sweeps (Sections~\ref{sec:design} and~\ref{sec:results}); and (iii) ablations that locate the source and limits of the gain. The layer is detector-agnostic (Section~\ref{sec:results}).
+Fuzzy and neuro-fuzzy systems suit this decision step, because they express learned evidence as linguistic rules that operators can read and audit~\cite{zadeh1965,jang1993,souza2020,fernandez2019}. As Table~\ref{tab:rw} shows, existing studies use these strengths for other purposes. Fuzzy intrusion detectors use rules to improve accuracy, but they still output a binary alarm~\cite{toosi2007,hamamoto2018,alalhareth2023}. Cost-sensitive learning~\cite{elkan2001,zhou2006} enters intrusion detection mainly through weighted training losses~\cite{gupta2022,telikani2024}, so the cost model shapes the classifier but does not choose the action. Explainable artificial intelligence (XAI) methods explain a score after it has been produced~\cite{arrieta2020,wang2020xai,alabbadi2025}. Reinforcement learning can rank alerts by priority, yet the ranking does not assign an action~\cite{wang2024alertpro}. Knowledge-based decision support has shown the value of explicit domain knowledge in cyber-risk assessment~\cite{bag2025}. None of these studies, however, combines an action-cost model, readable rules and graded responses in one triage layer.
+
+This Short Communication addresses that gap with three contributions. It proposes a knowledge-based layer that maps neural attack propensity to fuzzy risk bands and then to SOC actions through explicit rules (Section~\ref{sec:method}). It evaluates the layer by the quality of its decisions, using paired tests, repeated runs and sensitivity analyses (Sections~\ref{sec:design} and~\ref{sec:results}). Finally, ablations show where the gain comes from and where it ends.
 
 %% ---------------------------------------------------------------------------
 \section{Proposed fuzzy--neural decision framework}
 \label{sec:method}
-\subsection{Neural propensity model}
-Each alert $i$ has features $x_i$ (38 numeric NSL-KDD fields, standardised; protocol, service and flag, one-hot encoded) and label $y_i\in\{0,1\}$ (normal, attack). An MLP $g_\theta$ with ReLU layers of width 128 and 64, dropout 0.2 and one logit output gives the attack propensity
+\textit{Neural propensity model.} Each alert $i$ has a feature vector $x_i$ and a label $y_i\in\{0,1\}$, where 1 denotes an attack. The 38 numeric NSL-KDD fields are standardised, and the protocol, service and flag fields are one-hot encoded. An MLP $g_\theta$ with two ReLU layers of width 128 and 64, a dropout rate of 0.2 and a single logit output estimates the attack propensity:
 \begin{equation}
 \begin{split}
 p_i&=\sigma\big(g_\theta(x_i)\big),\\
@@ -97,10 +93,9 @@ p_i&=\sigma\big(g_\theta(x_i)\big),\\
 \end{split}
 \label{eq:mlp}
 \end{equation}
-where $N_{-}$ and $N_{+}$ count normal and attack training records. Training uses Adam (learning rate $10^{-3}$, batch size 512, 20 epochs) and keeps the epoch with the best validation ROC-AUC.
+where $N_{-}$ and $N_{+}$ are the numbers of normal and attack training records, so that $w_{+}$ offsets the class imbalance. The network is trained with Adam at a learning rate of $10^{-3}$ and a batch size of 512 for 20 epochs, and the epoch with the best validation ROC-AUC is kept.
 
-\subsection{Fuzzy risk bands and production-rule base}
-Propensity is mapped to three linguistic risk bands~\cite{zadeh1965} by shoulder and triangular membership functions, with $[z]_0^1=\min(1,\max(0,z))$:
+\textit{Fuzzy risk bands and production rules.} Two shoulder functions and one triangular function map the propensity to three linguistic risk bands~\cite{zadeh1965}. With the clipping operator $[z]_0^1=\min(1,\max(0,z))$, the membership functions are
 \begin{align}
 \mu_L(p)&=\big[(0.45-p)/0.45\big]_0^1, \label{eq:muL}\\
 \mu_M(p)&=\begin{cases}\big[(p-0.15)/0.35\big]_0^1, & p<0.5,\\ \big[(0.85-p)/0.35\big]_0^1, & p\ge 0.5,\end{cases} \label{eq:muM}\\
@@ -109,56 +104,55 @@ Propensity is mapped to three linguistic risk bands~\cite{zadeh1965} by shoulder
 The knowledge layer is the production-rule base $\mathcal{R}=\{R_1,R_2,R_3\}$:
 \begin{center}\small
 \begin{tabular}{@{}lp{0.88\linewidth}@{}}
-$R_1$: & IF risk IS Low THEN action $=$ Monitor (log the alert; no intervention);\\
-$R_2$: & IF risk IS Medium THEN action $=$ Soft-block (automatic containment, e.g., rate limit);\\
-$R_3$: & IF risk IS High THEN action $=$ Escalate (hand over to a human analyst).
+$R_1$: & IF risk IS Low THEN Monitor: log the alert without intervention.\\
+$R_2$: & IF risk IS Medium THEN Soft-block: apply automatic containment.\\
+$R_3$: & IF risk IS High THEN Escalate: hand the alert to a human analyst.
 \end{tabular}
 \end{center}
-Rule $R_k$ fires with strength $\mu_k(p_i)$; conflicts are resolved by winner-take-all, with ties going to the less severe action:
+Each rule $R_k$ fires with strength $\mu_k(p_i)$. The strongest rule determines the action, and a tie goes to the less severe action:
 \begin{equation}
 a_i = A\big(k_i^{*}\big),\qquad k_i^{*}=\arg\max_{k\in(L,M,H)}\mu_k(p_i),
 \label{eq:rule}
 \end{equation}
-where $A$ maps $(L,M,H)$ to (Monitor, Soft-block, Escalate). Firing strengths are logged with every decision as its explanation (e.g., ``$p=0.60$: $\mu_M=0.71$, $\mu_H=0.11$, Soft-block''). Solving $\mu_L=\mu_M$ and $\mu_M=\mu_H$ shows that Eq.~(\ref{eq:rule}) switches action at $p=9/32=0.281$ and $p=23/32=0.719$ (Fig.~\ref{fig:bands}). The breakpoints were set by expert judgement before the test data were examined.
+where $A$ maps $L$, $M$ and $H$ to Monitor, Soft-block and Escalate. The firing strengths are logged with every decision and serve as its explanation. For example, an alert with $p=0.60$ has $\mu_M=0.71$ and $\mu_H=0.11$, so it is soft-blocked. Solving $\mu_L=\mu_M$ and $\mu_M=\mu_H$ shows that the rule base switches action at $p=9/32=0.281$ and $p=23/32=0.719$ (Fig.~\ref{fig:bands}). The breakpoints were set by expert judgement before the test data were examined.
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.76\linewidth]{figures/fig1_decision_bands.pdf}
-\caption{Fuzzy score-to-action mapping (seed-42 test set). The memberships of Eqs.~(\ref{eq:muL})--(\ref{eq:muH}) and rules $R_1$--$R_3$ switch action at $p=9/32$ and $23/32$ (dotted). The Soft-block band holds only 776 alerts (3.9\%) yet yields the entire cost gain over the 0.5 threshold; the Bayes cost rule (dashed) soft-blocks every alert above $p=2/11$.}
+\includegraphics[width=0.62\linewidth]{figures/fig1_decision_bands.pdf}
+\caption{Fuzzy mapping from attack propensity to action on the seed-42 test set. The membership functions of Eqs.~(\ref{eq:muL})--(\ref{eq:muH}) and rules $R_1$--$R_3$ switch action at $p=9/32$ and $p=23/32$ (dotted lines). The Soft-block band holds only 776 alerts (3.9\%), yet it produces the entire cost gain over the 0.5 threshold.}
 \label{fig:bands}
 \end{figure}
 
-\subsection{Cost model and decision metrics}
-Actions are scored with the relative cost matrix
+\textit{Cost model and decision metrics.} Each action is scored with the relative cost matrix
 \begin{equation}
 \begin{aligned}
 C(\text{Monitor},y)&=C_{FN}\,y, & C(\text{Soft-block},y)&=1+(1-y),\\
-C(\text{Escalate},y)&=3+3(1-y), & C_{FN}&=10,
+C(\text{Escalate},y)&=3+3(1-y), & C_{FN}&=10.
 \end{aligned}
 \label{eq:cost}
 \end{equation}
-so a missed attack costs 10 units, containing an attack 1 unit and escalating a benign alert 6 units. Policies are compared by the mean triage cost $\bar C=\frac1N\sum_i C(a_i,y_i)$, the attack coverage $\sum_i \mathbf{1}[a_i\neq\text{Monitor}]\,y_i/\sum_i y_i$ and the number of unnecessary escalations (UE), i.e., escalated benign alerts. As a reference, we also report the plug-in Bayes cost rule
+Each policy is evaluated on three metrics. The mean triage cost is $\bar C=\frac1N\sum_i C(a_i,y_i)$. The attack coverage, $\sum_i \mathbf{1}[a_i\neq\text{Monitor}]\,y_i/\sum_i y_i$, is the share of attacks that receive any action other than Monitor. The third metric counts unnecessary escalations (UE), which are benign alerts sent to an analyst. As a reference, we also report the plug-in Bayes cost rule
 \begin{equation}
-a_i^{B}=\arg\min_{a}\;\big[(1-p_i)\,C(a,0)+p_i\,C(a,1)\big],
+a_i^{B}=\arg\min_{a}\;\big[(1-p_i)\,C(a,0)+p_i\,C(a,1)\big].
 \label{eq:bayes}
 \end{equation}
-which treats $p_i$ as a calibrated probability, an assumption that deep-model scores do not guarantee~\cite{abdar2021}. Because $C(\text{Soft-block},y)<C(\text{Escalate},y)$ for both classes, Eq.~(\ref{eq:bayes}) never escalates and soft-blocks whenever $p_i>2/11$.
+This rule treats $p_i$ as a calibrated probability, although deep-model scores do not guarantee calibration~\cite{abdar2021}. Because soft-blocking costs less than escalation for both classes, the Bayes rule never escalates. Instead, it soft-blocks every alert with $p_i>2/11$.
 
 %% ---------------------------------------------------------------------------
 \section{Experimental design}
 \label{sec:design}
-\textit{Data.} We use the NSL-KDD benchmark~\cite{tavallaee2009}. For CPU-scale reproducibility, 40,000 training records are sampled and split (stratified) into 34,000 training and 6,000 validation records; the scaler and encoder are fitted on training data only. The test set is capped at 20,000 records (attack rate 0.568) and contains attack types absent from training, so train/test shift is part of the task.
+\textit{Data.} The experiments used the NSL-KDD benchmark~\cite{tavallaee2009}. For reproducibility on a standard CPU, we sampled 40,000 training records and split them, with stratification, into 34,000 training and 6,000 validation records. The scaler and encoder were fitted on the training split only. The test set was capped at 20,000 records with an attack rate of 0.568. Because it contains attack types absent from training, the evaluation includes a realistic distribution shift.
 
-\textit{Baselines.} The detectors are class-balanced logistic regression, gradient boosting (GB)~\cite{friedman2001} with scikit-learn defaults and the MLP alone; the proposed policy shares the MLP propensity, so any benefit must appear in decisions. Decision baselines act on the same scores: a Monitor/Escalate threshold at 0.5, the same threshold tuned on validation data to minimise cost (threshold moving~\cite{zhou2006}) and escalation of the top 20\% of scores, a fixed analyst-capacity rule. The Bayes cost rule is a reference only; learned policies~\cite{wang2024alertpro} need interaction data and are excluded.
+\textit{Baselines.} Three detectors were compared: class-balanced logistic regression, gradient boosting (GB)~\cite{friedman2001} with scikit-learn defaults, and the MLP alone. The proposed policy uses the MLP propensity, so any benefit must come from better decisions rather than better scores. Three decision baselines acted on the same scores. The first escalates every alert scored above 0.5 and monitors the rest. The second tunes this threshold on validation data to minimise cost, a form of threshold moving~\cite{zhou2006}. The third escalates the 20\% highest-scored alerts, mimicking a fixed analyst capacity. Learned policies~\cite{wang2024alertpro} were excluded because they need interaction data that the benchmark lacks.
 
-\textit{Statistics.} On the seed-42 test set, we report percentile 95\% confidence intervals (CIs) from 2,000 paired bootstrap resamples of alerts~\cite{efron1994} and two-sided Wilcoxon signed-rank tests on per-alert cost differences~\cite{wilcoxon1945}. The full pipeline is repeated for seeds 42--51 (paired Wilcoxon test across seeds), and two sweeps vary the missed-attack cost $C_{FN}$ from 2 to 30 and the Medium-band half-width from 0.25 to 0.45.
+\textit{Statistics.} On the seed-42 test set, we report percentile 95\% confidence intervals (CIs) from 2,000 paired bootstrap resamples of alerts~\cite{efron1994}. Per-alert cost differences were tested with the two-sided Wilcoxon signed-rank test~\cite{wilcoxon1945}. The full pipeline was repeated for seeds 42--51, and the seed-level costs were compared with a paired Wilcoxon test. Two sweeps varied the missed-attack cost $C_{FN}$ from 2 to 30 and the half-width of the Medium band from 0.25 to 0.45.
 
 %% ---------------------------------------------------------------------------
 \section{Results and discussion}
 \label{sec:results}
 \begin{table}[!t]
 \centering
-\caption{Main results (seed 42; $N=20{,}000$ test alerts). Gradient boosting is the best detector, but on identical MLP scores the fuzzy rule policy has the lowest cost and highest coverage of the deployable policies. Brackets: paired bootstrap 95\% CIs; $\Delta\bar C$: difference from the proposed policy; $p$: two-sided Wilcoxon signed-rank test on per-alert costs; 10 seeds: mean $\pm$ SD over seeds 42--51. Bold: best in Panels A and B1.}
+\caption{Main results on the seed-42 test set ($N=20{,}000$ alerts). Brackets: paired bootstrap 95\% CIs. $\Delta\bar C$: cost difference from the proposed policy. $p$: two-sided Wilcoxon signed-rank test on per-alert costs. 10 seeds: mean $\pm$ SD over seeds 42--51. Bold: best value in Panels A and B1.}
 \label{tab:main}
 \setlength{\tabcolsep}{4pt}
 \resizebox{\linewidth}{!}{%
@@ -187,33 +181,31 @@ Bayes cost rule (reference) & MLP & 2.164 & 0.701 & 0 & $-0.903$ & $<10^{-300}$ 
 \bottomrule
 \end{tabular}}
 \par\smallskip
-\parbox{\linewidth}{\scriptsize\raggedright PR-AUC: area under the precision--recall curve; $\bar C$: mean triage cost, Eq.~(\ref{eq:cost}); UE: unnecessary escalations. Actions (Monitor/Soft-block/Escalate): threshold 0.5, 11,943/0/8,057; top-20\%, 16,000/0/4,000; proposed and crisp bands, 11,554/776/7,670; Bayes rule, 11,369/8,631/0. Panel B2 CIs: \texttt{results/table2\_decision.csv}.}
+\parbox{\linewidth}{\scriptsize\raggedright PR-AUC: area under the precision--recall curve. $\bar C$: mean triage cost, Eq.~(\ref{eq:cost}). UE: unnecessary escalations. Panel B2 CIs are given in \texttt{results/table2\_decision.csv}.}
 \end{table}
 
-\textit{Prediction versus decision.} Gradient boosting is the best detector on every metric (Table~\ref{tab:main}, Panel A) and beats the MLP in ROC-AUC in all ten seeds; we therefore make no detection claim. On identical MLP scores, the rule base lowers the mean triage cost by 0.196 per alert relative to the 0.5 threshold and by 1.242 relative to top-20\% escalation, and raises coverage by 0.031 (95\% CI [0.028, 0.034]) over the threshold (Panel B1). Rule base and threshold differ only on the 776 Medium-band alerts, which the rule base contains; this saves about 3,900 cost units per 20,000 alerts and sends 387 fewer alerts to analysts. Top-20\% escalation minimises unnecessary escalations (47) but covers only 0.348 of attacks, and validation tuning ($t=0.53$; 3.278) does not close the gap because unseen attack types shift the test scores.
+\textit{Prediction versus decision.} Gradient boosting is the best detector on every metric (Table~\ref{tab:main}, Panel A), and it beats the MLP in ROC-AUC in all ten seeds, so this study makes no claim about detection. On identical MLP scores, however, the rule base lowers the mean triage cost by 0.196 per alert relative to the 0.5 threshold and by 1.242 relative to top-20\% escalation (Panel B1). It also raises coverage by 0.031 relative to the threshold (95\% CI [0.028, 0.034]). The rule base and the threshold differ only on the 776 Medium-band alerts, which the rule base contains instead of monitoring or escalating them. This small band saves about 3,900 cost units per 20,000 alerts and sends 387 fewer alerts to analysts. Top-20\% escalation yields the fewest unnecessary escalations (47), but it covers only 0.348 of attacks.
 
-\begin{figure}[!t]
+\begin{figure}[!tb]
 \centering
-\includegraphics[width=0.76\linewidth]{figures/fig2_cost_sensitivity.pdf}
-\caption{Mean triage cost versus missed-attack cost $C_{FN}$ (seed 42). The fuzzy rule policy is cheaper than the 0.5 threshold at every tested $C_{FN}$ from 2 to 30, with a gap that widens as missed attacks grow costlier; top-20\% escalation wins only for $C_{FN}\le3$ (shaded). Error bars: paired bootstrap 95\% CIs at the default $C_{FN}=10$ (dotted); dashed: Bayes reference.}
+\includegraphics[width=0.58\linewidth]{figures/fig2_cost_sensitivity.pdf}
+\caption{Mean triage cost as a function of the missed-attack cost $C_{FN}$ (seed 42). The fuzzy rule policy is cheaper than the 0.5 threshold at every tested value from 2 to 30. Top-20\% escalation is cheaper only for $C_{FN}\le3$ (shaded region). Error bars show paired bootstrap 95\% CIs at the default $C_{FN}=10$ (dotted line).}
 \label{fig:sens}
 \end{figure}
 
-\textit{Robustness.} The rule base is cheaper than both crisp rules in all ten seeds ($3.088\pm0.081$ versus $3.246\pm0.076$ and $4.318\pm0.009$; Wilcoxon $p=0.002$ for both) and has higher coverage than the 0.5 threshold in every seed. Its advantage over the threshold grows from 0.055 at $C_{FN}=2$ to 0.549 at $C_{FN}=30$ (Fig.~\ref{fig:sens}); top-20\% escalation is cheaper only for $C_{FN}\le3$ (1.347 versus 1.640 at $C_{FN}=2$). Widening the Medium half-width from 0.25 to 0.45 enlarges the Soft-block band from 646 to 900 alerts and lowers the cost monotonically from 3.101 to 3.034; every width beats both crisp rules.
+\textit{Robustness.} These gains are stable across repeated runs and cost settings. Over ten seeds, the rule base has a mean cost of $3.088\pm0.081$, compared with $3.246\pm0.076$ for the threshold and $4.318\pm0.009$ for top-20\% escalation. It is cheaper than both crisp rules in every seed (Wilcoxon $p=0.002$ for both), and its coverage exceeds that of the threshold in every seed. Its advantage over the threshold grows from 0.055 at $C_{FN}=2$ to 0.549 at $C_{FN}=30$ (Fig.~\ref{fig:sens}). Top-20\% escalation is cheaper only when $C_{FN}\le3$, for example 1.347 against 1.640 at $C_{FN}=2$, because acting on fewer alerts pays off when missed attacks are cheap. Widening the Medium half-width from 0.25 to 0.45 enlarges the Soft-block band from 646 to 900 alerts and lowers the cost steadily from 3.101 to 3.034. Every width beats both crisp rules.
 
-\textit{What drives the gain.} Crisp bands at $p=9/32$ and $23/32$ reproduce every action (Panel B2), so the benefit comes from the containment band, not from fuzziness itself; the memberships add a graded explanation per decision. The rule base is not cost-optimal: the Bayes cost rule is 0.903 cheaper per alert because soft-blocking dominates escalation under Eq.~(\ref{eq:cost}), so it contains 8,631 alerts (43\% of traffic). An oracle test-set threshold of at most 0.10 would also win (minimum 2.929 at $t=0.01$), but validation tuning cannot find it under shift. On GB scores, the same rules cost 3.004 ($p=0.017$ versus MLP scores) and cut unnecessary escalations from 603 to 222, so the layer transfers.
+\textit{Sources and limits of the gain.} Crisp bands with cut-points at $p=9/32$ and $23/32$ reproduce every action of the rule base (Panel B2), so the benefit comes from the intermediate containment band rather than from fuzziness as such. What fuzziness adds is a graded explanation of each decision. The rule base is also not cost-optimal. The Bayes cost rule is 0.903 cheaper per alert, because soft-blocking dominates escalation under Eq.~(\ref{eq:cost}), and it therefore soft-blocks 8,631 alerts, or 43\% of all traffic. Threshold tuning does not match the rule base either. Validation tuning moves the threshold only to $t=0.53$, at a cost of 3.278, because unseen attack types shift the test scores. Only an oracle threshold of 0.10 or lower, chosen on the test set, would win, with a minimum cost of 2.929 at $t=0.01$. Finally, the layer transfers to another detector. On GB scores, the same rules cost 3.004, which is lower than on MLP scores ($p=0.017$), and they cut unnecessary escalations from 603 to 222.
 
-\textit{Implications for SOC decision-makers.} First, detectors should be judged by the decisions they enable: on identical scores, the action rule changed the cost by up to 1.242 per alert. Second, the cost matrix sets the action mix, so organisations must price false containment before automating Soft-block. Third, band boundaries are a reviewable workload lever that needs no retraining. Fourth, named rules with logged firing strengths give each action an audit trail that post hoc attributions~\cite{wang2020xai,alabbadi2025} lack, aiding compliance and human--AI teaming~\cite{chhetri2024}.
+\textit{Implications for SOC decision-makers.} Detectors should be judged by the decisions they enable, since the action rule alone changed the cost by up to 1.242 per alert. Because the cost matrix sets the mix of actions, organisations should price false containment before automating Soft-block. The band boundaries give managers a workload lever that needs no retraining. Named rules with logged firing strengths give each action an audit trail that post hoc attributions lack~\cite{wang2020xai,alabbadi2025}, which supports compliance and human--AI teaming~\cite{chhetri2024}.
 
 %% ---------------------------------------------------------------------------
-\section{Limitations}
+\section{Limitations and conclusion}
 \label{sec:limits}
-Fixed bands are sensitive to the score distribution, not only to the ranking: seed 48, the weakest replicate (cost 3.282, coverage 0.626), has a typical ROC-AUC (0.900) but the lowest accuracy at 0.5 (0.757). Adaptive, ANFIS-style tuning~\cite{jang1993} or cost-derived bands could close the Bayes gap. NSL-KDD (2009) is a dated laboratory benchmark that misses modern enterprise, cloud and Internet of Things traffic~\cite{ring2019,algaradi2020}, and the data were subsampled under one protocol. The cost matrix is illustrative, not elicited from a SOC; coverage counts containment as covering an attack; and there was no deployment, drift analysis or user study.
-
-%% ---------------------------------------------------------------------------
-\section{Conclusion}
 \label{sec:concl}
-As a knowledge-based decision layer, the fuzzy--neural rule base outperformed crisp threshold and capacity rules on NSL-KDD in cost and coverage across seeds, cost ratios and band widths. The gain comes from the containment band, and a Bayes rule derived from the cost matrix is cheaper still. Future work will derive bands from elicited SOC costs and validate them live.
+The study has four main limitations. First, fixed bands respond to the distribution of the scores, not only to their ranking. Seed 48, the weakest replicate (cost 3.282, coverage 0.626), has a typical ROC-AUC of 0.900 but the lowest accuracy at the 0.5 threshold (0.757). Adaptive tuning in the style of ANFIS~\cite{jang1993}, or bands derived from the cost matrix, could reduce this sensitivity and narrow the gap to the Bayes rule. Second, NSL-KDD is a laboratory benchmark from 2009 that does not reflect modern enterprise, cloud or Internet of Things traffic~\cite{ring2019,algaradi2020}, and the data were subsampled under a single protocol. Third, the cost matrix is illustrative rather than elicited from a real SOC, and the coverage metric counts containment as covering an attack. Fourth, the study involved no deployment, drift analysis or user study.
+
+In conclusion, a fuzzy--neural rule base can serve as a knowledge-based decision layer for alert triage. On NSL-KDD, it achieved lower cost and higher coverage than crisp threshold and capacity rules across seeds, cost ratios and band widths, and its gain comes from the intermediate containment band. Future work will derive the bands from costs elicited in real SOCs and validate the layer in live operation.
 
 %% ---------------------------------------------------------------------------
 \section*{Data availability}
@@ -222,16 +214,16 @@ The code, result tables and figure-generation scripts are publicly available at 
 \section*{Declaration of competing interest}
 The author declares no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
 
-\section*{Declaration of generative AI and AI-assisted technologies in the manuscript preparation process}
-During the preparation of this work the author used Grok Bot, an AI-assisted writing and coding tool, to help with language editing, code refactoring, reference checking and formatting. After using this tool, the author reviewed and edited the content as needed and takes full responsibility for the content of the published article. All results, tables and figures were generated by the author's executable code from the public dataset; no figure was created with generative AI.
-
 \section*{Funding}
 This research did not receive any specific grant from funding agencies in the public, commercial, or not-for-profit sectors.
 
 \section*{CRediT authorship contribution statement}
 \textbf{Sai Nithin Erigineni:} Conceptualization, Methodology, Software, Validation, Formal analysis, Investigation, Data curation, Visualization, Writing -- original draft, Writing -- review \& editing.
 
-\renewcommand{\bibfont}{\fontsize{9}{10}\selectfont}\setlength{\bibsep}{0pt plus 0.5pt}
+\section*{Declaration of generative AI and AI-assisted technologies in the manuscript preparation process}
+During the preparation of this work the author used Grok Bot, an AI-assisted writing and coding tool, to help with language editing, code refactoring, reference checking and formatting. After using this tool, the author reviewed and edited the content as needed and takes full responsibility for the content of the published article. All results, tables and figures were generated by the author's executable code from the public dataset; no figure was created with generative AI.
+
+\renewcommand{\bibfont}{\fontsize{8.5}{9.5}\selectfont}\setlength{\bibsep}{0pt plus 0.5pt}
 \bibliographystyle{elsarticle-num}
 \bibliography{refs}
 \end{document}
