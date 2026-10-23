@@ -23,7 +23,7 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
 | Figures uploaded as separate files | **FLAG** (at upload) | Upload `figures/*.pdf` separately in Editorial Manager |
 | References: numbered in square brackets, order of citation | OK | `elsarticle-num`; 28 entries, all cited, none missing (checked by script; 0 undefined citations after removing Thota 2026) |
 | Journal-name abbreviations (LTWA) | FLAG (minor) | Full journal names used; the guide accepts any consistent style. Abbreviation is applied at proof |
-| Data availability statement | OK (resolved) | NSL-KDD is public (CIC, UNB; cited). Code and results are in a GitHub repository that will be made public on acceptance and are available to the editor and reviewers on reasonable request. No link to the private repo is given in the paper |
+| Data availability statement | OK (resolved; repository public) | NSL-KDD is public (CIC, UNB; cited [24]). The code, result tables and figure-generation scripts are publicly available at https://github.com/nithin427/fuzzy-neural-cyber-triage (repository made public on 2026-10-23) |
 | Declaration of competing interest | OK | Present |
 | Generative-AI declaration (guide wording, before references) | OK / **FLAG** | Uses the guide template and names "Grok Bot". The author must confirm the tool name and the uses listed |
 | Funding statement | OK | Exact guide sentence for "no funding" |
@@ -80,7 +80,7 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
 
 ## 5. Unresolved issues
 1. ~~**Page limit** (see §1).~~ **RESOLVED (page limit)**: trimmed to 10 compiled pages (see §8). Double-spaced `review` mode is still ~11 pages before the references.
-2. ~~The repository is private; the Data availability statement promises access.~~ **RESOLVED (private repo vs data statement)**: the statement now says the code and results will be made public on acceptance and are available to the editor and reviewers on reasonable request.
+2. ~~The repository is private; the Data availability statement promises access.~~ **RESOLVED (private repo vs data statement)**: the statement now says the code and results will be made public on acceptance and are available to the editor and reviewers on reasonable request. **Superseded 2026-10-23:** the repository is now public and the statement gives the link.
 3. The multi-panel figures conflict with the guide's "do not combine images" sentence.
 4. The guide was read from a mirror snapshot; the live page could not be fetched.
 5. The GenAI declaration wording and tool name need the author's confirmation.
@@ -120,3 +120,4 @@ Status key: **OK** = checked against the file. **FLAG** = needs an author decisi
   - `\tnotetext` (Article type: Short Communication) was not attached to the title; added `\tnoteref{t1}`.
   - Unused `algorithm`/`algpseudocode` packages removed from `main.tex`.
   - Markdown mirror/generator note removed from `manuscript.md`; title moved to YAML metadata so the docx has a Title followed by Heading 1 sections (Abstract was Heading 2 before); table captions now labelled “Table 1.”/“Table 2.” like the figure captions. Docx checked with python-docx: single line spacing, both figures embedded, no raw LaTeX, no `??` or `[?]`, references numbered [1]–[28].
+- **2026-10-23, repository made public (author-approved).** Pre-release audit of the working tree and the full git history (all 13 commits, the `pre-editor-pass` tag, every blob): no tokens, keys, passwords or `.env` files; the only e-mail is the author's; NSL-KDD files were never committed (`data/*.txt` is git-ignored). The only stray machine paths were absolute figure paths in `results/summary.json`; they are now repository-relative, and `src/experiment.py` writes relative paths (no result value changed). History was not rewritten (nothing secret). Data availability in `main.tex`, `manuscript.md`, `manuscript.docx` and `README.md` now reads: "The code, result tables and figure-generation scripts are publicly available at https://github.com/nithin427/fuzzy-neural-cyber-triage. The NSL-KDD dataset is publicly available from the Canadian Institute for Cybersecurity, University of New Brunswick [24]." The `manuscript.md` header line now links the public repository. PDF still 10 pp, 28 references, 0 undefined citations/references.

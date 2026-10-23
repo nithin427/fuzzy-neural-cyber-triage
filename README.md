@@ -8,6 +8,12 @@ production base then turn that score into **Monitor / Soft-block / Escalate**, a
 an explicit cost matrix. The paper's claim is about the decision layer. It does not claim a better detector:
 gradient boosting has the best ROC-AUC.
 
+## Data and code availability
+This repository is public. The code, result tables and figure-generation scripts are available at https://github.com/nithin427/fuzzy-neural-cyber-triage.
+The NSL-KDD dataset is publicly available from the Canadian Institute for Cybersecurity, University of New Brunswick
+(https://www.unb.ca/cic/datasets/nsl.html; Tavallaee et al., CISDA 2009, https://doi.org/10.1109/CISDA.2009.5356528).
+The data files are not redistributed in this repository.
+
 ## Reproduce
 
 ```bash

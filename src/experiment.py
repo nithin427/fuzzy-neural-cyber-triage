@@ -49,6 +49,12 @@ FIG = ROOT / "figures"
 RES = ROOT / "results"
 PAPER_FIG = ROOT / "paper" / "elsevier" / "figures"
 
+
+def _rel(path) -> str:
+    """Path relative to the repository root (keeps machine paths out of summary.json)."""
+    return Path(path).resolve().relative_to(ROOT).as_posix()
+
+
 SEED = 42                        # headline run (Table 1 / Table 2 point estimates)
 SEEDS = list(range(42, 52))      # 10-seed repetition (subsample, split, model init)
 N_TRAIN, N_TEST_CAP = 40_000, 20_000
@@ -651,7 +657,7 @@ def main(quick: bool = False):
         "cost_ratio_sweep": sweep, "fuzzy_beats_thr05_at_c_fn": fz_beats_thr,
         "membership_width_sensitivity": mf_sens,
         "multi_seed": multi,
-        "figures": {"fig1": fig1, "fig2": fig2, "graphical_abstract": ga},
+        "figures": {"fig1": [_rel(f) for f in fig1], "fig2": [_rel(f) for f in fig2], "graphical_abstract": _rel(ga)},
         "config": {"n_boot": N_BOOT, "seeds": SEEDS if not quick else [SEED], "n_train_cap": N_TRAIN,
                    "n_test_cap": N_TEST_CAP, "torch": torch.__version__},
         "notes": [

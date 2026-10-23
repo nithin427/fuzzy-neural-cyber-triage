@@ -4,7 +4,7 @@ title: "Fuzzy–Neural Decision Intelligence for Cost-Aware Cyber Alert Triage"
 
 **Article type:** Short Communication — *Knowledge-Based Systems* (Elsevier)\
 **Author:** Sai Nithin Erigineni, DBA, Midwest University, 851 Parr Rd, Wentzville, MO 63385, United States (corresponding author: serigineni@midwest.edu)\
-**Code and results:** GitHub repository, to be made public on acceptance; available to the editor and reviewers on reasonable request
+**Code and results:** <https://github.com/nithin427/fuzzy-neural-cyber-triage> (public)
 
 # Abstract
 
@@ -113,7 +113,7 @@ Treating alert triage as a knowledge-based decision problem, a fuzzy–neural ru
 
 # Data availability
 
-The NSL-KDD dataset is publicly available from the Canadian Institute for Cybersecurity, University of New Brunswick [24]. The code and results (experiment script, result tables in CSV/JSON and figure-generation code) are held in a GitHub repository that will be made public on acceptance; until then they are available to the editor and reviewers on reasonable request.
+The code, result tables and figure-generation scripts are publicly available at <https://github.com/nithin427/fuzzy-neural-cyber-triage>. The NSL-KDD dataset is publicly available from the Canadian Institute for Cybersecurity, University of New Brunswick [24].
 
 # Declaration of competing interest
 

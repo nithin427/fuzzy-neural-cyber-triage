@@ -1133,14 +1133,14 @@
   },
   "figures": {
     "fig1": [
-      "/workspace/fuzzy-neural-cyber-triage/figures/fig1_architecture.png",
-      "/workspace/fuzzy-neural-cyber-triage/figures/fig1_architecture.pdf"
+      "figures/fig1_architecture.png",
+      "figures/fig1_architecture.pdf"
     ],
     "fig2": [
-      "/workspace/fuzzy-neural-cyber-triage/figures/fig2_roc_and_cost.png",
-      "/workspace/fuzzy-neural-cyber-triage/figures/fig2_roc_and_cost.pdf"
+      "figures/fig2_roc_and_cost.png",
+      "figures/fig2_roc_and_cost.pdf"
     ],
-    "graphical_abstract": "/workspace/fuzzy-neural-cyber-triage/figures/graphical_abstract.png"
+    "graphical_abstract": "figures/graphical_abstract.png"
   },
   "config": {
     "n_boot": 2000,
