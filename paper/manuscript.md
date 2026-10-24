@@ -27,30 +27,27 @@ Security operations centres (SOCs) receive risk scores from machine-learning det
 
 # 1. Introduction
 
-Security operations centres (SOCs) collect, analyse and respond to an organisation's security alerts [1]. Their analysts receive far more alerts than they can investigate, and the resulting alert fatigue is a central operational risk [2,3]. Intrusion-detection research has progressed from classical data mining [4,5] to deep networks trained on benchmarks such as NSL-KDD [6,7]. Most of this work, however, ends with a risk score and judges it by accuracy or by the area under the receiver operating characteristic curve (ROC-AUC). A SOC manager faces a different question: with limited analyst capacity and unequal error costs, which alerts should be monitored, contained or escalated? This is a data-driven decision task rather than a prediction task [8,9]. Decision-theoretic three-way decisions already choose among acceptance, rejection and deferment under stated losses [10], and recent SOC studies learn when to defer alerts to analysts [11] or prioritise them by reinforcement learning [12], while research on SOC human–AI teaming [13] and concept drift [14] addresses the operating context.
+Security operations centres (SOCs) collect, analyse and respond to an organisation's security alerts [1]. Their analysts receive far more alerts than they can investigate, because network intrusion detectors generate a high volume of low-quality alerts, most of them false positives [2]. Intrusion-detection research ranges from fuzzy and neuro-fuzzy detectors [3,4] to deep networks trained on benchmarks such as NSL-KDD [5]. Most of this work, however, ends with a risk score and judges it by accuracy or by the area under the receiver operating characteristic curve (ROC-AUC). A SOC manager faces a different question: with limited analyst capacity and unequal error costs, which alerts should be monitored, contained or escalated? We therefore treat triage as a decision task rather than a prediction task. Decision-theoretic three-way decisions already choose among acceptance, rejection and deferment under stated losses [6], and recent SOC studies learn when to defer alerts to analysts [7] or prioritise them by reinforcement learning to combat alert fatigue [8].
 
 | Study | Approach | Data | Cost | Rules | Graded | Tests |
 |:---|:---|:---|:--:|:--:|:--:|:--:|
-| Toosi [15] | Neuro-fuzzy + genetic tuning | KDD Cup 99 | (✓) | ✓ | × | × |
-| Hamamoto [16] | Genetic signature + fuzzy logic | Campus IP flows | × | ✓ | × | n.r. |
-| Alalhareth [17] | LSTM, fuzzy-tuned training | WUSTL-EHMS-2020 | (✓) | × | × | × |
-| Vinayakumar [6] | Deep neural network | NSL-KDD + 5 others | × | × | × | × |
-| Su [7] | Bidirectional LSTM + attention | NSL-KDD | × | × | × | × |
-| Gupta [18] | Cost-sensitive deep ensemble | NSL-KDD + 2 others | (✓) | × | × | n.r. |
-| Telikani [19] | Cost-sensitive autoencoder + SVM | UNSW-NB15, BoT-IoT | (✓) | × | × | n.r. |
-| Wang [20] | SHAP explanations | NSL-KDD | × | (✓) | × | × |
-| Alabbadi [21] | Deep models + XAI | TON_IoT | × | (✓) | × | n.r. |
-| Wang [22] | Reinforcement-learning ranking | 5 multi-step sets | × | × | (✓) | n.r. |
-| Bag [23] | Knowledge-graph decision support | 190 firms + 4 sets | × | (✓) | × | ✓ |
+| Toosi [3] | Neuro-fuzzy + genetic tuning | KDD Cup 99 | (✓) | ✓ | × | × |
+| Hamamoto [4] | Genetic signature + fuzzy logic | Campus IP flows | × | ✓ | × | n.r. |
+| Vinayakumar [5] | Deep neural network | NSL-KDD + 5 others | × | × | × | × |
+| Gupta [9] | Cost-sensitive deep ensemble | NSL-KDD + 2 others | (✓) | × | × | n.r. |
+| Telikani [10] | Cost-sensitive autoencoder + SVM | UNSW-NB15, BoT-IoT | (✓) | × | × | n.r. |
+| Wang [11] | SHAP explanations | NSL-KDD | × | (✓) | × | × |
+| Wang [8] | Reinforcement-learning ranking | 5 multi-step sets | × | × | (✓) | n.r. |
+| Bag [12] | Knowledge-graph decision support | 190 firms + 4 sets | × | (✓) | × | ✓ |
 | **This work** | **MLP + fuzzy rules $R_1$–$R_3$** | **NSL-KDD, 10 seeds** | ✓ | ✓ | ✓ | ✓ |
 
 : **Table 1.** Related work compared by design property rather than accuracy, because data sets and tasks differ. Only this work combines an explicit action-cost model, readable rules and graded actions with significance testing.
 
 ::: {custom-style="Table Note"}
-Cost: actions chosen under an explicit cost model. Rules: readable decision logic. Graded: more than two actions. Tests: significance tests or confidence intervals. ✓ present, (✓) partial, × absent, n.r. not reported. LSTM: long short-term memory; SHAP: Shapley additive explanations; SVM: support vector machine.
+Cost: actions chosen under an explicit cost model. Rules: readable decision logic. Graded: more than two actions. Tests: significance tests or confidence intervals. ✓ present, (✓) partial, × absent, n.r. not reported. SHAP: Shapley additive explanations; SVM: support vector machine.
 :::
 
-Fuzzy and neuro-fuzzy systems suit this decision step, because they express learned evidence as linguistic rules that operators can read and audit [24–27]. As Table 1 shows, existing studies use these strengths for other purposes. Fuzzy intrusion detectors use rules to improve accuracy, but they still output a binary alarm [15–17]. Cost-sensitive learning [28,29] enters intrusion detection mainly through weighted training losses [18,19], so the cost model shapes the classifier but does not choose the action. Explainable artificial intelligence (XAI) methods explain a score after it has been produced [20,21,30]. Reinforcement learning can rank alerts by priority, yet the ranking does not assign an action [12,22]. The closest designs to ours defer uncertain cases. Three-way decision models assign each case to acceptance, rejection or deferment, with thresholds derived from loss functions [10], and Jalalvand et al. [11] learn when to defer alerts from analyst feedback. Neither assigns graded SOC actions through a readable fuzzy rule base driven by a learned score. Knowledge-based decision support has shown the value of explicit domain knowledge in cyber-risk assessment [23]. However, to our knowledge none of these studies combines an action-cost model, readable rules and graded responses in one triage layer.
+Fuzzy and neuro-fuzzy systems suit this decision step, because they express learned evidence as linguistic rules that operators can read and audit [13,14]. As Table 1 shows, existing studies use these strengths for other purposes. Fuzzy intrusion detectors use rules to improve accuracy, but they still output a binary alarm [3,4]. Cost-sensitive learning [15] enters intrusion detection mainly through weighted training losses [9,10], so the cost model shapes the classifier but does not choose the action. Post hoc explainable artificial intelligence (XAI) methods, such as Shapley additive explanations, explain a score after it has been produced [11]. Reinforcement learning can rank alerts by priority, yet the ranking does not assign an action [8]. The closest designs to ours defer uncertain cases. Three-way decision models assign each case to acceptance, rejection or deferment, with thresholds derived from loss functions [6], and Jalalvand et al. [7] learn when to defer alerts from analyst feedback. Neither assigns graded SOC actions through a readable fuzzy rule base driven by a learned score. Knowledge-based decision support has shown the value of explicit domain knowledge in cyber-risk assessment [12]. However, to our knowledge none of these studies combines an action-cost model, readable rules and graded responses in one triage layer.
 
 This Short Communication addresses that gap with three contributions. It proposes a knowledge-based layer that maps neural attack propensity to fuzzy risk bands and then to SOC actions through explicit rules (Section 2). It evaluates the layer by the quality of its decisions, using paired tests, repeated runs and sensitivity analyses (Sections 3 and 4). Finally, ablations show where the gain comes from and where it ends.
 
@@ -62,7 +59,7 @@ p_i&=\sigma\big(g_\theta(x_i)\big),\\
 \end{split}
 \tag{1}$$ where $N_{-}$ and $N_{+}$ are the numbers of normal and attack training records, so that $w_{+}$ offsets the class imbalance. The network is trained with Adam at a learning rate of $10^{-3}$ and a batch size of 512 for 20 epochs, and the epoch with the best validation ROC-AUC is kept.
 
-*Fuzzy risk bands and production rules.* Two shoulder functions and one triangular function map the propensity to three linguistic risk bands [24]. With the clipping operator $[z]_0^1=\min(1,\max(0,z))$, the membership functions are $$\begin{align}
+*Fuzzy risk bands and production rules.* Two shoulder functions and one triangular function map the propensity to three linguistic risk bands [13]. With the clipping operator $[z]_0^1=\min(1,\max(0,z))$, the membership functions are $$\begin{align}
 \mu_L(p)&=\big[(0.45-p)/0.45\big]_0^1, \tag{2}\\
 \mu_M(p)&=\begin{cases}\big[(p-0.15)/0.35\big]_0^1, & p<0.5,\\ \big[(0.85-p)/0.35\big]_0^1, & p\ge 0.5,\end{cases} \tag{3}\\
 \mu_H(p)&=\big[(p-0.55)/0.45\big]_0^1. \tag{4}
@@ -90,15 +87,15 @@ C(\text{Monitor},y)&=C_{FN}\,y, & C(\text{Soft-block},y)&=1+(1-y),\\
 C(\text{Escalate},y)&=3+3(1-y), & C_{FN}&=10.
 \end{aligned}
 \tag{6}$$ Each policy is evaluated on three metrics. The mean triage cost is $\bar C=\frac1N\sum_i C(a_i,y_i)$. The attack coverage, $\sum_i \mathbf{1}[a_i\neq\text{Monitor}]\,y_i/\sum_i y_i$, is the share of attacks that receive any action other than Monitor. The third metric counts unnecessary escalations (UE), which are benign alerts sent to an analyst. As a reference, we also report the plug-in Bayes cost rule $$a_i^{B}=\arg\min_{a}\;\big[(1-p_i)\,C(a,0)+p_i\,C(a,1)\big].
-\tag{7}$$ This rule treats $p_i$ as a calibrated probability, although deep-model scores do not guarantee calibration [31]. Because soft-blocking costs less than escalation for both classes, the Bayes rule never escalates. Instead, it soft-blocks every alert with $p_i>2/11$.
+\tag{7}$$ This rule treats $p_i$ as a calibrated probability, which the MLP output need not be. Because soft-blocking costs less than escalation for both classes, the Bayes rule never escalates. Instead, it soft-blocks every alert with $p_i>2/11$.
 
 # 3. Experimental design
 
-*Data.* The experiments used the NSL-KDD benchmark [32]. For reproducibility on a standard CPU, we sampled 40,000 training records and split them, with stratification, into 34,000 training and 6,000 validation records. The scaler and encoder were fitted on the training split only. The test set was capped at 20,000 records with an attack rate of 0.568. Because it contains attack types absent from training, the evaluation includes a realistic distribution shift.
+*Data.* The experiments used the NSL-KDD benchmark [16]. For reproducibility on a standard CPU, we sampled 40,000 training records and split them, with stratification, into 34,000 training and 6,000 validation records. The scaler and encoder were fitted on the training split only. The test set was capped at 20,000 records with an attack rate of 0.568. Because it contains attack types absent from training, the evaluation includes a realistic distribution shift.
 
-*Baselines.* Three detectors were compared: class-balanced logistic regression, gradient boosting (GB) [33] with scikit-learn defaults, and the MLP alone. The proposed policy uses the MLP propensity, so any benefit must come from better decisions rather than better scores. Three decision baselines acted on the same scores. The first escalates every alert scored above 0.5 and monitors the rest. The second tunes this threshold on validation data to minimise cost, a form of threshold moving [29]. The third escalates the 20% highest-scored alerts, mimicking a fixed analyst capacity. Learned policies [12,22] were excluded because they need interaction or logged decision data with outcome feedback, which the benchmark lacks.
+*Baselines.* Three detectors were compared: class-balanced logistic regression, gradient boosting (GB) [17] with scikit-learn defaults, and the MLP alone. The proposed policy uses the MLP propensity, so any benefit must come from better decisions rather than better scores. Three decision baselines acted on the same scores. The first escalates every alert scored above 0.5 and monitors the rest. The second tunes this threshold on validation data to minimise cost, a form of threshold moving [15]. The third escalates the 20% highest-scored alerts, mimicking a fixed analyst capacity. Learned prioritisation policies, such as reinforcement learning [8], were excluded because they need interaction or logged decision data with outcome feedback, which the benchmark lacks.
 
-*Statistics.* On the seed-42 test set, we report percentile 95% confidence intervals (CIs) from 2,000 paired bootstrap resamples of alerts [34]. Per-alert cost differences were tested with the two-sided Wilcoxon signed-rank test [35], which treats alerts as independent. The full pipeline was repeated for seeds 42–51, and the seed-level costs were compared with a paired Wilcoxon test. Two sweeps varied the missed-attack cost $C_{FN}$ from 2 to 30 and the half-width of the Medium band from 0.25 to 0.45.
+*Statistics.* On the seed-42 test set, we report percentile 95% confidence intervals (CIs) from 2,000 paired bootstrap resamples of alerts [18]. Per-alert cost differences were tested with the two-sided Wilcoxon signed-rank test [19], which treats alerts as independent. The full pipeline was repeated for seeds 42–51, and the seed-level costs were compared with a paired Wilcoxon test. Two sweeps varied the missed-attack cost $C_{FN}$ from 2 to 30 and the half-width of the Medium band from 0.25 to 0.45.
 
 # 4. Results and discussion
 
@@ -132,21 +129,21 @@ PR-AUC: area under the precision–recall curve. $\bar C$: mean triage cost, Eq.
 
 *Robustness.* These gains are stable across repeated runs and cost settings. Over ten seeds, the rule base has a mean cost of $3.088\pm0.081$, compared with $3.246\pm0.076$ for the threshold and $4.318\pm0.009$ for top-20% escalation. It is cheaper than both crisp rules in every seed (Wilcoxon $p=0.002$ for both), and its coverage exceeds that of the threshold in every seed. Its advantage over the threshold grows from 0.055 at $C_{FN}=2$ to 0.549 at $C_{FN}=30$ (Fig. 2). Top-20% escalation is cheaper only when $C_{FN}\le3$, for example 1.347 against 1.640 at $C_{FN}=2$, because acting on fewer alerts pays off when missed attacks are cheap. Widening the Medium half-width from 0.25 to 0.45 enlarges the Soft-block band from 646 to 900 alerts and lowers the cost steadily from 3.101 to 3.034. Every width beats both crisp rules.
 
-*Sources and limits of the gain.* Crisp bands with cut-points at $p=9/32$ and $23/32$ reproduce every action of the rule base (Panel B2), so the benefit comes from the intermediate containment band rather than from fuzziness as such. What fuzziness adds is a graded explanation of each decision. The rule base is also not cost-optimal. The Bayes cost rule is 0.903 cheaper per alert, because soft-blocking dominates escalation under Eq. (6), and it therefore soft-blocks 8,631 alerts, or 43% of all traffic. This is the Bayesian minimum-risk procedure from which decision-theoretic three-way decisions derive their loss-based thresholds [10]. Threshold tuning does not match the rule base either. Validation tuning moves the threshold only to $t=0.53$, at a cost of 3.278, presumably because unseen attack types shift the test scores. Only an oracle threshold of 0.10 or lower, chosen on the test set, would win, with a minimum cost of 2.929 at $t=0.01$. This agrees with the cost-sensitive learning result that asymmetric costs move the optimal cut-off away from 0.5 [28]. Finally, the layer transfers to another detector. On GB scores, the same rules cost 3.004, which is lower than on MLP scores ($p=0.017$), and they cut unnecessary escalations from 603 to 222.
+*Sources and limits of the gain.* Crisp bands with cut-points at $p=9/32$ and $23/32$ reproduce every action of the rule base (Panel B2), so the benefit comes from the intermediate containment band rather than from fuzziness as such. What fuzziness adds is a graded explanation of each decision. The rule base is also not cost-optimal. The Bayes cost rule is 0.903 cheaper per alert, because soft-blocking dominates escalation under Eq. (6), and it therefore soft-blocks 8,631 alerts, or 43% of all traffic. This is the Bayesian minimum-risk procedure from which decision-theoretic three-way decisions derive their loss-based thresholds [6]. Threshold tuning does not match the rule base either. Validation tuning moves the threshold only to $t=0.53$, at a cost of 3.278, presumably because unseen attack types shift the test scores. Only an oracle threshold of 0.10 or lower, chosen on the test set, would win, with a minimum cost of 2.929 at $t=0.01$. This agrees with threshold moving in cost-sensitive learning, where unequal error costs shift the decision cut-off away from 0.5 [15]. Finally, the layer transfers to another detector. On GB scores, the same rules cost 3.004, which is lower than on MLP scores ($p=0.017$), and they cut unnecessary escalations from 603 to 222.
 
-*Implications for SOC decision-makers.* Detectors should be judged by the decisions they enable, since the action rule alone changed the cost by up to 1.242 per alert. Because the cost matrix sets the mix of actions, organisations should price false containment before automating Soft-block. Unlike a deferral band that hands uncertain alerts to analysts [11], the Soft-block band acts automatically, so the 387 alerts it keeps from the analyst queue carry an explicit price for false containment (Eq. (6)). Conformal classification with a reject option [36] instead abstains on uncertain cases under distribution-free error-rate guarantees rather than a cost matrix, and combining the two is a natural extension. The band boundaries give managers a workload lever that needs no retraining, which matters because NIDS alert streams are reported to be dominated by false positives [37]. Named rules with logged firing strengths give each action an audit trail that post hoc attributions lack [20,21], which supports compliance and human–AI teaming [3,13].
+*Implications for SOC decision-makers.* Detectors should be judged by the decisions they enable, since the action rule alone changed the cost by up to 1.242 per alert. Because the cost matrix sets the mix of actions, organisations should price false containment before automating Soft-block. Unlike a deferral band that hands uncertain alerts to analysts [7], the Soft-block band acts automatically, so the 387 alerts it keeps from the analyst queue carry an explicit price for false containment (Eq. (6)). Conformal classification with a reject option [20] instead abstains on uncertain cases under distribution-free error-rate guarantees rather than a cost matrix, and combining the two is a natural extension. The band boundaries give managers a workload lever that needs no retraining, which matters because NIDS alert streams are reported to be dominated by false positives [2]. Named rules with logged firing strengths give each action an audit trail that post hoc attributions lack [11], which supports compliance review and analyst oversight.
 
 # 5. Limitations
 
-The study has four main limitations. First, fixed bands respond to the distribution of the scores, not only to their ranking. Seed 48, the weakest replicate (cost 3.282, coverage 0.626), has a typical ROC-AUC of 0.900 but the lowest accuracy at the 0.5 threshold (0.757). Adaptive tuning in the style of ANFIS [25], or bands derived from the cost matrix, could reduce this sensitivity and narrow the gap to the Bayes rule. Second, NSL-KDD is a laboratory benchmark from 2009 that does not reflect modern enterprise, cloud or Internet of Things traffic [38,39], and the data were subsampled under a single protocol. Third, the cost matrix is illustrative rather than elicited from a real SOC, and the coverage metric counts containment as covering an attack. Fourth, the study involved no deployment, drift analysis [14] or user study.
+The study has four main limitations. First, fixed bands respond to the distribution of the scores, not only to their ranking. Seed 48, the weakest replicate (cost 3.282, coverage 0.626), has a typical ROC-AUC of 0.900 but the lowest accuracy at the 0.5 threshold (0.757). Adaptive neuro-fuzzy tuning of the breakpoints, or bands derived from the cost matrix, could reduce this sensitivity and narrow the gap to the Bayes rule. Second, NSL-KDD is a laboratory benchmark released in 2009 [16], so its traffic predates modern enterprise, cloud and Internet of Things networks, and the data were subsampled under a single protocol. Third, the cost matrix is illustrative rather than elicited from a real SOC, and the coverage metric counts containment as covering an attack. Fourth, the study involved no deployment, drift analysis or user study.
 
 # 6. Conclusion
 
-In conclusion, a fuzzy–neural rule base can serve as a knowledge-based decision layer for alert triage. On NSL-KDD, it achieved lower cost and higher coverage than crisp threshold and capacity rules across seeds, cost ratios and band widths, and its gain comes from the intermediate containment band. Future work will derive the bands from costs elicited in real SOCs and validate the layer in live operation. It will also add distribution-free error guarantees for the automatic actions through conformal classification with a reject option [36].
+In conclusion, a fuzzy–neural rule base can serve as a knowledge-based decision layer for alert triage. On NSL-KDD, it achieved lower cost and higher coverage than crisp threshold and capacity rules across seeds, cost ratios and band widths, and its gain comes from the intermediate containment band. Future work will derive the bands from costs elicited in real SOCs and validate the layer in live operation. It will also add distribution-free error guarantees for the automatic actions through conformal classification with a reject option [20].
 
 # Data availability
 
-The code, result tables and figure-generation scripts are publicly available at <https://github.com/nithin427/fuzzy-neural-cyber-triage>. NSL-KDD is available from the Canadian Institute for Cybersecurity [32]. The Supplementary Material contains the same code, the result files (including the Panel B2 confidence intervals of Table 2 in `table2_decision.csv`), both figures as vector files and a graphical abstract.
+The code, result tables and figure-generation scripts are publicly available at <https://github.com/nithin427/fuzzy-neural-cyber-triage>. NSL-KDD is available from the Canadian Institute for Cybersecurity [16]. The Supplementary Material contains the same code, the result files (including the Panel B2 confidence intervals of Table 2 in `table2_decision.csv`), both figures as vector files and a graphical abstract.
 
 # Declaration of competing interest
 
@@ -171,153 +168,77 @@ This research did not receive any specific grant from funding agencies in the pu
 :::
 
 ::: {custom-style="Reference"}
-[2]	S. Tariq, M. Baruwal Chhetri, S. Nepal, C. Paris, Alert fatigue in security operations centres: Research challenges and opportunities, ACM Comput. Surv. 57 (9) (2025) 1–38. https://doi.org/10.1145/3723158.
+[2]	H. Albasheer, M. Md Siraj, A. Mubarakali, O. Elsier Tayfour, S. Salih, M. Hamdan, S. Khan, A. Zainal, S. Kamarudeen, Cyber-attack prediction based on network intrusion detection systems for alert correlation techniques: A survey, Sensors 22 (4) (2022) 1494. https://doi.org/10.3390/s22041494.
 :::
 
 ::: {custom-style="Reference"}
-[3]	M. Baruwal Chhetri, S. Tariq, R. Singh, F. Jalalvand, C. Paris, S. Nepal, Towards human–AI teaming to mitigate alert fatigue in security operations centres, ACM Trans. Internet Technol. 24 (3) (2024) 1–22. https://doi.org/10.1145/3670009.
+[3]	A. N. Toosi, M. Kahani, A new approach to intrusion detection based on an evolutionary soft computing model using neuro-fuzzy classifiers, Comput. Commun. 30 (10) (2007) 2201–2212. https://doi.org/10.1016/j.comcom.2007.05.002.
 :::
 
 ::: {custom-style="Reference"}
-[4]	H.-J. Liao, C.-H. Richard Lin, Y.-C. Lin, K.-Y. Tung, Intrusion detection system: A comprehensive review, J. Netw. Comput. Appl. 36 (1) (2013) 16–24. https://doi.org/10.1016/j.jnca.2012.09.004.
+[4]	A. H. Hamamoto, L. F. Carvalho, L. D. H. Sampaio, T. Abrão, M. L. Proença, Network anomaly detection system using genetic algorithm and fuzzy logic, Expert Syst. Appl. 92 (2018) 390–402. https://doi.org/10.1016/j.eswa.2017.09.013.
 :::
 
 ::: {custom-style="Reference"}
-[5]	A. L. Buczak, E. Guven, A survey of data mining and machine learning methods for cyber security intrusion detection, IEEE Commun. Surv. Tutor. 18 (2) (2016) 1153–1176. https://doi.org/10.1109/COMST.2015.2494502.
+[5]	R. Vinayakumar, M. Alazab, K. P. Soman, P. Poornachandran, A. Al-Nemrat, S. Venkatraman, Deep learning approach for intelligent intrusion detection system, IEEE Access 7 (2019) 41525–41550. https://doi.org/10.1109/ACCESS.2019.2895334.
 :::
 
 ::: {custom-style="Reference"}
-[6]	R. Vinayakumar, M. Alazab, K. P. Soman, P. Poornachandran, A. Al-Nemrat, S. Venkatraman, Deep learning approach for intelligent intrusion detection system, IEEE Access 7 (2019) 41525–41550. https://doi.org/10.1109/ACCESS.2019.2895334.
+[6]	Y. Yao, Three-way decisions with probabilistic rough sets, Inf. Sci. 180 (3) (2010) 341–353. https://doi.org/10.1016/j.ins.2009.09.021.
 :::
 
 ::: {custom-style="Reference"}
-[7]	T. Su, H. Sun, J. Zhu, S. Wang, Y. Li, BAT: Deep learning methods on network intrusion detection using NSL-KDD dataset, IEEE Access 8 (2020) 29575–29585. https://doi.org/10.1109/ACCESS.2020.2972627.
+[7]	F. Jalalvand, M. Baruwal Chhetri, S. Nepal, C. Paris, Adaptive alert prioritisation in security operations centres via learning to defer with human feedback, Inf. Sci. 760 (2027) 124128. https://doi.org/10.1016/j.ins.2026.124128.
 :::
 
 ::: {custom-style="Reference"}
-[8]	G. Phillips-Wren, M. Daly, F. Burstein, Reconciling business intelligence, analytics and decision support systems: More data, deeper insight, Decis. Support Syst. 146 (2021) 113560. https://doi.org/10.1016/j.dss.2021.113560.
+[8]	X. Wang, X. Yang, X. Liang, X. Zhang, W. Zhang, X. Gong, Combating alert fatigue with AlertPro: Context-aware alert prioritization using reinforcement learning for multi-step attack detection, Comput. Secur. 137 (2024) 103583. https://doi.org/10.1016/j.cose.2023.103583.
 :::
 
 ::: {custom-style="Reference"}
-[9]	Y. Duan, J. S. Edwards, Y. K. Dwivedi, Artificial intelligence for decision making in the era of Big Data – evolution, challenges and research agenda, Int. J. Inf. Manag. 48 (2019) 63–71. https://doi.org/10.1016/j.ijinfomgt.2019.01.021.
+[9]	N. Gupta, V. Jindal, P. Bedi, CSE-IDS: Using cost-sensitive deep learning and ensemble algorithms to handle class imbalance in network-based intrusion detection systems, Comput. Secur. 112 (2022) 102499. https://doi.org/10.1016/j.cose.2021.102499.
 :::
 
 ::: {custom-style="Reference"}
-[10]	Y. Yao, Three-way decisions with probabilistic rough sets, Inf. Sci. 180 (3) (2010) 341–353. https://doi.org/10.1016/j.ins.2009.09.021.
+[10]	A. Telikani, N. E. Rudbardeh, S. Soleymanpour, A. Shahbahrami, J. Shen, G. Gaydadjiev, R. Hassanpour, A cost-sensitive machine learning model with multitask learning for intrusion detection in IoT, IEEE Trans. Ind. Inform. 20 (3) (2024) 3880–3890. https://doi.org/10.1109/TII.2023.3314208.
 :::
 
 ::: {custom-style="Reference"}
-[11]	F. Jalalvand, M. Baruwal Chhetri, S. Nepal, C. Paris, Adaptive alert prioritisation in security operations centres via learning to defer with human feedback, Inf. Sci. 760 (2027) 124128. https://doi.org/10.1016/j.ins.2026.124128.
+[11]	M. Wang, K. Zheng, Y. Yang, X. Wang, An explainable machine learning framework for intrusion detection systems, IEEE Access 8 (2020) 73127–73141. https://doi.org/10.1109/ACCESS.2020.2988359.
 :::
 
 ::: {custom-style="Reference"}
-[12]	L. Chavali, A. Krishnan, P. Saxena, B. Mitra, A. Sreevallabh Chivukula, Off-policy actor-critic deep reinforcement learning methods for alert prioritization in intrusion detection systems, Comput. Secur. 142 (2024) 103854. https://doi.org/10.1016/j.cose.2024.103854.
+[12]	S. Bag, S. Sarkar, I. Bose, Enhancing cybersecurity risk assessment using temporal knowledge graph-based explainable decision support system, Decis. Support Syst. 198 (2025) 114526. https://doi.org/10.1016/j.dss.2025.114526.
 :::
 
 ::: {custom-style="Reference"}
-[13]	M. Kumar, R. Rani, G. Epiphaniou, C. Maple, Adaptive trust-aware SOC human–AI teaming for resilient operations, Comput. Secur. 169 (2026) 104971. https://doi.org/10.1016/j.cose.2026.104971.
+[13]	L. A. Zadeh, Fuzzy sets, Inf. Control 8 (3) (1965) 338–353. https://doi.org/10.1016/S0019-9958(65)90241-X.
 :::
 
 ::: {custom-style="Reference"}
-[14]	R. Vaarandi, A. Guerra-Manzanares, NAD-CD: Addressing concept drift in network IDS alert classification for security operations centers, J. Inf. Secur. Appl. 103 (2026) 104663. https://doi.org/10.1016/j.jisa.2026.104663.
+[14]	A. Fernández, F. Herrera, O. Cordón, M. J. del Jesus, F. Marcelloni, Evolutionary fuzzy systems for explainable artificial intelligence: Why, when, what for, and where to?, IEEE Comput. Intell. Mag. 14 (1) (2019) 69–81. https://doi.org/10.1109/MCI.2018.2881645.
 :::
 
 ::: {custom-style="Reference"}
-[15]	A. N. Toosi, M. Kahani, A new approach to intrusion detection based on an evolutionary soft computing model using neuro-fuzzy classifiers, Comput. Commun. 30 (10) (2007) 2201–2212. https://doi.org/10.1016/j.comcom.2007.05.002.
+[15]	Z.-H. Zhou, X.-Y. Liu, Training cost-sensitive neural networks with methods addressing the class imbalance problem, IEEE Trans. Knowl. Data Eng. 18 (1) (2006) 63–77. https://doi.org/10.1109/TKDE.2006.17.
 :::
 
 ::: {custom-style="Reference"}
-[16]	A. H. Hamamoto, L. F. Carvalho, L. D. H. Sampaio, T. Abrão, M. L. Proença, Network anomaly detection system using genetic algorithm and fuzzy logic, Expert Syst. Appl. 92 (2018) 390–402. https://doi.org/10.1016/j.eswa.2017.09.013.
+[16]	M. Tavallaee, E. Bagheri, W. Lu, A. A. Ghorbani, A detailed analysis of the KDD CUP 99 data set, in: Proc. 2009 IEEE Symp. Comput. Intell. Secur. Def. Appl. (CISDA), 2009, pp. 1–6. https://doi.org/10.1109/CISDA.2009.5356528.
 :::
 
 ::: {custom-style="Reference"}
-[17]	M. Alalhareth, S.-C. Hong, An adaptive intrusion detection system in the Internet of Medical Things using fuzzy-based learning, Sensors 23 (22) (2023) 9247. https://doi.org/10.3390/s23229247.
+[17]	J. H. Friedman, Greedy function approximation: A gradient boosting machine, Ann. Stat. 29 (5) (2001) 1189–1232. https://doi.org/10.1214/aos/1013203451.
 :::
 
 ::: {custom-style="Reference"}
-[18]	N. Gupta, V. Jindal, P. Bedi, CSE-IDS: Using cost-sensitive deep learning and ensemble algorithms to handle class imbalance in network-based intrusion detection systems, Comput. Secur. 112 (2022) 102499. https://doi.org/10.1016/j.cose.2021.102499.
+[18]	B. Efron, R. J. Tibshirani, An Introduction to the Bootstrap, Chapman & Hall/CRC, New York, 1994. https://doi.org/10.1201/9780429246593.
 :::
 
 ::: {custom-style="Reference"}
-[19]	A. Telikani, N. E. Rudbardeh, S. Soleymanpour, A. Shahbahrami, J. Shen, G. Gaydadjiev, R. Hassanpour, A cost-sensitive machine learning model with multitask learning for intrusion detection in IoT, IEEE Trans. Ind. Inform. 20 (3) (2024) 3880–3890. https://doi.org/10.1109/TII.2023.3314208.
+[19]	F. Wilcoxon, Individual comparisons by ranking methods, Biom. Bull. 1 (6) (1945) 80–83. https://doi.org/10.2307/3001968.
 :::
 
 ::: {custom-style="Reference"}
-[20]	M. Wang, K. Zheng, Y. Yang, X. Wang, An explainable machine learning framework for intrusion detection systems, IEEE Access 8 (2020) 73127–73141. https://doi.org/10.1109/ACCESS.2020.2988359.
-:::
-
-::: {custom-style="Reference"}
-[21]	A. Alabbadi, F. Bajaber, An intrusion detection system over the IoT data streams using eXplainable Artificial Intelligence (XAI), Sensors 25 (3) (2025) 847. https://doi.org/10.3390/s25030847.
-:::
-
-::: {custom-style="Reference"}
-[22]	X. Wang, X. Yang, X. Liang, X. Zhang, W. Zhang, X. Gong, Combating alert fatigue with AlertPro: Context-aware alert prioritization using reinforcement learning for multi-step attack detection, Comput. Secur. 137 (2024) 103583. https://doi.org/10.1016/j.cose.2023.103583.
-:::
-
-::: {custom-style="Reference"}
-[23]	S. Bag, S. Sarkar, I. Bose, Enhancing cybersecurity risk assessment using temporal knowledge graph-based explainable decision support system, Decis. Support Syst. 198 (2025) 114526. https://doi.org/10.1016/j.dss.2025.114526.
-:::
-
-::: {custom-style="Reference"}
-[24]	L. A. Zadeh, Fuzzy sets, Inf. Control 8 (3) (1965) 338–353. https://doi.org/10.1016/S0019-9958(65)90241-X.
-:::
-
-::: {custom-style="Reference"}
-[25]	J.-S. R. Jang, ANFIS: Adaptive-network-based fuzzy inference system, IEEE Trans. Syst. Man Cybern. 23 (3) (1993) 665–685. https://doi.org/10.1109/21.256541.
-:::
-
-::: {custom-style="Reference"}
-[26]	P. V. de Campos Souza, Fuzzy neural networks and neuro-fuzzy networks: A review the main techniques and applications used in the literature, Appl. Soft Comput. 92 (2020) 106275. https://doi.org/10.1016/j.asoc.2020.106275.
-:::
-
-::: {custom-style="Reference"}
-[27]	A. Fernández, F. Herrera, O. Cordón, M. J. del Jesus, F. Marcelloni, Evolutionary fuzzy systems for explainable artificial intelligence: Why, when, what for, and where to?, IEEE Comput. Intell. Mag. 14 (1) (2019) 69–81. https://doi.org/10.1109/MCI.2018.2881645.
-:::
-
-::: {custom-style="Reference"}
-[28]	C. Elkan, The foundations of cost-sensitive learning, in: Proc. 17th Int. Jt. Conf. Artif. Intell. (IJCAI), 2001, pp. 973–978.
-:::
-
-::: {custom-style="Reference"}
-[29]	Z.-H. Zhou, X.-Y. Liu, Training cost-sensitive neural networks with methods addressing the class imbalance problem, IEEE Trans. Knowl. Data Eng. 18 (1) (2006) 63–77. https://doi.org/10.1109/TKDE.2006.17.
-:::
-
-::: {custom-style="Reference"}
-[30]	A. Barredo Arrieta, N. Díaz-Rodríguez, J. Del Ser, A. Bennetot, S. Tabik, A. Barbado, S. Garcia, S. Gil-Lopez, D. Molina, R. Benjamins, R. Chatila, F. Herrera, Explainable artificial intelligence (XAI): Concepts, taxonomies, opportunities and challenges toward responsible AI, Inf. Fusion 58 (2020) 82–115. https://doi.org/10.1016/j.inffus.2019.12.012.
-:::
-
-::: {custom-style="Reference"}
-[31]	M. Abdar, F. Pourpanah, S. Hussain, D. Rezazadegan, L. Liu, M. Ghavamzadeh, P. Fieguth, X. Cao, A. Khosravi, U. R. Acharya, V. Makarenkov, S. Nahavandi, A review of uncertainty quantification in deep learning: Techniques, applications and challenges, Inf. Fusion 76 (2021) 243–297. https://doi.org/10.1016/j.inffus.2021.05.008.
-:::
-
-::: {custom-style="Reference"}
-[32]	M. Tavallaee, E. Bagheri, W. Lu, A. A. Ghorbani, A detailed analysis of the KDD CUP 99 data set, in: Proc. 2009 IEEE Symp. Comput. Intell. Secur. Def. Appl. (CISDA), 2009, pp. 1–6. https://doi.org/10.1109/CISDA.2009.5356528.
-:::
-
-::: {custom-style="Reference"}
-[33]	J. H. Friedman, Greedy function approximation: A gradient boosting machine, Ann. Stat. 29 (5) (2001) 1189–1232. https://doi.org/10.1214/aos/1013203451.
-:::
-
-::: {custom-style="Reference"}
-[34]	B. Efron, R. J. Tibshirani, An Introduction to the Bootstrap, Chapman & Hall/CRC, New York, 1994. https://doi.org/10.1201/9780429246593.
-:::
-
-::: {custom-style="Reference"}
-[35]	F. Wilcoxon, Individual comparisons by ranking methods, Biom. Bull. 1 (6) (1945) 80–83. https://doi.org/10.2307/3001968.
-:::
-
-::: {custom-style="Reference"}
-[36]	J. Hallberg Szabadváry, T. Löfström, U. Johansson, C. Sönströd, E. Ahlberg, L. Carlsson, Classification with reject option: Distribution-free error guarantees via conformal prediction, Mach. Learn. Appl. 20 (2025) 100664. https://doi.org/10.1016/j.mlwa.2025.100664.
-:::
-
-::: {custom-style="Reference"}
-[37]	H. Albasheer, M. Md Siraj, A. Mubarakali, O. Elsier Tayfour, S. Salih, M. Hamdan, S. Khan, A. Zainal, S. Kamarudeen, Cyber-attack prediction based on network intrusion detection systems for alert correlation techniques: A survey, Sensors 22 (4) (2022) 1494. https://doi.org/10.3390/s22041494.
-:::
-
-::: {custom-style="Reference"}
-[38]	M. Ring, S. Wunderlich, D. Scheuring, D. Landes, A. Hotho, A survey of network-based intrusion detection data sets, Comput. Secur. 86 (2019) 147–167. https://doi.org/10.1016/j.cose.2019.06.005.
-:::
-
-::: {custom-style="Reference"}
-[39]	M. A. Al-Garadi, A. Mohamed, A. K. Al-Ali, X. Du, I. Ali, M. Guizani, A survey of machine and deep learning methods for Internet of Things (IoT) security, IEEE Commun. Surv. Tutor. 22 (3) (2020) 1646–1685. https://doi.org/10.1109/COMST.2020.2988293.
+[20]	J. Hallberg Szabadváry, T. Löfström, U. Johansson, C. Sönströd, E. Ahlberg, L. Carlsson, Classification with reject option: Distribution-free error guarantees via conformal prediction, Mach. Learn. Appl. 20 (2025) 100664. https://doi.org/10.1016/j.mlwa.2025.100664.
 :::
