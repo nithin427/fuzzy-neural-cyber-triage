@@ -17,5 +17,5 @@ pdflatex main && bibtex main && pdflatex main && pdflatex main
 | `manuscript.docx` | Word version generated from the same content with pandoc (Times New Roman 12 pt, 1.5 spacing, Word equations) |
 | `fuzzy-neural-cyber-triage-kbs.pdf` | PDF compiled from this folder |
 
-The compiled `preprint,12pt` PDF is 11 pages including references (references start on p. 10; tectonic build). For double-spaced review, change the class options to `review,12pt`; that layout runs to 15 pages (references start on p. 14). The 1.5-spaced Word version is 11 pages (LibreOffice render).
+The compiled `preprint,12pt` PDF is 9 pages including references (references start on p. 8; tectonic build). For the double-spaced review layout, change the class options to `review,12pt`: the text, both tables, both figures and all declarations end on p. 10 and the references run to p. 12 (Short Communication limit: 10 double-spaced pages including tables and figures). The 1.5-spaced Word version is 9 pages (LibreOffice render).
 Fig. 1 and Fig. 2 are drawn by `src/make_figures.py` from the result files (called at the end of `src/experiment.py`); the graphical abstract is drawn by `src/experiment.py`. Rerunning either script refreshes the copies in `figures/`.

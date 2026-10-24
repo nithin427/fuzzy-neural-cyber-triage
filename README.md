@@ -52,7 +52,7 @@ Tested with Python 3.13, torch 2.14.1+cpu, scikit-learn 1.9.1, numpy 2.5.4, pand
 | File | Content |
 |---|---|
 | `results/table1_predictive.{csv,md}` | Table 2, Panel A: Acc/F1/ROC-AUC/PR-AUC (seed 42) + 10-seed AUC |
-| `results/table2_decision.{csv,md}` | Table 2, Panels B1-B2: cost, coverage, unnecessary escalations, CIs, tests, ablations |
+| `results/table2_decision.{csv,md}` | Table 2, Panel B (decision policies) plus the ablation and reference rows cited from the Supplementary Material: cost, coverage, unnecessary escalations, CIs, tests |
 | `results/evidence_extended.csv` | Long-format sensitivity, ablation and per-seed numbers |
 | `results/summary.json` | Every number quoted in the paper |
 | `figures/fig1_decision_bands.{png,pdf}` | Fig. 1: membership functions, rule bands R1-R3 with alert counts, switch points and Bayes threshold |

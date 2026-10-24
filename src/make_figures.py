@@ -68,7 +68,7 @@ def fig1(summary):
     n = summary["n_test"]
     p = np.linspace(0, 1, 2001)
     mu_l, mu_m, mu_h = memberships(p, mf)
-    fig, ax = plt.subplots(figsize=(4.0, 1.9))
+    fig, ax = plt.subplots(figsize=(4.0, 1.65))
     spans = [(0, cuts[0], COL["L"], "R1: Monitor", t2["n_monitor"]),
              (cuts[0], cuts[1], COL["M"], "R2: Soft-block", t2["n_soft"]),
              (cuts[1], 1, COL["H"], "R3: Escalate", t2["n_escalate"])]
@@ -91,8 +91,10 @@ def fig1(summary):
     ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0])
     ax.set_xlabel("Neural attack propensity p")
     ax.set_ylabel("Membership degree")
-    ax.legend(loc="lower center", bbox_to_anchor=(0.5, 0.0), frameon=True, facecolor="white", edgecolor="none",
-              framealpha=0.95, fontsize=7)
+    # direct curve labels instead of a legend, so no curve is hidden
+    ax.text(0.01, 0.50, r"Low $\mu_L$", color=COL["L"], fontsize=7, ha="left", va="center")
+    ax.text(0.50, 0.60, r"Medium $\mu_M$", color=COL["M"], fontsize=7, ha="center", va="center")
+    ax.text(0.97, 0.48, r"High $\mu_H$", color=COL["H"], fontsize=7, ha="right", va="center")
     return _save(fig, "fig1_decision_bands")
 
 
@@ -100,7 +102,7 @@ def fig2(summary):
     sw = pd.DataFrame(summary["cost_ratio_sweep"])
     t2 = pd.read_csv(RES / "table2_decision.csv").set_index("Policy")
     c10 = summary["config"].get("c_fn_default", 10)
-    fig, ax = plt.subplots(figsize=(4.0, 2.05))
+    fig, ax = plt.subplots(figsize=(4.0, 1.8))
     pols = [("Prob. threshold 0.5", "thr", "s", "Threshold 0.5"),
             ("Top-20% by score", "top", "^", "Top-20% escalation"),
             (PROPOSED, "fz", "o", "Fuzzy rule policy (proposed)"),
