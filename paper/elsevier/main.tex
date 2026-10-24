@@ -131,7 +131,7 @@ C(\text{Escalate},y)&=3+3(1-y), & C_{FN}&=10.
 \end{aligned}
 \label{eq:cost}
 \end{equation}
-Each policy is evaluated on three metrics. The mean triage cost is $\bar C=\frac1N\sum_i C(a_i,y_i)$. The attack coverage, $\sum_i \mathbf{1}[a_i\neq\text{Monitor}]\,y_i/\sum_i y_i$, is the share of attacks that receive any action other than Monitor. The third metric counts unnecessary escalations (UE), which are benign alerts sent to an analyst. As a reference, we also report the plug-in Bayes cost rule
+Each policy is evaluated on three metrics. The mean triage cost is $\bar C=(1/N)\sum_i C(a_i,y_i)$. The attack coverage, $\sum_i \mathbf{1}[a_i\neq\text{Monitor}]\,y_i/\sum_i y_i$, is the share of attacks that receive any action other than Monitor. The third metric counts unnecessary escalations (UE), which are benign alerts sent to an analyst. As a reference, we also report the plug-in Bayes cost rule
 \begin{equation}
 a_i^{B}=\arg\min_{a}\;\big[(1-p_i)\,C(a,0)+p_i\,C(a,1)\big].
 \label{eq:bayes}
@@ -210,7 +210,7 @@ In conclusion, a fuzzy--neural rule base can serve as a knowledge-based decision
 
 %% ---------------------------------------------------------------------------
 \section*{Data availability}
-The code, result tables and figure-generation scripts are publicly available at \url{https://github.com/nithin427/fuzzy-neural-cyber-triage}. NSL-KDD is available from the Canadian Institute for Cybersecurity~\cite{tavallaee2009}. The Supplementary Material contains the same code, the result files (including the Panel B2 confidence intervals of Table~\ref{tab:main} in \texttt{table2\_decision.csv}), both figures as vector files and a graphical abstract.
+The code, result tables and figure-generation scripts are publicly available at \url{https://github.com/nithin427/fuzzy-neural-cyber-triage}. NSL-KDD is available from the Canadian Institute for Cybersecurity at \url{https://www.unb.ca/cic/datasets/nsl.html}~\cite{tavallaee2009}. The Supplementary Material contains the same code, the result files (including the Panel B2 confidence intervals of Table~\ref{tab:main} in \texttt{table2\_decision.csv}), both figures as vector files and a graphical abstract.
 
 \section*{Declaration of competing interest}
 The author declares no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.

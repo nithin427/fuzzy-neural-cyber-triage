@@ -89,7 +89,7 @@ Each rule $R_k$ fires with strength $\mu_k(p_i)$. The strongest rule determines 
 C(\text{Monitor},y)&=C_{FN}\,y, & C(\text{Soft-block},y)&=1+(1-y),\\
 C(\text{Escalate},y)&=3+3(1-y), & C_{FN}&=10.
 \end{aligned}
-\tag{6}$$ Each policy is evaluated on three metrics. The mean triage cost is $\bar C=\frac1N\sum_i C(a_i,y_i)$. The attack coverage, $\sum_i \mathbf{1}[a_i\neq\text{Monitor}]\,y_i/\sum_i y_i$, is the share of attacks that receive any action other than Monitor. The third metric counts unnecessary escalations (UE), which are benign alerts sent to an analyst. As a reference, we also report the plug-in Bayes cost rule $$a_i^{B}=\arg\min_{a}\;\big[(1-p_i)\,C(a,0)+p_i\,C(a,1)\big].
+\tag{6}$$ Each policy is evaluated on three metrics. The mean triage cost is $\bar C=(1/N)\sum_i C(a_i,y_i)$. The attack coverage, $\sum_i \mathbf{1}[a_i\neq\text{Monitor}]\,y_i/\sum_i y_i$, is the share of attacks that receive any action other than Monitor. The third metric counts unnecessary escalations (UE), which are benign alerts sent to an analyst. As a reference, we also report the plug-in Bayes cost rule $$a_i^{B}=\arg\min_{a}\;\big[(1-p_i)\,C(a,0)+p_i\,C(a,1)\big].
 \tag{7}$$ This rule treats $p_i$ as a calibrated probability, although deep-model scores do not guarantee calibration [20]. Because soft-blocking costs less than escalation for both classes, the Bayes rule never escalates. Instead, it soft-blocks every alert with $p_i>2/11$.
 
 # 3. Experimental design
@@ -146,7 +146,7 @@ In conclusion, a fuzzy–neural rule base can serve as a knowledge-based decisio
 
 # Data availability
 
-The code, result tables and figure-generation scripts are publicly available at <https://github.com/nithin427/fuzzy-neural-cyber-triage>. NSL-KDD is available from the Canadian Institute for Cybersecurity [21]. The Supplementary Material contains the same code, the result files (including the Panel B2 confidence intervals of Table 2 in `table2_decision.csv`), both figures as vector files and a graphical abstract.
+The code, result tables and figure-generation scripts are publicly available at <https://github.com/nithin427/fuzzy-neural-cyber-triage>. NSL-KDD is available from the Canadian Institute for Cybersecurity at <https://www.unb.ca/cic/datasets/nsl.html> [21]. The Supplementary Material contains the same code, the result files (including the Panel B2 confidence intervals of Table 2 in `table2_decision.csv`), both figures as vector files and a graphical abstract.
 
 # Declaration of competing interest
 
